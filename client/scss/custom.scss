@@ -1,0 +1,25 @@
+// Custom color palette
+$primary: #493a6c;
+$secondary: #a3a8ac;
+$success: #48b47a;
+$info: #d6c7ad;
+$warning: #e4d142;
+$danger: #ef3626;
+$dark: #020000;
+$light:#dfe3ff;
+
+// Include Bootstrap SCSS
+@import "bootstrap";
+$btn-border-radius: 0.5rem;
+body {
+  font-family: 'Sofia', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Sofia', sans-serif;
+}
+
+// Override Bootstrap variables with custom color palette
+// If there are any additional Bootstrap variables you want to override, you can do so here.
+// For example:
+// Fonts
