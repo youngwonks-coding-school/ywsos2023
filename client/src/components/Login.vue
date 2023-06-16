@@ -66,7 +66,7 @@ export default {
           localStorage.setItem('accessToken', response.data.access_token)
           localStorage.setItem('refreshToken', response.data.refresh_token)
 
-          // Reload the page
+          // Reload page
           window.location.reload()
         })
         .catch((error) => {
