@@ -41,4 +41,4 @@ def check_token_in_blacklist(jwt_header, jwt_data):
 
 
 if '__main__' == __name__:
-    app.run(debug=True)
+    app.run(local='127.0.0.1', port=5000, debug=True)
