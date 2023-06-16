@@ -96,7 +96,6 @@ class Logout(Resource):
         db.blacklisted_tokens.insert_one({'jti': jti})
 
         return {'message': 'Successfuly logged out.'}, 200
-    
 
 @auth.route('/update_password', methods=['POST'])
 class UpdatePassword(Resource):
