@@ -1,22 +1,25 @@
-import { createApp } from "vue";
-
-import App from "./App.vue";
-import router from "./router";
 import "bootstrap";
 import "../scss/custom.scss";
-import ToastPlugin from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-bootstrap.css';
 
+import App from "./App.vue";
+import ToastPlugin from 'vue-toast-notification';
 import axios from 'axios';
-axios.defaults.baseURL = import.meta.env.VITE_SERVER_URL
+import { createApp } from "vue";
+import router from "./router";
 
-
-const app = createApp(App);
-
-app.use(router);
-app.use(ToastPlugin, {
-    // One of the options
-    position: 'top-right'
-});
-
-app.mount("#app");
+(async () => {
+    axios.defaults.baseURL = import.meta.env.VITE_SERVER_URL;
+  
+    // Wait for the baseURL to be set
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  
+    const app = createApp(App);
+  
+    app.use(router);
+    app.use(ToastPlugin, {
+      position: 'top-right'
+    });
+  
+    app.mount("#app");
+  })();
