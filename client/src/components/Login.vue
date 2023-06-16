@@ -70,7 +70,7 @@ export default {
         })
         .catch((error) => {
           console.log(error)
-          this.$toast.error(error.response.data.message)
+          this.$toast.error(error.message)
         })
     },
     verifyUserSession() {
