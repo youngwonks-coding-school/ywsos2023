@@ -22,13 +22,14 @@
             <a class="nav-link" href="/login">Login</a>
           </li>
           <li class="nav-item" v-else>
-            <a class="nav-link" href="#" @click="logout">Logout</a>
+            <a class="nav-link" href="/logout" @click="logout">Logout</a>
           </li>
         </ul>
       </div>
     </div>
   </nav>
 </template>
+
 
 <script>
 export default {
