@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar navbar-expand-md d-flex justify-content-center navbar-floating" :class="{ 'dark-theme': isDarkTheme }">
     <div class="navbar-header">
-      <a class="navbar-brand" href="/">YWSOS</a>
+    <a class="navbar-brand" href="/">YWSOS</a>
     </div>
     <button
       class="navbar-toggler"
@@ -55,9 +55,11 @@ export default {
     changeTheme() {
       this.isDarkTheme = !this.isDarkTheme;
       if (this.isDarkTheme) {
+        localStorage.setItem('theme', 'dark');
         document.documentElement.setAttribute('data-theme', 'dark');
       } else {
         document.documentElement.setAttribute('data-theme', 'light');
+        localStorage.setItem('theme', 'light');
 
       }
     },
