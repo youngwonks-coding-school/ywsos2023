@@ -42,16 +42,14 @@ export default {
   data() {
     return {
       isLoggedIn: localStorage.hasOwnProperty('accessToken'),
-      currentTime: '',
     };
   },
-  mounted() {
-    this.updateClock(); // Update the clock immediately when the component is mounted
-
-    // Refresh the clock every second (1000 milliseconds)
-    setInterval(() => {
-      this.updateClock();
-    }, 1000);
+  computed: {
+    currentTime() {
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const format = 'HH:mm:ss'; // Format for displaying time
+      return moment().tz(timezone).format(format);
+    },
   },
   methods: {
     logout() {
@@ -60,10 +58,15 @@ export default {
       console.log('Logged out');
     },
     updateClock() {
-      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      const format = 'HH:mm:ss'; // Format for displaying time
-      this.currentTime = moment().tz(timezone).format(format);
+      this.$el.querySelector('.clock-text').textContent = this.currentTime;
     },
+  },
+  mounted() {
+    this.updateClock(); 
+
+    setInterval(() => {
+      this.updateClock();
+    }, 1000);
   },
 };
 </script>

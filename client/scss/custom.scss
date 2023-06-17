@@ -1,25 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Sofia&display=swap');
+
 // Custom color palette
-$primary: #493a6c;
-$secondary: #a3a8ac;
+$primary: #ACBAC7;
+$secondary: #FACF5A;
+$background: #22272D;
 $success: #48b47a;
 $info: #d6c7ad;
 $warning: #e4d142;
 $danger: #ef3626;
-$dark: #020000;
-$light:#dfe3ff;
+$dark: #2D333B;
+$light: #e2e2e7;
 
 // Include Bootstrap SCSS
 @import "bootstrap";
+
+// Override Bootstrap variables with custom color palette
 $btn-border-radius: 0.5rem;
+
 body {
   font-family: 'Sofia', sans-serif;
+  background-color: $background;
+  color: $primary;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Sofia', sans-serif;
 }
 
-// Override Bootstrap variables with custom color palette
-// If there are any additional Bootstrap variables you want to override, you can do so here.
-// For example:
-// Fonts
+
+// FORM STYLES
+
+.card{
+  background-color: $dark;
+  border-radius: 15px;
+  margin-top:-10%;
+}
+
+.card-title{
+  color: $secondary;
+}
+
+.form-check-label, 
+.form-label {
+  color: $primary;
+}
+
+// NAV BAR STYLES
+.navbar-floating {
+  position: relative;
+  margin-top: 50px;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 30%;
+  border-radius: 15px;
+  z-index: 100;
+  background-color: $dark;
+}
+
+.navbar-header .navbar-brand{
+  margin-left:30px;
+  color: $secondary
+}
+
+.container-fluid {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin-right:110px;
+}
+
+.navbar-floating .navbar-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav-link {
+  color: $primary;
+}
+
+.nav-link:hover {
+  color: $secondary;
+}
+
+.nav-item {
+  margin: 0 10px;
+}
+
+@media (max-width: 1000px) {
+  .navbar-floating {
+    width: 90% !important;
+  }
+}
