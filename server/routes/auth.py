@@ -15,7 +15,11 @@ auth_model = auth.model('AuthModel', {
     'password': fields.String(required=True, description='Password')
 })
 
-
+update_model = auth.model('UpdateModel', {
+    'email': fields.String(required=True, description='Email address'),
+    'old_pass': fields.String(required=True, description='Old password'),
+    'new_pass': fields.String(required=True, description='New password')
+})
 
 
 @auth.route('/register', methods=['POST'])
@@ -25,6 +29,7 @@ class Register(Resource):
         # Parse the request data
         email = auth.payload['email']
         password = auth.payload['password']
+        date_created = datetime.datetime.utcnow()
 
         # Check if the user already exists
         if db.users.find_one({'email': email}):
@@ -34,7 +39,7 @@ class Register(Resource):
         hashed_password = generate_password_hash(password)
 
         # Create a new user document
-        user = {'email': email, 'password': hashed_password}
+        user = {'email': email, 'password': hashed_password, "date_created": date_created}
         db.users.insert_one(user)
 
         return {'message': 'User registered successfully'}, 201
@@ -63,6 +68,7 @@ class Login(Resource):
 @auth.route('/verify', methods=['POST'])
 class Verify(Resource):
     @jwt_required()
+    @auth.doc(security="Bearer")
     def post(self):
         email = get_jwt_identity()
         print(email)
@@ -85,6 +91,21 @@ class Logout(Resource):
         db.blacklisted_tokens.insert_one({'jti': jti})
 
         return {'message': 'Successfuly logged out.'}, 200
+
+@auth.route('/update_password', methods=['POST'])
+class UpdatePassword(Resource):
+    @auth.expect(update_model, validate=True)
+    def post(self):
+        email = auth.payload['email']
+        old_password = auth.payload['old_pass']
+        new_password = auth.payload['new_pass']
+        user = db.users.find_one({"email": email})
+        if not user or not check_password_hash(user['password'], old_password):
+            return {'message': 'Invalid email or password'}, 401
+        password = generate_password_hash(new_password)
+        db.users.update_one({"email": email}, {"$set": {"password": password}})
+
+        return {"message": 'Successfuly update password'}, 200
 
 
 
