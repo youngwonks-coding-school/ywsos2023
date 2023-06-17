@@ -12,11 +12,11 @@
     </a>
 
     <ul class="nav col-md-4 justify-content-end">
-      <li class="nav-item"><a href="#" class="nav-link px-2">Home</a></li>
-      <li class="nav-item"><a href="#" class="nav-link px-2">Features</a></li>
-      <li class="nav-item"><a href="#" class="nav-link px-2">Pricing</a></li>
-      <li class="nav-item"><a href="#" class="nav-link px-2">FAQs</a></li>
-      <li class="nav-item"><a href="#" class="nav-link px-2">About</a></li>
+      <li class="nav-item"><a href="#" class="px-2 footer-link">Home</a></li>
+      <li class="nav-item"><a href="#" class="px-2 footer-link">Features</a></li>
+      <li class="nav-item"><a href="#" class="px-2 footer-link">Pricing</a></li>
+      <li class="nav-item"><a href="#" class="px-2 footer-link">FAQs</a></li>
+      <li class="nav-item"><a href="#" class="px-2 footer-link">About</a></li>
     </ul>
   </footer>
 </template>

@@ -25,6 +25,7 @@
           </li>
           <li class="nav-item" v-else>
             <a class="nav-link" href="/logout" @click="logout">Logout</a>
+            <a class="nav-link" href="/dashboard" >Dashboard</a>
           </li>
           <li class="nav-item">
             <button class="nav-link" @click="changeTheme()">

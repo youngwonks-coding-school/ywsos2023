@@ -34,7 +34,7 @@
           >
         </div>
         <div class="text-center">
-          <button type="button" @click="register()" class="btn btn-primary button">Register</button><br />
+          <button type="button" @click="register()" class="btn btn-secondary button">Register</button><br />
           <br />
           <label class="form-check-label"><a href="/login">Login</a> </label>
         </div>
