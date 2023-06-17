@@ -1,25 +1,164 @@
-// Custom color palette
-$primary: #493a6c;
-$secondary: #a3a8ac;
-$success: #48b47a;
-$info: #d6c7ad;
-$warning: #e4d142;
-$danger: #ef3626;
-$dark: #020000;
-$light:#dfe3ff;
-
-// Include Bootstrap SCSS
-@import "bootstrap";
-$btn-border-radius: 0.5rem;
-body {
-  font-family: 'Sofia', sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=Sofia&display=swap');
+@font-face {
+  font-family: 'Impact';
+  src: url('../fonts/impact.ttf') format('truetype');
+}
+[data-theme="light"] {
+  --primary: #2C4251;
+  --secondary: #d31a57;
+  --highlight:#543ce0;
+  --background: #ecf1f7;
+  --dark: #ffffff;
+  --light: #e2e2e7;
 }
 
-h1, h2, h3, h4, h5, h6 {
+// Dark theme colors
+[data-theme="dark"] {
+  --primary: #ACBAC7;
+  --secondary: #FACF5A;
+  --highlight:#543ce0;
+  --background: #22272D;
+  --dark: #2D333B;
+  --light: #e2e2e7;
+}
+
+@import "bootstrap";
+// Rest of your styles using the CSS custom properties
+body {
   font-family: 'Sofia', sans-serif;
+  background-color: var(--background);
+  color: var(--primary);
 }
 
 // Override Bootstrap variables with custom color palette
-// If there are any additional Bootstrap variables you want to override, you can do so here.
-// For example:
-// Fonts
+$btn-border-radius: 0.5rem;
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Sofia', sans-serif, 
+}
+a{
+  color: var(--primary);
+}
+
+
+//Home Page Styles
+.home-container {
+  position: relative;
+  margin-bottom: 10%;
+  margin-left: 5%;
+}
+
+.home-title {
+  font-family: 'Impact', sans-serif;
+  font-weight: 400;
+  font-size: 130px;
+  color: var(--secondary);
+}
+
+.home-subtitle {
+  font-family: 'Impact', sans-serif;
+  font-weight: 400;
+  font-size: 80px;
+  color: var(--primary);
+  width: 70%;
+}
+
+.vector1 {
+  position: absolute;
+  top: 20%;
+  left: 30%;
+  z-index: -1;
+  width: 1000px; /* Adjust the width as needed */
+  height: 500px; /* Adjust the height as needed */
+}
+
+.vector1 img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.home-auth{
+  display: flex;
+  flex-direction: column;
+  margin-top:30px;
+  width: 20%;
+}
+
+
+
+
+// FORM STYLES
+.card {
+  background-color: var(--dark);
+  border: var(--dark) 1px solid;
+  border-radius: 15px;
+  margin-top: -10%;
+}
+
+.card-title {
+  color: var(--secondary);
+}
+
+.form-check-label,
+.form-label
+{
+  color: var(--primary);
+}
+
+.button {
+  background-color: var(--secondary);
+  border-color: var(--secondary);
+}
+
+// NAV BAR STYLES
+.navbar-floating {
+  position: relative;
+  margin-top: 50px;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 30%;
+  border-radius: 15px;
+  z-index: 100;
+  background-color: var(--dark);
+}
+
+.navbar-header .navbar-brand{
+  color: var(--secondary);
+  position: relative;
+  margin-left: 50px;
+}
+
+.container-fluid {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin-right: 110px;
+}
+
+.navbar-floating .navbar-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav-link {
+  color: var(--primary);
+}
+
+.nav-link:hover {
+  color: var(--secondary);
+}
+
+.nav-item {
+  margin: 0 10px;
+}
+
+@media (max-width: 1300px) {
+  .navbar-floating {
+    width: 70% !important;
+  }
+}
