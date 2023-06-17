@@ -15,17 +15,35 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
+          <li class="nav-item" v-if="!isLoggedIn">
             <a class="nav-link active" aria-current="page" href="/register">Register</a>
           </li>
-          <li class="nav-item">
+          <li class="nav-item" v-if="!isLoggedIn">
             <a class="nav-link" href="/login">Login</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/logout">Logout</a>
+          <li class="nav-item" v-else>
+            <a class="nav-link" href="/logout" @click="logout">Logout</a>
           </li>
         </ul>
       </div>
     </div>
   </nav>
 </template>
+
+
+<script>
+export default {
+  data() {
+    return {
+      isLoggedIn: localStorage.hasOwnProperty("accessToken"),
+    };
+  },
+  methods: {
+    logout() {
+      localStorage.removeItem("accessToken");
+      this.isLoggedIn = false;
+      console.log("Logged out")
+    },
+  },
+};
+</script>

@@ -66,7 +66,8 @@ export default {
           localStorage.setItem('accessToken', response.data.access_token)
           localStorage.setItem('refreshToken', response.data.refresh_token)
 
-          this.$router.push('/dashboard')
+          // Reload page
+          window.location.reload()
         })
         .catch((error) => {
           console.log(error)
