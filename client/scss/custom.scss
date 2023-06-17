@@ -6,24 +6,24 @@
 
 @import "bootstrap";
 
-Color themes
-[data-theme="light"] {
-  --primary: #2C4251;
-  --secondary: #d31a57;
-  --highlight: #543ce0;
-  --background: #ecf1f7;
-  --dark: #ffffff;
-  --light: #e2e2e7;
-}
-
+// Color themes
 // [data-theme="light"] {
-//   --primary: #5B8A72;
-//   --secondary: #9aba42;
-//   --highlight: #884A39;
-//   --background: #BFCBA8;
-//   --dark: #56776C;
+//   --primary: #2C4251;
+//   --secondary: #d31a57;
+//   --highlight: #543ce0;
+//   --background: #ecf1f7;
+//   --dark: #ffffff;
 //   --light: #e2e2e7;
 // }
+
+[data-theme="light"] {
+  --primary: #5B8A72;
+  --secondary: #9aba42;
+  --highlight: #884A39;
+  --background: #BFCBA8;
+  --dark: #56776C;
+  --light: #e2e2e7;
+}
 
 [data-theme="dark"] {
   --primary: #ACBAC7;
