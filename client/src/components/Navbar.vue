@@ -114,7 +114,7 @@ export default {
     logout() {
       localStorage.removeItem('accessToken');
       this.isLoggedIn = false;
-      console.log('Logged out')
+      console.log('Logged out');
     },
 
     changeTheme() {
