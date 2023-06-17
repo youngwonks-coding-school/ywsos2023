@@ -1,19 +1,19 @@
 <template>
-  <nav class="navbar navbar-expand-md d-flex justify-content-center navbar-floating">
+  <nav class="navbar navbar-expand-md d-flex justify-content-center navbar-floating" :class="{ 'dark-theme': isDarkTheme }">
     <div class="navbar-header">
-        <a class="navbar-brand" href="/">YWSOS</a>
+      <a class="navbar-brand" href="/">YWSOS</a>
     </div>
     <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
     <div class="container-fluid">
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mb-2 mb-lg-0">
@@ -26,8 +26,11 @@
           <li class="nav-item" v-else>
             <a class="nav-link" href="/logout" @click="logout">Logout</a>
           </li>
-          <li class="nav-item" id="clock">
-            <span class="clock-text">{{ currentTime }}</span>
+          <li class="nav-item">
+            <button class="nav-link" @click="changeTheme()">
+              <i v-if="isDarkTheme" class="fas fa-moon"></i>
+              <i v-else class="fas fa-sun"></i>
+            </button>
           </li>
         </ul>
       </div>
@@ -36,20 +39,12 @@
 </template>
 
 <script>
-import moment from 'moment-timezone'; // Import moment-timezone library
-
 export default {
   data() {
     return {
       isLoggedIn: localStorage.hasOwnProperty('accessToken'),
+      isDarkTheme: true,
     };
-  },
-  computed: {
-    currentTime() {
-      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      const format = 'HH:mm:ss'; // Format for displaying time
-      return moment().tz(timezone).format(format);
-    },
   },
   methods: {
     logout() {
@@ -57,16 +52,15 @@ export default {
       this.isLoggedIn = false;
       console.log('Logged out');
     },
-    updateClock() {
-      this.$el.querySelector('.clock-text').textContent = this.currentTime;
-    },
-  },
-  mounted() {
-    this.updateClock(); 
+    changeTheme() {
+      this.isDarkTheme = !this.isDarkTheme;
+      if (this.isDarkTheme) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
 
-    setInterval(() => {
-      this.updateClock();
-    }, 1000);
+      }
+    },
   },
 };
 </script>

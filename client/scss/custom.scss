@@ -1,48 +1,61 @@
 @import url('https://fonts.googleapis.com/css2?family=Sofia&display=swap');
 
-// Custom color palette
-$primary: #ACBAC7;
-$secondary: #FACF5A;
-$background: #22272D;
-$success: #48b47a;
-$info: #d6c7ad;
-$warning: #e4d142;
-$danger: #ef3626;
-$dark: #2D333B;
-$light: #e2e2e7;
+[data-theme="light"] {
+  --primary: #2C4251;
+  --secondary: #d31a57;
+  --background: #ecf1f7;
+  --dark: #ffffff;
+  --light: #e2e2e7;
+}
 
-// Include Bootstrap SCSS
+// Dark theme colors
+[data-theme="dark"] {
+  --primary: #ACBAC7;
+  --secondary: #FACF5A;
+  --background: #22272D;
+  --dark: #2D333B;
+  --light: #e2e2e7;
+}
+
 @import "bootstrap";
+// Rest of your styles using the CSS custom properties
+body {
+  font-family: 'Sofia', sans-serif;
+  background-color: var(--background);
+  color: var(--primary);
+}
 
 // Override Bootstrap variables with custom color palette
 $btn-border-radius: 0.5rem;
 
-body {
-  font-family: 'Sofia', sans-serif;
-  background-color: $background;
-  color: $primary;
-}
-
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Sofia', sans-serif;
 }
-
+a{
+  color: var(--primary);
+}
 
 // FORM STYLES
-
-.card{
-  background-color: $dark;
+.card {
+  background-color: var(--dark);
+  border: var(--dark) 1px solid;
   border-radius: 15px;
-  margin-top:-10%;
+  margin-top: -10%;
 }
 
-.card-title{
-  color: $secondary;
+.card-title {
+  color: var(--secondary);
 }
 
-.form-check-label, 
-.form-label {
-  color: $primary;
+.form-check-label,
+.form-label
+{
+  color: var(--primary);
+}
+
+.button {
+  background-color: var(--secondary);
+  border-color: var(--secondary);
 }
 
 // NAV BAR STYLES
@@ -55,12 +68,12 @@ h1, h2, h3, h4, h5, h6 {
   width: 30%;
   border-radius: 15px;
   z-index: 100;
-  background-color: $dark;
+  background-color: var(--dark);
 }
 
-.navbar-header .navbar-brand{
-  margin-left:30px;
-  color: $secondary
+.navbar-header .navbar-brand {
+  margin-left: 30px;
+  color: var(--secondary);
 }
 
 .container-fluid {
@@ -69,7 +82,7 @@ h1, h2, h3, h4, h5, h6 {
   justify-content: center;
   align-items: center;
   text-align: center;
-  margin-right:110px;
+  margin-right: 110px;
 }
 
 .navbar-floating .navbar-nav {
@@ -79,11 +92,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .nav-link {
-  color: $primary;
+  color: var(--primary);
 }
 
 .nav-link:hover {
-  color: $secondary;
+  color: var(--secondary);
 }
 
 .nav-item {
