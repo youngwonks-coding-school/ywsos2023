@@ -1,64 +1,166 @@
 @import url('https://fonts.googleapis.com/css2?family=Sofia&display=swap');
+@font-face {
+  font-family: 'Impact';
+  src: url('../fonts/impact.ttf') format('truetype');
+}
+
+@import "bootstrap";
+
+// Color themes
+// [data-theme="light"] {
+//   --primary: #2C4251;
+//   --secondary: #d31a57;
+//   --highlight: #543ce0;
+//   --background: #ecf1f7;
+//   --dark: #ffffff;
+//   --light: #e2e2e7;
+// }
 
 [data-theme="light"] {
-  --primary: #2C4251;
-  --secondary: #d31a57;
-  --background: #ecf1f7;
-  --dark: #ffffff;
+  --primary: #5B8A72;
+  --secondary: #9aba42;
+  --highlight: #884A39;
+  --background: #BFCBA8;
+  --dark: #56776C;
   --light: #e2e2e7;
 }
 
-// Dark theme colors
 [data-theme="dark"] {
   --primary: #ACBAC7;
   --secondary: #FACF5A;
+  --highlight: #543ce0;
   --background: #22272D;
   --dark: #2D333B;
   --light: #e2e2e7;
 }
 
-@import "bootstrap";
-// Rest of your styles using the CSS custom properties
+// Global styles
+html {
+  -webkit-overflow-x-scrolling: hidden;
+  overflow-x: hidden !important;
+}
+
 body {
+  margin: 0;
+  padding: 0;
+  -webkit-overflow-x-scrolling: hidden;
   font-family: 'Sofia', sans-serif;
   background-color: var(--background);
   color: var(--primary);
 }
 
-// Override Bootstrap variables with custom color palette
-$btn-border-radius: 0.5rem;
+@media screen and (min-height: 800px) {
+  body {
+    overflow-y: hidden;
+  }
+}
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Sofia', sans-serif;
 }
-a{
+
+a {
   color: var(--primary);
 }
 
-// FORM STYLES
+//HOME PAGE STYLES
+
+.home-container {
+  position: relative;
+  margin-bottom: 10%;
+  margin-left: 5%;
+  margin-top: -200px;
+}
+
+$homeTFSize: 130px;
+$homeSFSize: 80px;
+
+.home-title, .home-subtitle {
+  font-family: 'Impact', sans-serif;
+  font-weight: 400;
+  color: var(--primary);
+}
+
+.home-title {
+  font-size: $homeTFSize;
+  color: var(--secondary);
+}
+
+.home-subtitle {
+  font-size: $homeSFSize;
+}
+
+$v1: (
+  w: 1000px,
+  h: 500px,
+  t: 20%,
+  l: 30%
+);
+
+.vector1 {
+  position: absolute;
+  width: map-get($v1, w);
+  height: map-get($v1, h);
+  top: map-get($v1, t);
+  left: map-get($v1, l);
+  z-index: -1;
+}
+
+.vector1 img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+
+.home-ts{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 70%;
+}
+
+
+.home-auth {
+  display: flex;
+  flex-direction: column;
+  margin-top: 30px;
+  width: 20%;
+}
+
+//REGISTRATION PAGE STYLES
+
 .card {
   background-color: var(--dark);
   border: var(--dark) 1px solid;
   border-radius: 15px;
   margin-top: -10%;
-}
 
-.card-title {
-  color: var(--secondary);
-}
+  .card-title {
+    color: var(--secondary);
+  }
 
-.form-check-label,
-.form-label
-{
-  color: var(--primary);
+  .form-check-label, .form-label {
+    color: var(--primary);
+  }
+
 }
 
 .button {
   background-color: var(--secondary);
-  border-color: var(--secondary);
+  border-color: var(--secondary) !important;
+  border-radius: 5px;
+  outline: none;
 }
 
-// NAV BAR STYLES
+.button:hover, .button:focus {
+  background-color: var(--secondary);
+  box-shadow: 0 0.3rem 0.5rem rgba(77, 77, 77, 0.3);
+}
+
+//NAV STYLES
+
 .navbar-floating {
   position: relative;
   margin-top: 50px;
@@ -69,42 +171,120 @@ a{
   border-radius: 15px;
   z-index: 100;
   background-color: var(--dark);
+
+  .navbar-header .navbar-brand {
+    color: var(--secondary);
+    position: relative;
+    margin-left: 50px;
+  }
+
+  .container-fluid {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-right: 110px;
+  }
+
+  .navbar-floating .navbar-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .nav-link,
+  .footer-link {
+    color:var(--primary);
+  }
+
+  .nav-link:hover,
+  .footer-link:hover {
+    color: var(--secondary);
+  }
+
+  .nav-item {
+    margin: 0 10px;
+    color: var(--primary);
+  }
+
 }
 
-.navbar-header .navbar-brand {
-  margin-left: 30px;
-  color: var(--secondary);
-}
-
-.container-fluid {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  margin-right: 110px;
-}
-
-.navbar-floating .navbar-nav {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.nav-link {
-  color: var(--primary);
-}
-
-.nav-link:hover {
-  color: var(--secondary);
-}
-
-.nav-item {
-  margin: 0 10px;
-}
-
-@media (max-width: 1000px) {
+@media (max-width: 1500px) {
   .navbar-floating {
-    width: 90% !important;
+    width: 70% !important;
+  }
+
+  .home-title {
+    font-size: calc(#{$homeTFSize} - 30px);
+  }
+
+  .home-subtitle {
+    font-size: calc(#{$homeSFSize} - 30px);
+  }
+
+  .home-ts {
+    width: 60%;
+  }
+
+  .vector1 {
+    $v1t: map-get($v1, t);
+    $v1l: map-get($v1, l);
+    $v1h: map-get($v1, h);
+    $v1w: map-get($v1, w);
+
+    top: calc(#{$v1t} + 10%);
+    left: 10%;
+    width: calc(#{$v1h} * 0.9+10%);
+  }
+}
+
+@media screen and (max-width:1000px) {
+  .vector1 {
+    $v1t: map-get($v1, t);
+    $v1l: map-get($v1, l);
+    $v1h: map-get($v1, h);
+    $v1w: map-get($v1, w);
+
+    top: calc(#{$v1t} + 10%);
+    left: 15%;
+    width: calc(#{$v1h} * .9);
+  }
+}
+@media screen and (max-width: 750px) {
+  .home-title {
+    font-size: calc(#{$homeTFSize} - 50px);
+  }
+
+  .home-subtitle {
+    font-size: calc(#{$homeSFSize} - 50px);
+  }
+
+  .home-ts {
+    width: 80%;
+  }
+
+  .vector1{
+    $v1t: map-get($v1, t);
+    $v1l: map-get($v1, l);
+    $v1h: map-get($v1, h);
+    $v1w: map-get($v1, w);
+
+    top: calc(#{$v1t} + 10%);
+    left: 10%;
+    width: calc(#{$v1h} * .8);
+  }
+}
+
+@media screen and (max-width:500px) {
+  .vector1{
+    $v1t: map-get($v1, t);
+    $v1l: map-get($v1, l);
+    $v1h: map-get($v1, h);
+    $v1w: map-get($v1, w);
+
+    top: calc(#{$v1t} + 20%);
+    left: 10%;
+    width: calc(#{$v1h} * .5);
   }
 }

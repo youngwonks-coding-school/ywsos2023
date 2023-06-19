@@ -10,7 +10,7 @@ import router from "./router";
 
 (async () => {
     axios.defaults.baseURL = import.meta.env.VITE_SERVER_URL;
-  
+    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light');
     // Wait for the baseURL to be set
     await new Promise(resolve => setTimeout(resolve, 1000));
   
