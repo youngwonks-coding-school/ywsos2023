@@ -103,7 +103,7 @@ class UpdatePassword(Resource):
         if not user or not check_password_hash(user['password'], old_password):
             return {'message': 'Invalid email or password'}, 401
         password = generate_password_hash(new_password)
-        db.users.update_one({"email": email}, {"$set": {"password": password}})
+        db.users.update_one({"email": email}, {"$set": {"password": password, "updated_at": datetime.datetime.utcnow()}})
 
         return {"message": 'Successfuly update password'}, 200
 
