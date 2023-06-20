@@ -6,22 +6,12 @@
 
 @import "bootstrap";
 
-// Color themes
-// [data-theme="light"] {
-//   --primary: #2C4251;
-//   --secondary: #d31a57;
-//   --highlight: #543ce0;
-//   --background: #ecf1f7;
-//   --dark: #ffffff;
-//   --light: #e2e2e7;
-// }
-
 [data-theme="light"] {
-  --primary: #5B8A72;
-  --secondary: #9aba42;
+  --primary: #AD8B73;
+  --secondary: #CEAB93;
   --highlight: #884A39;
-  --background: #BFCBA8;
-  --dark: #56776C;
+  --background: #FFFBE9;
+  --dark: #E3CAA5;
   --light: #e2e2e7;
 }
 
@@ -69,7 +59,6 @@ a {
   position: relative;
   margin-bottom: 10%;
   margin-left: 5%;
-  margin-top: -200px;
 }
 
 $homeTFSize: 130px;
@@ -90,28 +79,6 @@ $homeSFSize: 80px;
   font-size: $homeSFSize;
 }
 
-$v1: (
-  w: 1000px,
-  h: 500px,
-  t: 20%,
-  l: 30%
-);
-
-.vector1 {
-  position: absolute;
-  width: map-get($v1, w);
-  height: map-get($v1, h);
-  top: map-get($v1, t);
-  left: map-get($v1, l);
-  z-index: -1;
-}
-
-.vector1 img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
 
 .home-ts{
   display: flex;
@@ -121,13 +88,25 @@ $v1: (
   width: 70%;
 }
 
-
 .home-auth {
   display: flex;
   flex-direction: column;
   margin-top: 30px;
   width: 20%;
 }
+
+.home-truck {
+  position: fixed;
+  top: 70%;
+  transform: translate(50%, -50%);
+  right: 0;
+}
+
+.home-truck img {
+  max-width: 50%;
+}
+
+
 
 //REGISTRATION PAGE STYLES
 
@@ -136,6 +115,7 @@ $v1: (
   border: var(--dark) 1px solid;
   border-radius: 15px;
   margin-top: -10%;
+  box-shadow: 0 0.3rem 0.5rem rgba(77, 77, 77, 0.3);
 
   .card-title {
     color: var(--secondary);
@@ -167,10 +147,10 @@ $v1: (
   top: 30%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 30%;
   border-radius: 15px;
   z-index: 100;
   background-color: var(--dark);
+  box-shadow: 0 0.3rem 0.5rem rgba(77, 77, 77, 0.3);
 
   .navbar-header .navbar-brand {
     color: var(--secondary);
@@ -207,7 +187,6 @@ $v1: (
     margin: 0 10px;
     color: var(--primary);
   }
-
 }
 
 @media (max-width: 1500px) {
@@ -215,6 +194,10 @@ $v1: (
     width: 70% !important;
   }
 
+  .home-container {
+    margin-left: 10%;
+    width: 100%;
+  }
   .home-title {
     font-size: calc(#{$homeTFSize} - 30px);
   }
@@ -227,30 +210,8 @@ $v1: (
     width: 60%;
   }
 
-  .vector1 {
-    $v1t: map-get($v1, t);
-    $v1l: map-get($v1, l);
-    $v1h: map-get($v1, h);
-    $v1w: map-get($v1, w);
-
-    top: calc(#{$v1t} + 10%);
-    left: 10%;
-    width: calc(#{$v1h} * 0.9+10%);
-  }
 }
 
-@media screen and (max-width:1000px) {
-  .vector1 {
-    $v1t: map-get($v1, t);
-    $v1l: map-get($v1, l);
-    $v1h: map-get($v1, h);
-    $v1w: map-get($v1, w);
-
-    top: calc(#{$v1t} + 10%);
-    left: 15%;
-    width: calc(#{$v1h} * .9);
-  }
-}
 @media screen and (max-width: 750px) {
   .home-title {
     font-size: calc(#{$homeTFSize} - 50px);
@@ -264,27 +225,6 @@ $v1: (
     width: 80%;
   }
 
-  .vector1{
-    $v1t: map-get($v1, t);
-    $v1l: map-get($v1, l);
-    $v1h: map-get($v1, h);
-    $v1w: map-get($v1, w);
 
-    top: calc(#{$v1t} + 10%);
-    left: 10%;
-    width: calc(#{$v1h} * .8);
-  }
 }
 
-@media screen and (max-width:500px) {
-  .vector1{
-    $v1t: map-get($v1, t);
-    $v1l: map-get($v1, l);
-    $v1h: map-get($v1, h);
-    $v1w: map-get($v1, w);
-
-    top: calc(#{$v1t} + 20%);
-    left: 10%;
-    width: calc(#{$v1h} * .5);
-  }
-}

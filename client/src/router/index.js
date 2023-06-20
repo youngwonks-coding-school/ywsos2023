@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+
 import HomeView from "../views/HomeView.vue";
 import axios from 'axios'
 
@@ -9,6 +10,11 @@ const router = createRouter({
       path: "/",
       name: "home",
       component: HomeView,
+    },
+    {
+      path: "/",
+      name: "profile",
+      component: () => import("../views/ProfileView.vue"),
     },
     {
       path: "/login",
