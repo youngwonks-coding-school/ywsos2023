@@ -1,6 +1,7 @@
 import "bootstrap";
 import "../scss/custom.scss";
 import 'vue-toast-notification/dist/theme-bootstrap.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 import App from "./App.vue";
 import ToastPlugin from 'vue-toast-notification';

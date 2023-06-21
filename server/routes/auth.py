@@ -111,8 +111,7 @@ class UpdatePassword(Resource):
         return {"message": 'Successfuly update password'}, 200
 
 
-#PUT IN YOUR ENV FILE 
-#YELP_API_KEY = "I4VEQwNoLWKDbxaFK9Z-eN8W2L6Z9woSCz7Orp0DQCYzh8zePaKhMPnNQrOpM8Ij9myS3jCnG2n_WrnAgq2TZc5fw7KBtWrMvm5y7PigYrl_ArfZ7eLX01h6BXeSZHYx"
+#Make your you have a YELP_API_KEY in .env
 @auth.route('/profile_data', methods=['POST'])
 class ProfileData(Resource):
     def post(self):
