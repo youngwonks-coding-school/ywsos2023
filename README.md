@@ -32,3 +32,8 @@ Depending on your Python install, you may need to use `python3` and `pip3` inste
 3. Create a new project named `test_database`.
 4. Click on the connect button and select the appropriate options.(Note: when replacing <password>, make sure to use your user password and not your account password)
 5. Copy the connection string and paste it into the `MONGO_URI` key in the `.env` file in the `server` folder.
+
+### Creating Yelp Api Key
+1. Go to [Yelp account](https://www.yelp.com/developers/v3/manage_app) and create/login to an account
+2. Enter in the necessary information into the fields
+3. Copy the API key given and paste it into the `YELP_API_KEY` key in the `.env` file in the `server` folder
