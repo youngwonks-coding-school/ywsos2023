@@ -1,27 +1,22 @@
-@import url('https://fonts.googleapis.com/css2?family=Sofia&display=swap');
-@font-face {
-  font-family: 'Impact';
-  src: url('../fonts/impact.ttf') format('truetype');
-}
-
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap');
 @import "bootstrap";
 
 [data-theme="light"] {
-  --primary: #AD8B73;
-  --secondary: #CEAB93;
-  --highlight: #884A39;
-  --background: #FFFBE9;
-  --dark: #E3CAA5;
-  --light: #e2e2e7;
+  --primary: #454444;
+  --highlight21: #484848;
+  --highlight2: #884A39;
+  --background: #dadada;
+  --secondary: #fffefc;
+  --opposite: #454444;
 }
 
 [data-theme="dark"] {
   --primary: #ACBAC7;
-  --secondary: #FACF5A;
-  --highlight: #543ce0;
+  --highlight21: #FACF5A;
+  --highlight2: #543ce0;
   --background: #22272D;
-  --dark: #2D333B;
-  --light: #e2e2e7;
+  --secondary: #2D333B;
+  --opposite: #ACBAC7
 }
 
 // Global styles
@@ -34,7 +29,7 @@ body {
   margin: 0;
   padding: 0;
   -webkit-overflow-x-scrolling: hidden;
-  font-family: 'Sofia', sans-serif;
+  font-family: 'Roboto', sans-serif;
   background-color: var(--background);
   color: var(--primary);
 }
@@ -53,12 +48,134 @@ a {
   color: var(--primary);
 }
 
-//HOME PAGE STYLES
+input {
+  border: 1px solid var(--primary);
+  border-radius: 5px;
+  padding: 5px;
+  margin: 5px;
+  background-color: var(--secondary);
+  color: var(--opposite);
+}
+
+input:focus {
+  outline: none;
+  background-color: var(--secondary);
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: var(--secondary);
+  color: var(--opposite);
+}
+
+
+// PROFILE
+
+.p-title {
+  font-family: 'Impact', sans-serif;
+  font-weight: 400;
+  color: var(--highlight21);
+  font-size: 50px;
+  text-align: center;
+  justify-self: unset;
+}
+
+.form-container {
+  width: 500px;
+  margin: 0 auto;
+  padding: 30px;
+}
+
+.form {
+  background-color: var(--secondary);
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  color: var(--primary);
+  margin-bottom: 5px;
+}
+
+
+
+.button {
+  background-color: var(--highlight21);
+  border-color: var(--highlight21) !important;
+  border-radius: 5px;
+  outline: none;
+  padding: 10px 20px;
+  color: var(--primary);
+  cursor: pointer;
+}
+
+.button:hover, .button:focus {
+  background-color: var(--highlight21);
+}
+.toggle-button {
+  display: flex;
+  justify-content: center; 
+  margin-top: 50px;
+
+  .toggle-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    cursor: pointer;
+    padding-top: 10px;
+    padding-right: 15px;
+    padding-bottom: 10px;
+    padding-left: 5px;
+    position: relative;
+    transition: background-color 0.2s ease;
+    border-radius: 20px;
+    background-color: var(--opposite);
+    width: 170px;
+
+    .toggle-text {
+      font-size: 14px;
+      color: var(--secondary);
+    }
+
+    .toggle-switch {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 50%;
+      height: calc(100% - 4px);
+      background-color: #dbd6d6;
+      opacity: 0.7;
+      border-radius: 20px;
+      transition: transform 0.2s ease;
+    }
+  }
+
+  input[type="checkbox"].toggle-input {
+    display: none;
+
+    &:checked + .toggle-label .toggle-switch {
+      transform: translateX(100%);
+    }
+  }
+}
+
+
+
+// HOME PAGE STYLES
 
 .home-container {
   position: relative;
-  margin-bottom: 10%;
   margin-left: 5%;
+  margin-top: 50px;
+  width: 75%;
 }
 
 $homeTFSize: 130px;
@@ -72,15 +189,14 @@ $homeSFSize: 80px;
 
 .home-title {
   font-size: $homeTFSize;
-  color: var(--secondary);
+  color: var(--highlight21);
 }
 
 .home-subtitle {
   font-size: $homeSFSize;
 }
 
-
-.home-ts{
+.home-ts {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -106,54 +222,52 @@ $homeSFSize: 80px;
   max-width: 50%;
 }
 
-
-
-//REGISTRATION PAGE STYLES
+// REGISTRATION PAGE STYLES
 
 .card {
-  background-color: var(--dark);
-  border: var(--dark) 1px solid;
+  background-color: var(--secondary);
+  border: var(--secondary) 1px solid;
   border-radius: 15px;
-  margin-top: -10%;
+  margin-top: 10%;
   box-shadow: 0 0.3rem 0.5rem rgba(77, 77, 77, 0.3);
 
   .card-title {
-    color: var(--secondary);
+    color: var(--highlight21);
   }
 
   .form-check-label, .form-label {
     color: var(--primary);
   }
-
 }
 
 .button {
-  background-color: var(--secondary);
-  border-color: var(--secondary) !important;
+  background-color: var(--highlight21);
+  border-color: var(--highlight21) !important;
   border-radius: 5px;
   outline: none;
 }
 
 .button:hover, .button:focus {
-  background-color: var(--secondary);
-  box-shadow: 0 0.3rem 0.5rem rgba(77, 77, 77, 0.3);
+  background-color: var(--highlight21);
 }
 
-//NAV STYLES
+
+// NAV STYLES
 
 .navbar-floating {
   position: relative;
   margin-top: 50px;
   top: 30%;
   left: 50%;
+  width: 50%;
   transform: translate(-50%, -50%);
   border-radius: 15px;
   z-index: 100;
-  background-color: var(--dark);
+  background-color: var(--secondary);
   box-shadow: 0 0.3rem 0.5rem rgba(77, 77, 77, 0.3);
 
   .navbar-header .navbar-brand {
-    color: var(--secondary);
+    color: var(--highlight21);
     position: relative;
     margin-left: 50px;
   }
@@ -175,18 +289,27 @@ $homeSFSize: 80px;
 
   .nav-link,
   .footer-link {
-    color:var(--primary);
+    color: var(--primary);
+    margin-left: 20px;
   }
 
   .nav-link:hover,
   .footer-link:hover {
-    color: var(--secondary);
+    color: var(--highlight21);
   }
 
   .nav-item {
-    margin: 0 10px;
     color: var(--primary);
   }
+}
+
+.footer {
+  position: fixed;
+  height: 50px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  margin-bottom: 0px;
 }
 
 @media (max-width: 1500px) {
@@ -198,6 +321,7 @@ $homeSFSize: 80px;
     margin-left: 10%;
     width: 100%;
   }
+
   .home-title {
     font-size: calc(#{$homeTFSize} - 30px);
   }
@@ -209,7 +333,6 @@ $homeSFSize: 80px;
   .home-ts {
     width: 60%;
   }
-
 }
 
 @media screen and (max-width: 750px) {
@@ -224,7 +347,5 @@ $homeSFSize: 80px;
   .home-ts {
     width: 80%;
   }
-
-
 }
 

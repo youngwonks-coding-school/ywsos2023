@@ -12,7 +12,7 @@ const router = createRouter({
       component: HomeView,
     },
     {
-      path: "/",
+      path: "/profile",
       name: "profile",
       component: () => import("../views/ProfileView.vue"),
     },
