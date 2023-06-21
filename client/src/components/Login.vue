@@ -65,15 +65,17 @@ export default {
           this.$toast.success(response.data.message)
           localStorage.setItem('accessToken', response.data.access_token)
           localStorage.setItem('refreshToken', response.data.refresh_token)
-
           this.$router.push('/dashboard')
+          // Reload page
+          window.location.reload()
         })
         .catch((error) => {
           console.log(error)
-          this.$toast.error(error.response.data.message)
+          this.$toast.error(error.message)
         })
     },
     verifyUserSession() {
+      console.log('verifyUserSession')
       if (localStorage.hasOwnProperty('accessToken')) {
         axios
           .post(

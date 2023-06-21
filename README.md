@@ -30,5 +30,5 @@ Depending on your Python install, you may need to use `python3` and `pip3` inste
 1. Go to [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) and create an account.
 2. Create a new project and a new cluster.
 3. Create a new project named `test_database`.
-4. Click on the connect button and select the appropriate options.
+4. Click on the connect button and select the appropriate options.(Note: when replacing <password>, make sure to use your user password and not your account password)
 5. Copy the connection string and paste it into the `MONGO_URI` key in the `.env` file in the `server` folder.
