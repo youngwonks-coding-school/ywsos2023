@@ -11,7 +11,7 @@ from opentelemetry.sdk.resources import SERVICE_NAME, Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import SimpleSpanProcessor
 
-from custom_spanexporters import TinyDBSpanExporter
+from custom_spanexporters import MongoDBSpanExporter
 from routes.index import index
 from routes.auth import auth
 from dotenv import load_dotenv
@@ -47,7 +47,7 @@ trace.set_tracer_provider(TracerProvider(
     resource=Resource.create({SERVICE_NAME: "ywsos2023-flask-server"})
 ))
 trace.get_tracer_provider().add_span_processor(
-    SimpleSpanProcessor(TinyDBSpanExporter("logging/server_traces_db.json"))
+    SimpleSpanProcessor(MongoDBSpanExporter("logging/server_traces_db.json"))
 )
 FlaskInstrumentor().instrument_app(app)
 

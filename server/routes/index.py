@@ -1,12 +1,12 @@
 from flask import jsonify, request
 from flask_restx import Namespace, Resource
 
-from custom_spanexporters import TinyDBSpanExporter
+from custom_spanexporters import MongoDBSpanExporter
 
 
 index = Namespace("", description="Open Routes")
 
-spanexporter = TinyDBSpanExporter("logging/web_traces_db.json", formatter=lambda x: x)
+spanexporter = MongoDBSpanExporter("logging/web_traces_db.json", formatter=lambda x: x)
 
 
 @index.route("/", methods=["GET"])
