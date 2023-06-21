@@ -4,6 +4,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 from db import db
 import os
+import requests
+
 
 from flask_jwt_extended import jwt_required,get_jwt_identity,create_access_token,create_refresh_token,get_jwt
 
@@ -91,6 +93,7 @@ class Logout(Resource):
         db.blacklisted_tokens.insert_one({'jti': jti})
 
         return {'message': 'Successfuly logged out.'}, 200
+    
 
 @auth.route('/update_password', methods=['POST'])
 class UpdatePassword(Resource):
@@ -108,6 +111,28 @@ class UpdatePassword(Resource):
         return {"message": 'Successfuly update password'}, 200
 
 
+#PUT IN YOUR ENV FILE 
+#YELP_API_KEY = "I4VEQwNoLWKDbxaFK9Z-eN8W2L6Z9woSCz7Orp0DQCYzh8zePaKhMPnNQrOpM8Ij9myS3jCnG2n_WrnAgq2TZc5fw7KBtWrMvm5y7PigYrl_ArfZ7eLX01h6BXeSZHYx"
+@auth.route('/profile_data', methods=['POST'])
+class ProfileData(Resource):
+    def post(self):
+        data = request.get_json()
+        url = "https://api.yelp.com/v3/businesses/search"
 
+        headers = {
+            "accept": "application/json",
+            "Authorization": "Bearer " + os.environ.get("YELP_API_KEY"),
+        }
+        
+        params = {
+            "term": data["name"],
+            "location": data["address"]
+        }
+        
+
+        response = requests.get(url, params=params, headers=headers)
+
+
+        return {'message': response.text}, 200
     
 

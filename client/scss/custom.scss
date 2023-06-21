@@ -11,7 +11,7 @@
 }
 
 [data-theme="dark"] {
-  --primary: #ACBAC7;
+  --primary: #afb8c1;
   --highlight21: #FACF5A;
   --highlight2: #543ce0;
   --background: #22272D;
@@ -113,32 +113,48 @@ label {
   border-radius: 5px;
   outline: none;
   padding: 10px 20px;
-  color: var(--primary);
+  color: var(--secondary);
   cursor: pointer;
 }
 
 .button:hover, .button:focus {
   background-color: var(--highlight21);
 }
+
+.invalid-feedback {
+  display: none;
+  color: red;
+  font-size: 0.8rem;
+}
+
+.needs-validation input:invalid {
+  border-color: red;
+}
+
+.needs-validation input:invalid ~ .invalid-feedback {
+  display: block;
+}
+
+//profile toggle button
 .toggle-button {
   display: flex;
   justify-content: center; 
-  margin-top: 50px;
+  margin-top: 30px;
 
   .toggle-label {
     display: flex;
     align-items: center;
     justify-content: space-around;
     cursor: pointer;
-    padding-top: 10px;
-    padding-right: 15px;
-    padding-bottom: 10px;
+    padding-top: 12px;
+    padding-right: 20px;
+    padding-bottom: 12px;
     padding-left: 5px;
     position: relative;
     transition: background-color 0.2s ease;
     border-radius: 20px;
     background-color: var(--opposite);
-    width: 170px;
+    width: 180px;
 
     .toggle-text {
       font-size: 14px;
@@ -150,7 +166,7 @@ label {
       top: 2px;
       left: 2px;
       width: 50%;
-      height: calc(100% - 4px);
+      height: calc(100% - 5px);
       background-color: #dbd6d6;
       opacity: 0.7;
       border-radius: 20px;
@@ -162,7 +178,7 @@ label {
     display: none;
 
     &:checked + .toggle-label .toggle-switch {
-      transform: translateX(100%);
+      transform: translateX(94%);
     }
   }
 }
