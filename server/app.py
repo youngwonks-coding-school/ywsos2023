@@ -47,7 +47,7 @@ trace.set_tracer_provider(TracerProvider(
     resource=Resource.create({SERVICE_NAME: "ywsos2023-flask-server"})
 ))
 trace.get_tracer_provider().add_span_processor(
-    SimpleSpanProcessor(TinyDBSpanExporter("logging/traces_db.json"))
+    SimpleSpanProcessor(TinyDBSpanExporter("logging/server_traces_db.json"))
 )
 FlaskInstrumentor().instrument_app(app)
 

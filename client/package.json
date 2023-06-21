@@ -10,9 +10,14 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@opentelemetry/api": "^1.4.1",
+    "@opentelemetry/context-zone": "^1.14.0",
+    "@opentelemetry/instrumentation-document-load": "^0.32.3",
+    "@opentelemetry/sdk-trace-web": "^1.14.0",
     "axios": "^1.4.0",
     "bootstrap": "^5.3.0",
     "cors": "^2.8.5",
+    "luxon": "^3.3.0",
     "sass": "^1.63.3",
     "vue": "^3.3.2",
     "vue-router": "^4.2.0",

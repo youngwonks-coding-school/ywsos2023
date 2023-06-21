@@ -4,13 +4,6 @@ from opentelemetry.sdk.trace.export import SpanExporter, SpanExportResult
 
 
 class TinyDBSpanExporter(SpanExporter):
-    """Implementation of :class:`SpanExporter` that prints spans to the
-    console.
-
-    This class can be used for diagnostic purposes. It prints the exported
-    spans to the console STDOUT.
-    """
-
     def __init__(
         self,
         out: str,
@@ -34,13 +27,6 @@ class TinyDBSpanExporter(SpanExporter):
 
 
 class MongoDBSpanExporter(SpanExporter):
-    """Implementation of :class:`SpanExporter` that prints spans to the
-    console.
-
-    This class can be used for diagnostic purposes. It prints the exported
-    spans to the console STDOUT.
-    """
-
     def __init__(
         self,
         db: str,
@@ -53,9 +39,9 @@ class MongoDBSpanExporter(SpanExporter):
         self.formatter = formatter
         self.service_name = service_name
 
-    def export(self, spans):
+    def export(self, spans, col=None):
         for span in spans:
-            self.db[self.col].insert(self.formatter(span))
+            self.db[self.col if col is None else col].insert(self.formatter(span))
         return SpanExportResult.SUCCESS
 
     def force_flush(self, timeout_millis: int = 30000) -> bool:

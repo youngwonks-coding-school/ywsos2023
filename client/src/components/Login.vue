@@ -44,7 +44,9 @@
 </template>
 
 <script>
-import axios from 'axios'
+import axios from 'axios';
+import { trace, context, webTracerWithZone } from '../telemetry.js';
+
 export default {
   data() {
     return {
@@ -61,6 +63,12 @@ export default {
       axios
         .post('/api/auth/login', { email: this.email, password: this.password })
         .then((response) => {
+          const span = webTracerWithZone.startSpan('login');
+          context.with(trace.setSpan(context.active(), span), () => {
+            trace.getSpan(context.active()).addEvent('login');
+            trace.getSpan(context.active()).setAttribute('email', this.email);
+            span.end();
+          });
           console.log(response.data.message)
           this.$toast.success(response.data.message)
           localStorage.setItem('accessToken', response.data.access_token)
