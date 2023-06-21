@@ -25,7 +25,7 @@ app.config['JSON_AS_ASCII'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
 
 # Set the secret key to sign the JWTs with
-app.config['JWT_SECRET_KEY'] = os.environ.get('lucas')   # Change this!
+app.config['JWT_SECRET_KEY'] = os.environ['SECRET_KEY']  # Change this!
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(minutes=15)  # Access token expires in 15 minutes
 app.config['JWT_REFRESH_TOKEN_EXPIRES'] = datetime.timedelta(days=30)  # Refresh token expires in 30 days
 
