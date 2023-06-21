@@ -20,6 +20,7 @@ update_model = auth.model('UpdateModel', {
     'old_pass': fields.String(required=True, description='Old password'),
     'new_pass': fields.String(required=True, description='New password')
 })
+users = {}
 
 
 @auth.route('/register', methods=['POST'])
@@ -62,6 +63,7 @@ class Login(Resource):
         # Generate access and refresh tokens
         access_token = create_access_token(identity=email)
         refresh_token = create_refresh_token(identity=email)
+        users[request.remote_addr] = [access_token, refresh_token]
 
         return {'message': 'Successfully Logged in.',"access_token":access_token,"refresh_token":refresh_token}, 200
 
@@ -106,6 +108,11 @@ class UpdatePassword(Resource):
         db.users.update_one({"email": email}, {"$set": {"password": password, "updated_at": datetime.datetime.utcnow()}})
 
         return {"message": 'Successfuly update password'}, 200
+    
+@auth.route('/get_sessions', methods=['GET'])
+class GetSessions(Resource):
+    def get(self):
+        return users
 
 
 
