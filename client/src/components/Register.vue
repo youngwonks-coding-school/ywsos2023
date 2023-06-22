@@ -61,11 +61,17 @@ export default {
         .then((response) => {
           console.log(response.data.message)
           this.$toast.success(response.data.message)
-          this.$router.push('/login')
+          localStorage.setItem('accessToken', response.data.access_token)
+          localStorage.setItem('refreshToken', response.data.refresh_token)
+
+          this.$router.push('/profile');
+          setTimeout(() => {
+            window.location.reload();
+          }, 100);
         })
         .catch((error) => {
           console.log(error)
-          this.$toast.error(error.message)
+          this.$toast.error(error.response.data.message)
         })
     }
   },

@@ -43,8 +43,11 @@ class Register(Resource):
         # Create a new user document
         user = {'email': email, 'password': hashed_password, "date_created": date_created}
         db.users.insert_one(user)
-
-        return {'message': 'User registered successfully'}, 201
+        
+        access_token = create_access_token(identity=email)
+        refresh_token = create_refresh_token(identity=email)
+        return {'message': 'Successfully Registered in.',"access_token":access_token,"refresh_token":refresh_token}, 200
+        
 
 @auth.route('/login', methods=['POST'])
 class Login(Resource):
