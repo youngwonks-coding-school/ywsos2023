@@ -114,6 +114,9 @@ strong{
     width: 70%; 
     margin-bottom: 20px;
     border-radius: 15px;
+    .card-text{
+      color : var(--text);
+    }
 
     .card-img-top {
       height: 200px; 
