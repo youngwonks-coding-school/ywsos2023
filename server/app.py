@@ -29,7 +29,7 @@ app.config['JWT_REFRESH_TOKEN_EXPIRES'] = datetime.timedelta(days=30)  # Refresh
 jwt = JWTManager(app)
 # enable CORS
 CORS(app, resources={r'/*': {'origins': '*'}})
-api = Api(app, version='1.0', title='API',description='API documentation', doc='/api-doc')
+api = Api(app, version='1.0', title='API', description='API documentation',doc='/api-doc')
 
 api.add_namespace(index, '/api')
 api.add_namespace(auth, '/api/auth')
