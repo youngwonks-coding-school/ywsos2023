@@ -1,11 +1,11 @@
 <template>
     <div class="home-container">
-      <div class="vector1">
-        <img src="../../public/images/path1.svg" alt="vector1" />
+      <div class="home-truck">
+        <img src="../../public/images/truck.png" alt="truck" />
       </div>
       <div class="d-flex flex-column align-items-start home-ts">
-        <h1 class="home-title">Walk Wise</h1>
-        <h2 class="home-subtitle">Step into Serenity: Discover, Rate, and Share Inspiring Walking Routes</h2>
+        <h1 class="home-title">Yum Union</h1>
+        <h2 class="home-subtitle">Wasting None, Feeding Everyone!"</h2>
       </div>
     <div class="d-flex flex-column home-auth">
         <router-link  v-if="loggedOut" to="/register" class="btn btn-secondary button mb-3 ">Register</router-link>
