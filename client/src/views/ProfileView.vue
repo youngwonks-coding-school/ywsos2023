@@ -11,9 +11,9 @@
           <span class="toggle-text ml-4">Food</span>
         </label>
       </div>
-    <div class="form-container d-flex justify-content-center flex-nowrap" v-on:submit.prevent="onSubmit">
+    <div class="form-container d-flex justify-content-center flex-nowrap">
 
-      <form class="row form">
+      <form class="row form ">
         <div class="row-md-6 form-group">
           <label for="name">Business Name:</label>
           <input type="text" id="name" class="form-control" v-model="name">
@@ -47,12 +47,29 @@
         </div>
         <div class="col-md-12 d-flex justify-content-center">
           <div class="submit-button">
-            <input type="submit" @click="onSubmit()" class="btn btn-primary form-button" value="Submit"/>
+            <input type="button" @click="onSubmit" id="submitButton" class="btn btn-primary form-button" value="Submit"/>
           </div>
         </div>
-      </form>
+      </form>  
     </div>
   </div>
+  <div class="submission container">
+    <div id="profile-results" class="profile-results card-deck container d-flex flex-row align-items-center ">
+      <div class="card" v-for="(key, index) in Object.keys(yelp_response).slice(0, 3)" :key="index">
+        <img :src="yelp_response[key].image" class="card-img-top" alt="Restaurant Image">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">{{ yelp_response[key].name }}</h5>
+          <p class="card-text">{{ yelp_response[key].address }}</p>
+          <p class="card-text">Phone: {{ yelp_response[key].phone }}</p>
+          <p class="card-text">Rating: {{ yelp_response[key].rating }}</p>
+          <div class="mt-auto">
+            <a :href="yelp_response[key].url" target="_blank" class="btn btn-primary button" style="background: #4f61ff">View on Yelp</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </template>
 
 <script>
@@ -66,11 +83,13 @@ export default {
       city: '',
       state: '',
       country: '',
-      yelp_response: '',
+      yelp_response: {},
+      submitted: false
     };
   },
   methods: { 
-        onSubmit() {
+        onSubmit(event) {
+          event.preventDefault();
           this.name = document.getElementById('name').value;
           this.address = document.getElementById('address').value;
           this.phone = document.getElementById('phone').value;
@@ -93,14 +112,34 @@ export default {
             type: this.type
           }
           axios.post('/api/auth/profile_data', data).then((response) => {
-            const responseData = JSON.parse(JSON.stringify(response.data.message))
-            console.log('buisness count' + responseData)
-            this.yelp_response = responseData
+            const responseData = JSON.parse(response.data.message).businesses
+            const amount = responseData.length
+            if (amount > 0) {
+              this.$toast.success("Success!");
+            }
+            for (let i = 0; i < amount; i++){
+              this.yelp_response[i] = {
+                name: responseData[i].name,
+                address: responseData[i].location.display_address.join(', '),
+                phone: responseData[i].display_phone,
+                rating: responseData[i].rating,
+                image: responseData[i].image_url,
+                url: responseData[i].url,
+                price: responseData[i].price,
+                categories: responseData[i].categories,
+                distance: responseData[i].distance,
+                coordinates: responseData[i].coordinates
+              }
+            }
+            this.submitted = true
+
+
           }).catch((error) => {
-            console.log(error)
+            this.$toast.error("Error! Please provide accurate information")
           })
-        }
-    }
+        },
+
+  }
 
 };
 </script>
