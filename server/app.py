@@ -1,7 +1,9 @@
 import os
 import datetime
+import eventlet
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
+from flask_socketio import SocketIO
 from flask_cors import CORS
 from flask_restx import Api, Resource
 from flask_jwt_extended import JWTManager
@@ -12,9 +14,6 @@ from dotenv import load_dotenv
 from db import db
 
 
-import socketio
-
-sio = socketio.Server()
 app = Flask(__name__)
 load_dotenv()
 app.config['JSON_AS_ASCII'] = False
@@ -22,6 +21,7 @@ app.config['PROPAGATE_EXCEPTIONS'] = True
 
 # Set the secret key to sign the JWTs with
 app.config['JWT_SECRET_KEY'] = os.environ['SECRET_KEY']  # Change this!
+socketio = SocketIO(app)
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(minutes=15)  # Access token expires in 15 minutes
 app.config['JWT_REFRESH_TOKEN_EXPIRES'] = datetime.timedelta(days=30)  # Refresh token expires in 30 days
 
@@ -29,7 +29,7 @@ app.config['JWT_REFRESH_TOKEN_EXPIRES'] = datetime.timedelta(days=30)  # Refresh
 jwt = JWTManager(app)
 # enable CORS
 CORS(app, resources={r'/*': {'origins': '*'}})
-api = Api(app, version='1.0', title='API', description='API documentation',doc='/api-doc')
+api = Api(app, version='1.0', title='API', description='API documentation', doc='/api-doc')
 
 api.add_namespace(index, '/api')
 api.add_namespace(auth, '/api/auth')
@@ -50,9 +50,9 @@ def background_thread():
     """Example of how to send server generated events to clients."""
     count = 0
     while True:
-        sio.sleep(10)
+        socketio.sleep(10)
         count += 1
-        sio.emit('my_response', {'data': 'Server generated event'})
+        socketio.emit('my_response', {'data': 'Server generated event'})
 
 
 
@@ -61,54 +61,54 @@ def background_thread():
 
 
 #for custom notification events
-@sio.event
+@socketio.event
 def my_event(sid, message):
-    sio.emit('my_response', {'data': message['data']}, room=sid)
+    socketio.emit('my_response', {'data': message['data']}, room=sid)
 
 #for broadcasting notifications to all connected clients
-@sio.event
+@socketio.event
 def my_broadcast_event(sid, message):
-    sio.emit('my_response', {'data': message['data']})
+    socketio.emit('my_response', {'data': message['data']})
 
 #allows clients to join specific rooms and recieve notification related to them
-@sio.event
+@socketio.event
 def join(sid, message):
-    sio.enter_room(sid, message['room'])
-    sio.emit('my_response', {'data': 'Entered room: ' + message['room']},
+    socketio.enter_room(sid, message['room'])
+    socketio.emit('my_response', {'data': 'Entered room: ' + message['room']},
              room=sid)
 
 #allows clients to leave specific rooms and stop receiving notification related to them
-@sio.event
+@socketio.event
 def leave(sid, message):
-    sio.leave_room(sid, message['room'])
-    sio.emit('my_response', {'data': 'Left room: ' + message['room']},
+    socketio.leave_room(sid, message['room'])
+    socketio.emit('my_response', {'data': 'Left room: ' + message['room']},
              room=sid)
 
 #closes a specific room and emits my_response event to clients of specified room
-@sio.event
+@socketio.event
 def close_room(sid, message):
-    sio.emit('my_response',
+    socketio.emit('my_response',
              {'data': 'Room ' + message['room'] + ' is closing.'},
              room=message['room'])
-    sio.close_room(message['room'])
+    socketio.close_room(message['room'])
 
 #for custom notification events in a specific room
-@sio.event
+@socketio.event
 def my_room_event(sid, message):
-    sio.emit('my_response', {'data': message['data']}, room=message['room'])
+    socketio.emit('my_response', {'data': message['data']}, room=message['room'])
 
 #handles a client's request to disconnect
-@sio.event
+@socketio.event
 def disconnect_request(sid):
-    sio.disconnect(sid)
+    socketio.disconnect(sid)
 
 #handles a clients connection to server
-@sio.event
+@socketio.event
 def connect(sid, environ):
-    sio.emit('my_response', {'data': 'Connected', 'count': 0}, room=sid)
+    socketio.emit('my_response', {'data': 'Connected', 'count': 0}, room=sid)
 
 #tracks when a client disconnects from server
-@sio.event
+@socketio.event
 def disconnect(sid):
     print('Client disconnected')
 
@@ -123,4 +123,9 @@ def disconnect(sid):
 
 
 if '__main__' == __name__:
+    # Wrap the Flask app with SocketIO object
+    socketio = SocketIO(app, async_mode='eventlet')
+
+    # To run both servers simultaneously using eventlet
+    eventlet.spawn(socketio.run, app, host='127.0.0.1', port=5000, debug=True)
     app.run(host='127.0.0.1', port=5000, debug=True)
