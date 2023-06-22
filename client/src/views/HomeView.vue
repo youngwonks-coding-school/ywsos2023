@@ -25,6 +25,7 @@
             <div class="home-auth row d-flex justify-content-between mb-5">
               <router-link v-if="loggedOut" to="/register" class="col btn btn-secondary button me-1">Register</router-link>
               <router-link v-if="loggedOut" to="/login" class="col btn btn-secondary button ms-1" style="background-color: #5465FF;">Login</router-link>
+              <button v-else class="col btn btn-secondary button ms-1" style="background-color: #5465FF;">Already Logged In</button>
             </div>
           </div>
         </div>

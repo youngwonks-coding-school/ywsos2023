@@ -23,7 +23,7 @@
           <li class="nav-item" v-if="!isLoggedIn">
             <a class="nav-link" href="/login">Login</a>
           </li>
-          <div className="d-flex" v-else>
+          <div class="d-flex" v-else>
             <li class="nav-item">
             <a class="nav-link" href="/logout" @click="logout">Logout</a>
             </li>
