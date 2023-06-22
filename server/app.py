@@ -1,6 +1,5 @@
 import os
 import datetime
-import eventlet
 
 from flask import Flask, jsonify, render_template
 from flask_socketio import SocketIO
@@ -123,9 +122,4 @@ def disconnect(sid):
 
 
 if '__main__' == __name__:
-    # Wrap the Flask app with SocketIO object
-    socketio = SocketIO(app, async_mode='eventlet')
-
-    # To run both servers simultaneously using eventlet
-    eventlet.spawn(socketio.run, app, host='127.0.0.1', port=5000, debug=True)
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    socketio.run(app, debug=True)
