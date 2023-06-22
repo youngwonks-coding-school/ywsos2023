@@ -1,21 +1,27 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Inter:wght@300&display=swap');
 @import "bootstrap";
 
 [data-theme="light"] {
-  --primary: #454444;
-  --highlight21: #484848;
-  --highlight2: #884A39;
-  --background: #dadada;
-  --secondary: #fffefc;
-  --opposite: #454444;
+  --text: #1a1a1a;
+  --white-text: #f3f3f3;
+
+  --highlight1: #3e3e3e;
+  --highlight2: #4f61ff;
+
+  --background: #eeebeb;
+
+  --secondary: #dadada;
+  --opposite: #3e3e3e;
 }
 
 [data-theme="dark"] {
-  --primary: #afb8c1;
-  --highlight21: #FACF5A;
-  --highlight2: #543ce0;
+  --text: #afb8c1;
+  --white-text: #f3f3f3;
+
+  --highlight1: #FACF5A;
   --background: #22272D;
-  --secondary: #2D333B;
+
+  --secondary: #2D333B; 
   --opposite: #ACBAC7
 }
 
@@ -29,9 +35,10 @@ body {
   margin: 0;
   padding: 0;
   -webkit-overflow-x-scrolling: hidden;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Dela Gothic One', cursive;
+  font-family: 'Inter', sans-serif;
   background-color: var(--background);
-  color: var(--primary);
+  color: var(--text);
 }
 
 @media screen and (min-height: 800px) {
@@ -41,15 +48,14 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Sofia', sans-serif;
+  font-family: 'Dela Gothic One', cursive;
 }
 
 a {
-  color: var(--primary);
+  color: var(--text);
 }
 
 input {
-  border: 1px solid var(--primary);
   border-radius: 5px;
   padding: 5px;
   margin: 5px;
@@ -66,17 +72,38 @@ input[type="text"] {
   width: 100%;
   padding: 10px;
   border-radius: 5px;
+  border: 1px solid #5a5a5a;
   background-color: var(--secondary);
   color: var(--opposite);
+}
+
+strong{
+  color: var(--highlight2);
+}
+
+.button {
+  background-color: var(--highlight1);
+  border: none;
+  border-radius: 5px;
+  outline: none;
+}
+
+.button:hover, .button:focus {
+  background-color: var(--highlight1);
 }
 
 
 // PROFILE
 
+.profile-container{
+  margin-top:150px;
+  height:100vh;
+}
+
 .p-title {
-  font-family: 'Impact', sans-serif;
+  font-family: 'Dela Gothic One', cursive;
   font-weight: 400;
-  color: var(--highlight21);
+  color: var(--highlight1);
   font-size: 50px;
   text-align: center;
   justify-self: unset;
@@ -101,39 +128,27 @@ input[type="text"] {
 label {
   display: block;
   font-weight: bold;
-  color: var(--primary);
+  color: var(--text);
   margin-bottom: 5px;
 }
 
 
 
-.button {
-  background-color: var(--highlight21);
-  border-color: var(--highlight21) !important;
+.form-button {
+  background-color: var(--highlight1);
+  border-color: var(--highlight1) !important;
   border-radius: 5px;
   outline: none;
   padding: 10px 20px;
+  width: 200px;
   color: var(--secondary);
   cursor: pointer;
 }
 
-.button:hover, .button:focus {
-  background-color: var(--highlight21);
+.form-button:hover, .form-button:focus {
+  background-color: var(--highlight1);
 }
 
-.invalid-feedback {
-  display: none;
-  color: red;
-  font-size: 0.8rem;
-}
-
-.needs-validation input:invalid {
-  border-color: red;
-}
-
-.needs-validation input:invalid ~ .invalid-feedback {
-  display: block;
-}
 
 //profile toggle button
 .toggle-button {
@@ -187,93 +202,105 @@ label {
 
 // HOME PAGE STYLES
 
-.home-container {
-  position: relative;
-  margin-left: 5%;
-  margin-top: 50px;
-  width: 75%;
+.home-img {
+  border-radius: 20px;
+  width:75%;
+}
+
+//section 1
+
+.first-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #1a1a1a;
+  height: 90vh;
 }
 
 $homeTFSize: 130px;
 $homeSFSize: 80px;
 
 .home-title, .home-subtitle {
-  font-family: 'Impact', sans-serif;
+  font-family: 'Dela Gothic One', cursive;
   font-weight: 400;
-  color: var(--primary);
+  color: var(--white-text);
+  text-align: center;
+  justify-self: center;
 }
 
 .home-title {
   font-size: $homeTFSize;
-  color: var(--highlight21);
 }
 
 .home-subtitle {
   font-size: $homeSFSize;
 }
 
-.home-ts {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 70%;
+//section 2
+
+.second-container {
+  background-color: var(--background);
+  height: 40vh;
+  margin-top:100px;
 }
 
-.home-auth {
-  display: flex;
-  flex-direction: column;
-  margin-top: 30px;
-  width: 20%;
+.home-info-title{
+  font-size: calc(#{$homeSFSize} - 30px);
 }
 
-.home-truck {
-  position: fixed;
-  top: 70%;
-  transform: translate(50%, -50%);
-  right: 0;
+.home-info-title-sm{
+  font-size: calc(#{$homeSFSize} - 50px);
 }
 
-.home-truck img {
-  max-width: 50%;
+.home-info-text{
+  margin-top: 10px;
+  font-size: 23px;
 }
+
+//section 3 
+.third-container{
+  height: 40vh;
+}
+
+//section 4 
+.fourth-container{
+  height: 60vh;
+}
+
+//section 5
+.fifth-container{
+  height: 40vh;
+}
+
+
+
 
 // REGISTRATION PAGE STYLES
 
 .card {
-  background-color: var(--secondary);
+  background-color: var(--background);
   border: var(--secondary) 1px solid;
   border-radius: 15px;
-  margin-top: 10%;
-  box-shadow: 0 0.3rem 0.5rem rgba(77, 77, 77, 0.3);
-
-  .card-title {
-    color: var(--highlight21);
-  }
-
-  .form-check-label, .form-label {
-    color: var(--primary);
-  }
+  margin-top: 15%;
+  height: 100%;
 }
 
-.button {
-  background-color: var(--highlight21);
-  border-color: var(--highlight21) !important;
-  border-radius: 5px;
-  outline: none;
+.card-title {
+  color: var(--highlight1);
+  margin-bottom: 30px;
+  margin-top:20px;
 }
 
-.button:hover, .button:focus {
-  background-color: var(--highlight21);
+.form-check-label, .form-label {
+  color: var(--text);
 }
-
 
 // NAV STYLES
 
 .navbar-floating {
-  position: relative;
+  position: absolute;
   margin-top: 50px;
-  top: 30%;
   left: 50%;
   width: 50%;
   transform: translate(-50%, -50%);
@@ -283,7 +310,7 @@ $homeSFSize: 80px;
   box-shadow: 0 0.3rem 0.5rem rgba(77, 77, 77, 0.3);
 
   .navbar-header .navbar-brand {
-    color: var(--highlight21);
+    color: var(--highlight1);
     position: relative;
     margin-left: 50px;
   }
@@ -305,17 +332,17 @@ $homeSFSize: 80px;
 
   .nav-link,
   .footer-link {
-    color: var(--primary);
+    color: var(--text);
     margin-left: 20px;
   }
 
   .nav-link:hover,
   .footer-link:hover {
-    color: var(--highlight21);
+    color: var(--highlight1);
   }
 
   .nav-item {
-    color: var(--primary);
+    color: var(--text);
   }
 }
 
@@ -333,11 +360,6 @@ $homeSFSize: 80px;
     width: 70% !important;
   }
 
-  .home-container {
-    margin-left: 10%;
-    width: 100%;
-  }
-
   .home-title {
     font-size: calc(#{$homeTFSize} - 30px);
   }
@@ -346,9 +368,6 @@ $homeSFSize: 80px;
     font-size: calc(#{$homeSFSize} - 30px);
   }
 
-  .home-ts {
-    width: 60%;
-  }
 }
 
 @media screen and (max-width: 750px) {
@@ -360,8 +379,5 @@ $homeSFSize: 80px;
     font-size: calc(#{$homeSFSize} - 50px);
   }
 
-  .home-ts {
-    width: 80%;
-  }
 }
 

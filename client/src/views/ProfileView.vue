@@ -1,5 +1,5 @@
 <template>
-  <div class="container mt-5 mb-5">
+  <div class="profile-container container">
     <div class="title-container d-flex justify-content-center flex-nowrap">
       <h1 class="p-title">Let's Figure Out Who You Are!</h1>
     </div>
@@ -14,38 +14,40 @@
     <div class="form-container d-flex justify-content-center flex-nowrap" v-on:submit.prevent="onSubmit">
 
       <form class="row form">
-        <div class="col-md-6 form-group">
-          <label for="name">Name:</label>
+        <div class="row-md-6 form-group">
+          <label for="name">Business Name:</label>
           <input type="text" id="name" class="form-control" v-model="name">
         </div>
 
-        <div class="col-md-6 form-group">
-          <label for="address">Address:</label>
+        <div class="row-md-6 form-group">
+          <label for="address">Business Address:</label>
           <input type="text" id="address" class="form-control" v-model="address">
         </div>
         <div class="w-100"></div>
-        <div class="col-md-6 form-group">
-          <label for="number">Phone Number:</label>
-          <input type="text" id="phone" class="form-control" v-model="phone">
-        </div>
 
-        <div class="col-md-6 form-group">
+        <div class="row-md-6 form-group">
           <label for="city">City:</label>
           <input type="text" id="city" class="form-control" v-model="city">
         </div>
         <div class="w-100"></div>
-        <div class="col-md-6 form-group">
-          <label for="state">State:</label>
-          <input type="text" id="state" class="form-control" v-model="state">
-        </div>
+        <div class="row form-group">
+          <div class="col-md-6 form-group">
+            <label for="state">State:</label>
+            <input type="text" id="state" class="form-control" v-model="state">
+          </div>
 
-        <div class="col-md-6 form-group">
-          <label for="country">Country:</label>
-          <input type="text" id="country" class="form-control" v-model="country">
+          <div class="col-md-6 form-group">
+            <label for="country">Country:</label>
+            <input type="text" id="country" class="form-control" v-model="country">
+          </div>
+        </div>
+        <div class="row-md-6 form-group">
+            <label for="number">Phone Number:</label>
+            <input type="text" id="phone" class="form-control" v-model="phone">
         </div>
         <div class="col-md-12 d-flex justify-content-center">
           <div class="submit-button">
-            <input type="submit" @click="onSubmit()" class="btn btn-primary button" value="Submit"/>
+            <input type="submit" @click="onSubmit()" class="btn btn-primary form-button" value="Submit"/>
           </div>
         </div>
       </form>
@@ -92,7 +94,7 @@ export default {
           }
           axios.post('/api/auth/profile_data', data).then((response) => {
             const responseData = JSON.parse(JSON.stringify(response.data.message))
-            console.log('buisness count' + responseData[0])
+            console.log('buisness count' + responseData)
             this.yelp_response = responseData
           }).catch((error) => {
             console.log(error)
