@@ -22,7 +22,6 @@ update_model = auth.model('UpdateModel', {
     'old_pass': fields.String(required=True, description='Old password'),
     'new_pass': fields.String(required=True, description='New password')
 })
-users = {}
 
 
 @auth.route('/register', methods=['POST'])
@@ -65,7 +64,7 @@ class Login(Resource):
         # Generate access and refresh tokens
         access_token = create_access_token(identity=email)
         refresh_token = create_refresh_token(identity=email)
-        users[request.remote_addr] = [access_token, refresh_token]
+        db.sessions.add_one({"ip": request.remote_addr, "access_token": access_token, "refresh_token": refresh_token, "email": email})
 
         return {'message': 'Successfully Logged in.',"access_token":access_token,"refresh_token":refresh_token}, 200
 
@@ -115,7 +114,23 @@ class UpdatePassword(Resource):
 @auth.route('/get_sessions', methods=['GET'])
 class GetSessions(Resource):
     def get(self):
-        return users
+        return db.sessions.get()
+    
+
+@auth.route('/get_sessions_for_user', methods=['GET'])
+class GetSessionsForUser(Resource):
+    @jwt_required()
+    def get(self):
+        return db.sessions.get({'email': get_jwt_identity()})
+
+@auth.route('/logout_specific')
+class LogoutSpecific(Resource):
+    @jwt_required()
+    def post(self):
+        jti = get_jwt()["jti"]
+        db.blacklisted_tokens.insert_one({'jti': jti})
+
+        return {"message": "Account logged out"}, 200
 
 
 #Make your you have a YELP_API_KEY in .env
