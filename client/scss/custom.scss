@@ -228,10 +228,25 @@ label {
 
 // HOME PAGE STYLES
 
+
+.image-container {
+  width: 100%;
+  max-width: 300px; /* Adjust this value to your desired image width */
+  margin: 0 auto;
+}
+
 .home-img {
   border-radius: 20px;
-  width:75%;
+  width: 75%;
+  height: auto;
 }
+
+
+.door{
+  width: 200%;
+  height: auto;
+}
+
 
 //section 1
 
@@ -267,7 +282,7 @@ $homeSFSize: 80px;
 
 .second-container {
   background-color: var(--background);
-  height: 40vh;
+  height: 30vh;
   margin-top:100px;
 }
 
@@ -286,7 +301,8 @@ $homeSFSize: 80px;
 
 //section 3 
 .third-container{
-  height: 40vh;
+  position: relative;
+  height: 50vh;
 }
 
 //section 4 

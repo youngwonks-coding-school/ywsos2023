@@ -15,16 +15,18 @@
           </div>
       </div>
       <div class="third-container container">
-        <div class="row mb-4">
-          <div class="col-md-9 ">
+        <div class="row row-cols-2 align-items-center">
+          <div class="col-8 ">
             <h3 class="home-info-title">Ready to make a difference? Join Food Connect.</h3>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-2">
-            <div class="home-auth row d-flex justify-content-between mb-5">
+            <div class="home-auth col-4 mt-4 d-flex justify-content-between">
               <router-link v-if="loggedOut" to="/register" class="col btn btn-secondary button me-1">Register</router-link>
               <router-link v-if="loggedOut" to="/login" class="col btn btn-secondary button ms-1" style="background-color: #5465FF;">Login</router-link>
+              <button v-else class="col btn btn-secondary button ms-1" style="background-color: #5465FF;">Already Logged In</button>
+            </div>
+          </div>
+          <div class="col-4 text-center">
+            <div class="image-container">
+              <img src="../../public/images/home-door.png" alt="Image" class="door">
             </div>
           </div>
         </div>
