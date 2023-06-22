@@ -230,21 +230,21 @@ label {
 
 
 .image-container {
-  width: 100%;
-  max-width: 300px; /* Adjust this value to your desired image width */
-  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .home-img {
   border-radius: 20px;
   width: 75%;
-  height: auto;
+  height: 100%;
 }
 
 
 .door{
-  width: 200%;
-  height: auto;
+  width: 70%;
+  margin-left:50px;
 }
 
 

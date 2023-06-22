@@ -2,7 +2,7 @@
     <div class="home-container">
       <div class="first-container d-flex justify-content-center">
         <h1 class="home-title">Yum Union</h1>
-        <h2 class="home-subtitle">Wasting None, Feeding Everyone!"</h2>
+        <h2 class="home-subtitle">Wasting None, Feeding Everyone!</h2>
       </div>
       <div class="second-container container">
           <div class="row ">
@@ -24,10 +24,8 @@
               <button v-else class="col btn btn-secondary button ms-1" style="background-color: #5465FF;">Already Logged In</button>
             </div>
           </div>
-          <div class="col-4 text-center">
-            <div class="image-container">
+          <div class="col-4">
               <img src="../../public/images/home-door.png" alt="Image" class="door">
-            </div>
           </div>
         </div>
       </div>
