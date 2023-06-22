@@ -1,7 +1,7 @@
 import os
 import datetime
 
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_restx import Api, Resource
 from flask_jwt_extended import JWTManager
@@ -13,13 +13,9 @@ from db import db
 
 
 import socketio
-import eventlet
 
-
-async_mode='eventlet'
-sio = socketio.Server(logger=True, async_mode=async_mode)
+sio = socketio.Server()
 app = Flask(__name__)
-app.wsgi_app = socketio.WSGIApp(sio, app.wsgi_app)
 load_dotenv()
 app.config['JSON_AS_ASCII'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
@@ -30,13 +26,10 @@ app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(minutes=15)  # Acces
 app.config['JWT_REFRESH_TOKEN_EXPIRES'] = datetime.timedelta(days=30)  # Refresh token expires in 30 days
 
 
-thread = None
-
-
 jwt = JWTManager(app)
 # enable CORS
 CORS(app, resources={r'/*': {'origins': '*'}})
-api = Api(app, version='1.0', title='API', description='API documentation',doc='/api-doc')
+api = Api(app, version='1.0', title='API', description='API documentation', doc='/api-doc')
 
 api.add_namespace(index, '/api')
 api.add_namespace(auth, '/api/auth')
@@ -130,15 +123,4 @@ def disconnect(sid):
 
 
 if '__main__' == __name__:
-    app.wsgi_app=socketio.WSGIApp(sio,app.wsgi_app)
-    eventlet.wsgi.server(eventlet.listen(('127.0.0.1', 5000)), app, debug=True)
-    
-    
-    
-
-
-
-
-
-
-
+    app.run(host='127.0.0.1', port=5000, debug=True)
