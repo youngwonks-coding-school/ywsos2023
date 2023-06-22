@@ -1,7 +1,7 @@
 import os
 import datetime
 
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify
 from flask_socketio import SocketIO
 from flask_cors import CORS
 from flask_restx import Api, Resource
