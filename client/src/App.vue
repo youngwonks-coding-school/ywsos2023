@@ -5,7 +5,7 @@ import Footer from './components/Footer.vue'
 </script>
 
 <template>
-  <div className="main-container d-flex flex-column justify-content-between">
+  <div class="main-container d-flex flex-column justify-content-between">
     <Navbar />
     <RouterView />
     <Footer />
