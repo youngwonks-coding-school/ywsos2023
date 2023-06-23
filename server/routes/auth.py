@@ -40,11 +40,15 @@ class Register(Resource):
         # Hash the password
         hashed_password = generate_password_hash(password)
 
+        access_token = create_access_token(identity=email)
+        refresh_token = create_refresh_token(identity=email)
+        db.sessions.add_one({"ip": request.remote_addr, "access_token": access_token, "refresh_token": refresh_token, "email": email})
+
         # Create a new user document
         user = {'email': email, 'password': hashed_password, "date_created": date_created}
         db.users.insert_one(user)
 
-        return {'message': 'User registered successfully'}, 201
+        return {'message': 'User registered successfully', "access_token":access_token,"refresh_token":refresh_token}, 201
 
 @auth.route('/login', methods=['POST'])
 class Login(Resource):
