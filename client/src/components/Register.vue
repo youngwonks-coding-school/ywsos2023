@@ -59,10 +59,11 @@ export default {
       axios
         .post('/api/auth/register', { email: this.email, password: this.password })
         .then((response) => {
-          console.log(response.data.message)
+
           this.$toast.success(response.data.message)
           localStorage.setItem('accessToken', response.data.access_token)
           localStorage.setItem('refreshToken', response.data.refresh_token)
+          localStorage.setItem('email', this.email)
 
           this.$router.push('/profile');
           setTimeout(() => {

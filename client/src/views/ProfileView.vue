@@ -57,7 +57,7 @@
     <div id="profile-results" class="profile-results card-deck container d-flex flex-row align-items-center ">
       <div class="card" v-for="(key, index) in Object.keys(yelp_response).slice(0, 3)" :key="index">
         <img :src="yelp_response[key].image" class="card-img-top" alt="Restaurant Image">
-        <div class="card-body d-flex flex-column">
+        <div class="card-body d-flex flex-column" @click="restaurantSelect(index)">
           <h5 class="card-title">{{ yelp_response[key].name }}</h5>
           <p class="card-text">{{ yelp_response[key].address }}</p>
           <p class="card-text">Phone: {{ yelp_response[key].phone }}</p>
@@ -111,7 +111,7 @@ export default {
             country: this.country,
             type: this.type
           }
-          axios.post('/api/auth/profile_data', data).then((response) => {
+          axios.post('/api/get_restaurants', data).then((response) => {
             const responseData = JSON.parse(response.data.message).businesses
             const amount = responseData.length
             if (amount > 0) {
@@ -135,10 +135,18 @@ export default {
 
 
           }).catch((error) => {
+            console.log(error)
             this.$toast.error("Error! Please provide accurate information")
           })
         },
-
+        restaurantSelect(index){
+          axios.post("/api/set_restaurant", {"selected": this.yelp_response[index], "current_user": localStorage.getItem('email')}).then((response) => {
+            console.log("set restaurant", this.yelp_response[index])
+            this.$toast.success("Success!");
+          }).catch((error) => {
+            this.$toast.error("Error selecting restaurant")
+          })
+        }
   }
 
 };

@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 from db import db
 import os
-import requests
+import requests 
 
 
 from flask_jwt_extended import jwt_required,get_jwt_identity,create_access_token,create_refresh_token,get_jwt
@@ -44,9 +44,7 @@ class Register(Resource):
         user = {'email': email, 'password': hashed_password, "date_created": date_created}
         db.users.insert_one(user)
         
-        access_token = create_access_token(identity=email)
-        refresh_token = create_refresh_token(identity=email)
-        return {'message': 'Successfully Registered in.',"access_token":access_token,"refresh_token":refresh_token}, 200
+        return {'message': 'Successfully Registered in.'}, 200
         
 
 @auth.route('/login', methods=['POST'])
@@ -111,29 +109,3 @@ class UpdatePassword(Resource):
         db.users.update_one({"email": email}, {"$set": {"password": password}})
 
         return {"message": 'Successfuly update password'}, 200
-
-
-#Make your you have a YELP_API_KEY in .env
-@auth.route('/profile_data', methods=['POST'])
-class ProfileData(Resource):
-    def post(self):
-        data = request.get_json()
-        url = "https://api.yelp.com/v3/businesses/search"
-
-        headers = {
-            "accept": "application/json",
-            "Authorization": "Bearer " + os.environ.get("YELP_API_KEY"),
-        }
-        
-        params = {
-            "term": data["name"],
-            "location": data["address"]
-        }
-        
-
-        response = requests.get(url, params=params, headers=headers)
-
-
-        return {'message': response.text}, 200
-    
-
