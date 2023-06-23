@@ -1,7 +1,7 @@
 <template>
   <div class="profile-container container">
     <div class="title-container d-flex justify-content-center flex-nowrap">
-      <h1 class="p-title">Let's Figure Out Who You Are!</h1>
+      <h1 class="p-title">{{this.title}}</h1>
     </div>
     <div class="toggle-button">
         <input type="checkbox" id="toggle" class="toggle-input">
@@ -16,34 +16,34 @@
       <form class="row form ">
         <div class="row-md-6 form-group">
           <label for="name">Business Name:</label>
-          <input type="text" id="name" class="form-control" v-model="name">
+          <input type="text" id="name" class="form-control" v-model="form.name">
         </div>
 
         <div class="row-md-6 form-group">
           <label for="address">Business Address:</label>
-          <input type="text" id="address" class="form-control" v-model="address">
+          <input type="text" id="address" class="form-control" v-model="form.address">
         </div>
         <div class="w-100"></div>
 
         <div class="row-md-6 form-group">
           <label for="city">City:</label>
-          <input type="text" id="city" class="form-control" v-model="city">
+          <input type="text" id="city" class="form-control" v-model="form.city">
         </div>
         <div class="w-100"></div>
         <div class="row form-group">
           <div class="col-md-6 form-group">
             <label for="state">State:</label>
-            <input type="text" id="state" class="form-control" v-model="state">
+            <input type="text" id="state" class="form-control" v-model="form.state">
           </div>
 
           <div class="col-md-6 form-group">
             <label for="country">Country:</label>
-            <input type="text" id="country" class="form-control" v-model="country">
+            <input type="text" id="country" class="form-control" v-model="form.country">
           </div>
         </div>
         <div class="row-md-6 form-group">
             <label for="number">Phone Number:</label>
-            <input type="text" id="phone" class="form-control" v-model="phone">
+            <input type="text" id="phone" class="form-control" v-model="form.phone">
         </div>
         <div class="col-md-12 d-flex justify-content-center">
           <div class="submit-button">
@@ -77,47 +77,79 @@ import axios from 'axios'
 export default {
   data() {
     return {
-      name: '',
-      address: '',
-      phone: '',
-      city: '',
-      state: '',
-      country: '',
+      //form restaurant data that user entered
+      form:{name: '', address: '', phone: '', city: '', state: '', country: '', type: ''},
       yelp_response: {},
+
+      //selected restaurant data (includes everything)
+      restaurant: {},
+      title: 'Let\'s Figure Out Who You Are!',
       submitted: false
     };
+  },
+  mounted() {
+    //send the current user so if user already logged restaurant information it will be presented to the user
+    const current_user = localStorage.getItem('email');
+    console.log(current_user)
+    axios.get(`/api/profile/previous_restaurant?current_user=${current_user}`)
+      .then(response => {
+        console.log(response)
+        if (response != false){
+          //If user previously set up restaurant set the form info filled out, change the title, set restaurant data already
+          this.restaurant = response.data
+          this.title = "Hello "+response.data.name+"!"
+          this.form.name = response.data.phone; this.form.address = response.data.address; this.form.phone = response.data.phone; 
+          
+          // //attempt to get city and state information
+          // const cityStateRegex = /,\s*(\w+)\s*(\w{2})\s*\d+/;
+          // const matches = (response.data.address).match(cityStateRegex);
+
+          // if (matches && matches.length === 3) {
+          //   this.form.city = matches[1];
+          //   this.form.state = matches[2];
+          // }
+          
+        }
+
+      })
+      .catch(error => {
+        console.error(error);
+      });
+
   },
   methods: { 
         onSubmit(event) {
           event.preventDefault();
-          this.name = document.getElementById('name').value;
-          this.address = document.getElementById('address').value;
-          this.phone = document.getElementById('phone').value;
-          this.city = document.getElementById('city').value;
-          this.state = document.getElementById('state').value;
-          this.country = document.getElementById('country').value;
-          this.type = document.getElementById('toggle').checked ? 'restaurant' : 'food';
+          this.form.name = document.getElementById('name').value;
+          this.form.address = document.getElementById('address').value;
+          this.form.phone = document.getElementById('phone').value;
+          this.form.city = document.getElementById('city').value;
+          this.form.state = document.getElementById('state').value;
+          this.form.country = document.getElementById('country').value;
+          this.form.type = document.getElementById('toggle').checked ? 'restaurant' : 'food';
           console.log("submitted")
           this.profile_data();
 
         },
         profile_data(){
           const data = {
-            name: this.name,
-            address: this.address,
-            phone: this.phone,
-            city: this.city,
-            state: this.state,
-            country: this.country,
-            type: this.type
+            name: this.form.name,
+            address: this.form.address,
+            phone: this.form.phone,
+            city: this.form.city,
+            state: this.form.state,
+            country: this.form.country,
+            type: this.form.type
           }
-          axios.post('/api/get_restaurants', data).then((response) => {
+          //get possible restaurants from yelp based on entered form data
+          axios.post('/api/profile/get_restaurants', data).then((response) => {
             const responseData = JSON.parse(response.data.message).businesses
             const amount = responseData.length
             if (amount > 0) {
               this.$toast.success("Success!");
             }
             for (let i = 0; i < amount; i++){
+              //insert all results into yelp_response (will be accessed to turn data into cards to select)
               this.yelp_response[i] = {
                 name: responseData[i].name,
                 address: responseData[i].location.display_address.join(', '),
@@ -140,9 +172,10 @@ export default {
           })
         },
         restaurantSelect(index){
-          axios.post("/api/set_restaurant", {"selected": this.yelp_response[index], "current_user": localStorage.getItem('email')}).then((response) => {
-            console.log("set restaurant", this.yelp_response[index])
-            this.$toast.success("Success!");
+          //user selected restaurant -> server will send this data to db
+          axios.post("/api/profile/set_restaurant", {"selected": this.yelp_response[index], "current_user": localStorage.getItem('email')}).then((response) => {
+            this.restaurant = {name: this.yelp_response[index].name, address: this.yelp_response[index].address, phone: this.yelp_response[index].phone, rating: this.yelp_response[index].rating, image: this.yelp_response[index].image, url: this.yelp_response[index].url, price: this.yelp_response[index].price,categories: this.yelp_response[index].categories,distance: this.yelp_response[index].distance,coordinates: this.yelp_response[index].coordinates}
+            console.log("we set your restaurant", this.restaurant)
           }).catch((error) => {
             this.$toast.error("Error selecting restaurant")
           })

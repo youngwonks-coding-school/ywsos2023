@@ -8,6 +8,7 @@ from flask_jwt_extended import JWTManager
 
 from routes.index import index
 from routes.auth import auth
+from routes.profile import profile
 from dotenv import load_dotenv
 from db import db
 
@@ -49,6 +50,7 @@ api.swagger = {
 
 api.add_namespace(index, '/api')
 api.add_namespace(auth, '/api/auth')
+api.add_namespace(profile, '/api/profile')
 
 
 @jwt.token_in_blocklist_loader
@@ -60,6 +62,6 @@ def check_token_in_blacklist(jwt_header, jwt_data):
 
 
 if '__main__' == __name__:
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    app.run(host='127.0.0.1', port=4000, debug=True)
     
     
