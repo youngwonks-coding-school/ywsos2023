@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'api_interface.dart';
 import 'utils.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.title});
+class Posts extends StatefulWidget {
+  const Posts({super.key, required this.title});
 
   final String title;
   final selectedColor = const Color.fromRGBO(249, 181, 12, 1);
   final unSelectedColor = const Color.fromRGBO(88, 47, 195, 1);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<Posts> createState() => _PostsState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _PostsState extends State<Posts> {
   @override
   Widget build(BuildContext context) {
     API().verify();
@@ -27,17 +26,14 @@ class _HomePageState extends State<HomePage> {
           child: Stack(
             alignment: Alignment.center,
             children: <Widget>[
-              Container(
-                margin: const EdgeInsets.fromLTRB(205, 25, 0, 0),
-                child: SvgPicture.asset(
-                  'assets/images/path.svg',
-                  height: 115,
-                ),
-              ),
-              const Text(
-                'Step into Serenity: Discover, Rate, and Share Inspiring Walking Routes',
-                style: TextStyle(
-                    fontSize: 26, color: Color.fromRGBO(49, 65, 80, 1)),
+              TextButton.icon(
+                onPressed: () async {
+                  await API().logout();
+                  Navigator.pushNamed(context, '/charts');
+                },
+                icon: const Icon(Icons.trending_up, size: 19),
+                label: const Text("View Posting Trends",
+                    style: TextStyle(fontSize: 16)),
               ),
             ],
           ),
@@ -46,7 +42,7 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: buildNavbar(
         selectedColor: widget.selectedColor,
         unSelectedColor: widget.unSelectedColor,
-        currentPageIndex: 0,
+        currentPageIndex: 2,
         context: context,
       ),
     );
