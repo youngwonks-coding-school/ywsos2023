@@ -40,12 +40,15 @@ class Register(Resource):
         # Hash the password
         hashed_password = generate_password_hash(password)
 
+        access_token = create_access_token(identity=email)
+        refresh_token = create_refresh_token(identity=email)
+        db.sessions.insert_one({"ip": request.remote_addr, "access_token": access_token, "refresh_token": refresh_token, "email": email})
+
         # Create a new user document
         user = {'email': email, 'password': hashed_password, "date_created": date_created}
         db.users.insert_one(user)
-        
-        return {'message': 'Successfully Registered in.'}, 200
-        
+
+        return {'message': 'User registered successfully', "access_token":access_token,"refresh_token":refresh_token}, 201
 
 @auth.route('/login', methods=['POST'])
 class Login(Resource):
@@ -65,6 +68,7 @@ class Login(Resource):
         # Generate access and refresh tokens
         access_token = create_access_token(identity=email)
         refresh_token = create_refresh_token(identity=email)
+        db.sessions.insert_one({"ip": request.remote_addr, "access_token": access_token, "refresh_token": refresh_token, "email": email})
 
         return {'message': 'Successfully Logged in.',"access_token":access_token,"refresh_token":refresh_token}, 200
 
@@ -106,6 +110,32 @@ class UpdatePassword(Resource):
         if not user or not check_password_hash(user['password'], old_password):
             return {'message': 'Invalid email or password'}, 401
         password = generate_password_hash(new_password)
-        db.users.update_one({"email": email}, {"$set": {"password": password}})
+        db.users.update_one({"email": email}, {"$set": {"password": password, "updated_at": datetime.datetime.utcnow()}})
 
         return {"message": 'Successfuly update password'}, 200
+
+@auth.route('/get_sessions', methods=['GET'])
+class GetSessions(Resource):
+    def get(self):
+        return db.sessions.get()
+    
+
+@auth.route('/get_sessions_for_user', methods=['GET'])
+class GetSessionsForUser(Resource):
+    @jwt_required()
+    def get(self):
+        return db.sessions.get({'email': get_jwt_identity()})
+
+@auth.route('/logout_specific')
+class LogoutSpecific(Resource):
+    @jwt_required()
+    def post(self):
+        jti = get_jwt()["jti"]
+        db.blacklisted_tokens.insert_one({'jti': jti})
+
+        return {"message": "Account logged out"}, 200
+
+
+
+    
+
