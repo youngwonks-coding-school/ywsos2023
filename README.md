@@ -13,16 +13,16 @@ The `.env` file in the `server` folder will contain the database url and the sec
 ### Instructions to run the app
 Depending on your Python install, you may need to use `python3` and `pip3` instead of `python` and `pip` respectively.
 
-1. To run the Flask server: 
-    Change directory to the server folder: `cd server`
-    Create a venv in the server folder: `python -m venv venv`
-    Activate the virtual environment
-    Install the dependencies : `pip install -r requirements.txt`
+1. To run the Flask server: \
+    Change directory to the server folder: `cd server` \
+    Create a venv in the server folder: `python -m venv venv` \
+    Activate the virtual environment \
+    Install the dependencies: `pip install -r requirements.txt` \
     Run the server: `python app.py`
 
-2. To run the VueJS client: 
-    Change directory to the client folder: `cd client`
-    Install the dependencies: `npm install`
+2. To run the VueJS client: \
+    Change directory to the client folder: `cd client` \
+    Install the dependencies: `npm install` \
     Run the application: `npm run dev`
 
 
