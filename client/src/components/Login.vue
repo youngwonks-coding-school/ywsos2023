@@ -34,7 +34,7 @@
           >
         </div>
         <div class="text-center">
-          <button type="button" @click="login()" class="btn btn-primary">Login</button><br /><br />
+          <button type="button" @click="login()" class="btn btn-primary button">Login</button><br /><br />
 
           <label class="form-check-label"><a href="/register">Register</a> </label>
         </div>
@@ -65,6 +65,8 @@ export default {
           this.$toast.success(response.data.message)
           localStorage.setItem('accessToken', response.data.access_token)
           localStorage.setItem('refreshToken', response.data.refresh_token)
+          localStorage.setItem('email', this.email)
+
           this.$router.push('/dashboard')
           // Reload page
           window.location.reload()
@@ -110,6 +112,7 @@ export default {
                 console.log(response.data.message)
                 this.$toast.success(response.data.message)
                 localStorage.setItem('accessToken', response.data.access_token)
+                localStorage.setItem('email', this.email)
 
                 this.$router.push('/dashboard')
               })

@@ -5,7 +5,7 @@ import Footer from './components/Footer.vue'
 </script>
 
 <template>
-  <div className="main-container d-flex flex-column min-vh-100">
+  <div class="main-container d-flex flex-column justify-content-between">
     <Navbar />
     <RouterView />
     <Footer />
@@ -13,7 +13,7 @@ import Footer from './components/Footer.vue'
 </template>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Inter:wght@300&display=swap');
 body {
   font-family: 'Roboto', sans-serif;
 }

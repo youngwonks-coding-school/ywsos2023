@@ -34,7 +34,7 @@
           >
         </div>
         <div class="text-center">
-          <button type="button" @click="register()" class="btn btn-secondary button">Register</button><br />
+          <button type="button" @click="register()" class="btn btn-primary button">Register</button><br />
           <br />
           <label class="form-check-label"><a href="/login">Login</a> </label>
         </div>
@@ -59,13 +59,20 @@ export default {
       axios
         .post('/api/auth/register', { email: this.email, password: this.password })
         .then((response) => {
-          console.log(response.data.message)
+
           this.$toast.success(response.data.message)
-          this.$router.push('/login')
+          localStorage.setItem('accessToken', response.data.access_token)
+          localStorage.setItem('refreshToken', response.data.refresh_token)
+          localStorage.setItem('email', this.email)
+
+          this.$router.push('/profile');
+          setTimeout(() => {
+            window.location.reload();
+          }, 100);
         })
         .catch((error) => {
           console.log(error)
-          this.$toast.error(error.message)
+          this.$toast.error(error.response.data.message)
         })
     }
   },
