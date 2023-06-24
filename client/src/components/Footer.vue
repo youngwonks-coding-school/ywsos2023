@@ -1,6 +1,6 @@
 <template>
   <footer
-    class="d-flex flex-wrap justify-content-between align-items-center px-2 my-2 border-top w-100"
+    class="d-flex flex-wrap justify-content-between align-items-center px-2 my-2 border-top w-100 footer"
   >
     <p class="col-md-4 mb-0 text-muted">© 2023 Company, Inc</p>
 

@@ -4,6 +4,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 from db import db
 import os
+import requests
+
 
 from flask_jwt_extended import jwt_required,get_jwt_identity,create_access_token,create_refresh_token,get_jwt
 
@@ -91,6 +93,7 @@ class Logout(Resource):
         db.blacklisted_tokens.insert_one({'jti': jti})
 
         return {'message': 'Successfuly logged out.'}, 200
+    
 
 @auth.route('/update_password', methods=['POST'])
 class UpdatePassword(Resource):
@@ -108,6 +111,27 @@ class UpdatePassword(Resource):
         return {"message": 'Successfuly update password'}, 200
 
 
+#Make your you have a YELP_API_KEY in .env
+@auth.route('/profile_data', methods=['POST'])
+class ProfileData(Resource):
+    def post(self):
+        data = request.get_json()
+        url = "https://api.yelp.com/v3/businesses/search"
 
+        headers = {
+            "accept": "application/json",
+            "Authorization": "Bearer " + os.environ.get("YELP_API_KEY"),
+        }
+        
+        params = {
+            "term": data["name"],
+            "location": data["address"]
+        }
+        
+
+        response = requests.get(url, params=params, headers=headers)
+
+
+        return {'message': response.text}, 200
     
 

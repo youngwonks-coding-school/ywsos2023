@@ -23,16 +23,17 @@
           <li class="nav-item" v-if="!isLoggedIn">
             <a class="nav-link" href="/login">Login</a>
           </li>
-          <li class="nav-item" v-else>
+          <div className="d-flex" v-else>
+            <li class="nav-item">
             <a class="nav-link" href="/logout" @click="logout">Logout</a>
-            <a class="nav-link" href="/dashboard" >Dashboard</a>
-          </li>
-          <li class="nav-item">
-            <button class="nav-link" @click="changeTheme()">
-              <i v-if="isDarkTheme" class="fas fa-moon"></i>
-              <i v-else class="fas fa-sun"></i>
-            </button>
-          </li>
+            </li>
+            <li>
+              <a class="nav-link" href="/dashboard" >Dashboard</a>
+            </li>
+            <li>
+              <a class="nav-link" href="/profile" >Profile</a>
+            </li>
+          </div>
            <li class="nav-item">
             <div class="dropdown" href="/clock">
               <a
@@ -50,6 +51,12 @@
                 </li>
               </ul>
             </div>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" @click="changeTheme()">
+              <i v-if="isDarkTheme" class="fas fa-moon"></i>
+              <i v-else class="fas fa-sun"></i>
+            </button>
           </li>
         </ul>
       </div>
