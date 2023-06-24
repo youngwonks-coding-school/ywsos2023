@@ -42,7 +42,7 @@ class Register(Resource):
 
         access_token = create_access_token(identity=email)
         refresh_token = create_refresh_token(identity=email)
-        db.sessions.add_one({"ip": request.remote_addr, "access_token": access_token, "refresh_token": refresh_token, "email": email})
+        db.sessions.insert_one({"ip": request.remote_addr, "access_token": access_token, "refresh_token": refresh_token, "email": email})
 
         # Create a new user document
         user = {'email': email, 'password': hashed_password, "date_created": date_created}
@@ -68,7 +68,7 @@ class Login(Resource):
         # Generate access and refresh tokens
         access_token = create_access_token(identity=email)
         refresh_token = create_refresh_token(identity=email)
-        db.sessions.add_one({"ip": request.remote_addr, "access_token": access_token, "refresh_token": refresh_token, "email": email})
+        db.sessions.insert_one({"ip": request.remote_addr, "access_token": access_token, "refresh_token": refresh_token, "email": email})
 
         return {'message': 'Successfully Logged in.',"access_token":access_token,"refresh_token":refresh_token}, 200
 
