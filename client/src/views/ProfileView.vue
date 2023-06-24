@@ -2,6 +2,9 @@
   <div class="profile-container container">
     <div class="title-container d-flex justify-content-center flex-nowrap">
       <h1 class="p-title">{{this.title}}</h1>
+      <div v-if="associated_restaurants_ids.length > 1">
+
+      </div>
     </div>
     <div class="toggle-button">
         <input type="checkbox" id="toggle" class="toggle-input">
@@ -79,42 +82,54 @@ export default {
     return {
       //form restaurant data that user entered
       form:{name: '', address: '', phone: '', city: '', state: '', country: '', type: ''},
-      yelp_response: {},
 
-      //selected restaurant data (includes everything)
+
+      yelp_response: {},
       restaurant: {},
+      associated_restaurants_ids: [],
+      associated_restaurants: {},
+      selectedRestaurant: null,
+
+
+      email: '',
       title: 'Let\'s Figure Out Who You Are!',
       submitted: false
     };
   },
   mounted() {
-    //send the current user so if user already logged restaurant information it will be presented to the user
-    const current_user = localStorage.getItem('email');
-    console.log(current_user)
-    axios.get(`/api/profile/previous_restaurant?current_user=${current_user}`)
-      .then(response => {
-        console.log(response)
-        if (response != false){
-          //If user previously set up restaurant set the form info filled out, change the title, set restaurant data already
-          this.restaurant = response.data
-          this.title = "Hello "+response.data.name+"!"
-          this.form.name = response.data.phone; this.form.address = response.data.address; this.form.phone = response.data.phone; 
-          
-          // //attempt to get city and state information
-          // const cityStateRegex = /,\s*(\w+)\s*(\w{2})\s*\d+/;
-          // const matches = (response.data.address).match(cityStateRegex);
+    //get the current user email and all sessions
+    axios.get('/api/auth/get_sessions_for_user', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+      }
+    })
+    .then((response) => {
+      this.email = response.data.email
+      console.log("Found User Session + Email " + this.email)
 
-          // if (matches && matches.length === 3) {
-          //   this.form.city = matches[1];
-          //   this.form.state = matches[2];
-          // }
-          
-        }
+      //get all restaurants associated with user (id)
+      this.associated_restaurants_ids = response.data.associated_restaurants_ids
 
-      })
-      .catch(error => {
-        console.error(error);
-      });
+      //check user has set up restaurant
+      console.log(this.associated_restaurants_ids.length)
+      if (this.associated_restaurants_ids.length != undefined && this.associated_restaurants_ids.length > 0){
+        //check user is associated with more than one restaurants (allow for managing)
+        axios.get(`/api/profile/previous_restaurant?current_user=${this.email}`)
+          .then(response => {
+            response = JSON.parse(response.data)
+            //give all associated_restaurants to all_user_restaurants
+            for (let i = 0; i < response.associated_restaurants.length; i++){
+              this.associated_restaurants[i] = response.associated_restaurants[i]
+            }
+            //give current restaurant info to restaurant
+            this.restaurant = response.current_restaurant_info;
+            
+            this.form.name = this.restaurant.name; this.form.address = this.restaurant.address; this.form.phone = this.restaurant.phone; this.form.city = this.restaurant.city; this.form.state = this.restaurant.state; this.form.country = this.restaurant.country; this.form.type = this.restaurant.type;
+            this.title = 'Hello There ' + this.restaurant.name 
+          }).catch(error => {console.error(error);});
+      }
+    }).catch((error) => {console.log(error)});
+
 
   },
   methods: { 
@@ -139,7 +154,7 @@ export default {
             city: this.form.city,
             state: this.form.state,
             country: this.form.country,
-            type: this.form.type
+            type: this.form.type,
           }
           //get possible restaurants from yelp based on entered form data
           axios.post('/api/profile/get_restaurants', data).then((response) => {
@@ -173,10 +188,13 @@ export default {
         },
         restaurantSelect(index){
           //user selected restaurant -> server will send this data to db
-          axios.post("/api/profile/set_restaurant", {"selected": this.yelp_response[index], "current_user": localStorage.getItem('email')}).then((response) => {
+
+          axios.post("/api/profile/add_restaurant", {"selected": this.yelp_response[index], "current_user": this.email}).then(() => {
             this.restaurant = {name: this.yelp_response[index].name, address: this.yelp_response[index].address, phone: this.yelp_response[index].phone, rating: this.yelp_response[index].rating, image: this.yelp_response[index].image, url: this.yelp_response[index].url, price: this.yelp_response[index].price,categories: this.yelp_response[index].categories,distance: this.yelp_response[index].distance,coordinates: this.yelp_response[index].coordinates}
             console.log("we set your restaurant", this.restaurant)
+            window.location.reload()
           }).catch((error) => {
+            console.log(error)
             this.$toast.error("Error selecting restaurant")
           })
         }

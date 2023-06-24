@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 from db import db
 import os
-import requests 
+import requests
 
 
 from flask_jwt_extended import jwt_required,get_jwt_identity,create_access_token,create_refresh_token,get_jwt
@@ -98,6 +98,7 @@ class Logout(Resource):
         db.blacklisted_tokens.insert_one({'jti': jti})
 
         return {'message': 'Successfuly logged out.'}, 200
+    
 
 @auth.route('/update_password', methods=['POST'])
 class UpdatePassword(Resource):
@@ -112,8 +113,10 @@ class UpdatePassword(Resource):
         password = generate_password_hash(new_password)
         db.users.update_one({"email": email}, {"$set": {"password": password, "updated_at": datetime.datetime.utcnow()}})
 
+
         return {"message": 'Successfuly update password'}, 200
 
+    
 @auth.route('/get_sessions', methods=['GET'])
 class GetSessions(Resource):
     def get(self):
@@ -124,7 +127,16 @@ class GetSessions(Resource):
 class GetSessionsForUser(Resource):
     @jwt_required()
     def get(self):
-        return db.sessions.get({'email': get_jwt_identity()})
+        #get current user email
+        session = db.sessions.find_one({'email': get_jwt_identity()})
+        
+        #get associated_restaurants id (no need for all data)
+        associated_restaurants_ids = []
+        document = db.restaurants.find_one({'email': get_jwt_identity()})
+        if document: associated_restaurants_ids = document.get('associated_restaurants_ids')
+
+        #convert object id to string
+        return jsonify({'associated_restaurants_ids': associated_restaurants_ids, 'email': get_jwt_identity()})
 
 @auth.route('/logout_specific')
 class LogoutSpecific(Resource):

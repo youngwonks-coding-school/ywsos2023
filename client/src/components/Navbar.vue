@@ -105,11 +105,6 @@ export default {
         { identifier: 'UTC+13', label: 'Tonga Time' },
         { identifier: 'UTC+10', label: 'Chamorro Standard Time' },
       ],
-      
-      
-      
-      
-      
     };
   },
   
