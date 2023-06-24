@@ -124,4 +124,4 @@ def disconnect(sid):
 
 
 if '__main__' == __name__:
-    app.run(host=os.environ["FLASK_HOST"], port=os.environ["FLASK_PORT"], debug=os.getenv("FLASK_DEBUG", "False") == "True")
+    socketio.run(app, host=os.environ["FLASK_HOST"], port=os.environ["FLASK_PORT"], debug=os.getenv("FLASK_DEBUG", "False") == "True")
