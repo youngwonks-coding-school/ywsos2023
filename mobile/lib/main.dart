@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/charts.dart';
+import 'package:mobile/posts.dart';
 import 'home_page.dart';
 import 'authenticate.dart';
 import 'profile.dart';
@@ -24,7 +26,8 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': ((context) => const HomePage(title: 'Walk Wise')),
         '/discover': ((context) => const HomePage(title: 'Discover Trails')),
-        '/map': ((context) => const HomePage(title: 'Map')),
+        '/posts': ((context) => const Posts(title: 'Posts')),
+        '/charts': (context) => const Charts(title: 'Posting Trends'),
         '/authenticate': (context) => const Authenticate(title: 'Authenticate'),
         '/profile': (context) => const Profile(title: 'Profile'),
       },

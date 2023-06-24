@@ -9,6 +9,7 @@ from flask_jwt_extended import JWTManager
 
 from routes.index import index
 from routes.auth import auth
+from routes.posts import posts
 from routes.profile import profile
 from dotenv import load_dotenv
 from db import db
@@ -52,6 +53,7 @@ api.swagger = {
 
 api.add_namespace(index, '/api')
 api.add_namespace(auth, '/api/auth')
+api.add_namespace(posts, '/api/posts')
 api.add_namespace(profile, '/api/profile')
 
 
@@ -143,4 +145,4 @@ def disconnect(sid):
 
 
 if '__main__' == __name__:
-    socketio.run(app, debug=True)
+    socketio.run(app, host=os.environ["FLASK_HOST"], port=os.environ["FLASK_PORT"], debug=os.getenv("FLASK_DEBUG", "False") == "True")

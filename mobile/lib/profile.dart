@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'api_interface.dart';
 import 'utils.dart';
 
@@ -43,7 +42,6 @@ class _ProfileState extends State<Profile> {
         selectedColor: widget.selectedColor,
         unSelectedColor: widget.unSelectedColor,
         currentPageIndex: 3,
-        routes: ['/', '/discover', '/map', '/authenticate', '/profile'],
         context: context,
       ),
     );

@@ -74,8 +74,7 @@ class _AuthenticateState extends State<Authenticate> {
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content:
-                            Text('Your email or password is incorrect!'),
+                        content: Text('Your email or password is incorrect!'),
                       ),
                     );
                   }
@@ -137,7 +136,6 @@ class _AuthenticateState extends State<Authenticate> {
         selectedColor: widget.selectedColor,
         unSelectedColor: widget.unSelectedColor,
         currentPageIndex: 3,
-        routes: ['/', '/discover', '/map', '/authenticate', '/profile'],
         context: context,
       ),
     );

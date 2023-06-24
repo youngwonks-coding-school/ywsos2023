@@ -7,9 +7,11 @@ Widget buildNavbar({
   required Color selectedColor,
   required Color unSelectedColor,
   required int currentPageIndex,
-  required List<String> routes,
+  List<String>? routes,
   required BuildContext context,
 }) {
+  routes ??= ['/', '/discover', '/posts', API().loggedIn() ? '/profile' : '/authenticate'];
+
   return CustomNavigationBar(
     iconSize: 30.0,
     selectedColor: selectedColor,
@@ -35,9 +37,9 @@ Widget buildNavbar({
         ),
       ),
       CustomNavigationBarItem(
-        icon: const Icon(CupertinoIcons.map),
+        icon: const Icon(Icons.sticky_note_2_outlined),
         title: Text(
-          "Map",
+          "Posts",
           style: TextStyle(
             color: currentPageIndex == 2 ? selectedColor : unSelectedColor,
           ),
@@ -55,12 +57,7 @@ Widget buildNavbar({
     ],
     currentIndex: currentPageIndex,
     onTap: (index) {
-      if (API().loggedIn()) {
-        if (index == 3) {
-          index = 4;
-        }
-      }
-      Navigator.pushNamed(context, routes[index]);
+      Navigator.pushNamed(context, routes![index]);
     },
   );
 }

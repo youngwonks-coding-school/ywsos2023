@@ -110,4 +110,9 @@ class API {
   bool loggedIn() {
     return _loggedIn;
   }
+
+  Future<Response> getPosts() async {
+    Response response = await dio.get('$serverURL/api/get-posts');
+    return response;
+  }
 }
