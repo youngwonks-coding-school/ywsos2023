@@ -7,7 +7,7 @@
 Make a copy of the `.env.sample` files present in the `server` and `client` folders and name them as `.env`.
 Replace the content with your appropriate values.
 The `.env` file in the `client` folder will contain the Vite server url. This can be left unchanged.
-The `.env` file in the `server` folder will contain the database url and the secret key for the JWT token. The secret key for the JWT token can be left unchanged for development purposes, but the database url will need to be changed. Instructions for be are given below.
+The `.env` file in the `server` folder will contain the database url and the secret key for the JWT token. The secret key for the JWT token can be left unchanged for development purposes, but the database url will need to be changed. Instructions for be are given below. You may also need to change the `FLASK_HOST` key to be 
 
 
 ### Instructions to run the app

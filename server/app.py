@@ -9,6 +9,7 @@ from flask_jwt_extended import JWTManager
 
 from routes.index import index
 from routes.auth import auth
+from routes.posts import posts
 from dotenv import load_dotenv
 from db import db
 
@@ -32,6 +33,7 @@ api = Api(app, version='1.0', title='API', description='API documentation',doc='
 
 api.add_namespace(index, '/api')
 api.add_namespace(auth, '/api/auth')
+api.add_namespace(posts, '/api/posts')
 
 
 @jwt.token_in_blocklist_loader
@@ -122,6 +124,4 @@ def disconnect(sid):
 
 
 if '__main__' == __name__:
-    app.run(host='0.0.0.0', port=5000, debug=True)
-    
-    
+    app.run(host=os.environ["FLASK_HOST"], port=os.environ["FLASK_PORT"], debug=os.getenv("FLASK_DEBUG", "False") == "True")
