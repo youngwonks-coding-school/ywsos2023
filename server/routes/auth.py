@@ -1,8 +1,9 @@
-from flask import request, jsonify,make_response
+from flask import request, jsonify,make_response, session, current_app
 from flask_restx import Namespace, Resource,fields
 from werkzeug.security import generate_password_hash, check_password_hash
-import datetime
+from datetime import datetime
 from db import db
+import json
 import os
 import requests
 
@@ -31,7 +32,7 @@ class Register(Resource):
         # Parse the request data
         email = auth.payload['email']
         password = auth.payload['password']
-        date_created = datetime.datetime.utcnow()
+        date_created = datetime.utcnow()
 
         # Check if the user already exists
         if db.users.find_one({'email': email}):
@@ -44,9 +45,15 @@ class Register(Resource):
         refresh_token = create_refresh_token(identity=email)
         db.sessions.insert_one({"ip": request.remote_addr, "access_token": access_token, "refresh_token": refresh_token, "email": email})
 
+        
+        
         # Create a new user document
         user = {'email': email, 'password': hashed_password, "date_created": date_created}
         db.users.insert_one(user)
+        
+        #Generate user session to handle timeout
+        session['user_id'] = str(user["_id"])
+        session['last_activity'] = datetime.now()
 
         return {'message': 'User registered successfully', "access_token":access_token,"refresh_token":refresh_token}, 201
 
@@ -68,7 +75,12 @@ class Login(Resource):
         # Generate access and refresh tokens
         access_token = create_access_token(identity=email)
         refresh_token = create_refresh_token(identity=email)
+        
         db.sessions.insert_one({"ip": request.remote_addr, "access_token": access_token, "refresh_token": refresh_token, "email": email})
+        
+        #Generate user session
+        session['user_id'] = str(user["_id"])
+        session['last_activity'] = datetime.now()
 
         return {'message': 'Successfully Logged in.',"access_token":access_token,"refresh_token":refresh_token}, 200
 
@@ -95,6 +107,7 @@ class Logout(Resource):
     def post(self):
         # Add the access token to the blacklist
         jti = get_jwt()['jti']
+        session.clear()
         db.blacklisted_tokens.insert_one({'jti': jti})
 
         return {'message': 'Successfuly logged out.'}, 200
@@ -147,7 +160,20 @@ class LogoutSpecific(Resource):
 
         return {"message": "Account logged out"}, 200
 
+def check_session_timeout():
+    if 'user_id' in session:
+        last_activity = session.get('last_activity')
+        if last_activity is not None and datetime.now() - last_activity > current_app.config['PERMANENT_SESSION_LIFETIME']:
+            # Session has expired, perform logout
+            session.clear()
+
+    # Update last activity timestamp
+    session['last_activity'] = datetime.now()
 
 
-    
-
+@auth.route('/session_lifetime')
+class SessionLifetime(Resource):
+    def get(self):
+        session_lifetime = current_app.config['PERMANENT_SESSION_LIFETIME']
+        print('xx')
+        return {'session_lifetime': session_lifetime.total_seconds()}, 200

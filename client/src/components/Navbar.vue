@@ -67,6 +67,7 @@
 
 <script>
 import { DateTime, IANAZone } from 'luxon';
+import axios from 'axios';
 export default {
   data() {
     return {
@@ -115,6 +116,10 @@ export default {
   
   methods: {
     logout() {
+      axios.get('/api/auth/logout', {
+      headers: {Authorization: `Bearer ${localStorage.getItem('accessToken')}`}}).catch((error) => {console.log(error, "logging out");
+      });
+
       localStorage.removeItem('accessToken');
       this.isLoggedIn = false;
       console.log('Logged out');
