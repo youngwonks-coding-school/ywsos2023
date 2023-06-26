@@ -19,7 +19,7 @@ app.config['JSON_AS_ASCII'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
 
 app.secret_key = os.environ['SECRET_KEY']
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=5)
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
 
 # Set the secret key to sign the JWTs with
 app.config['JWT_SECRET_KEY'] = os.environ['SECRET_KEY']  # Change this!

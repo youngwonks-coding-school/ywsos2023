@@ -51,9 +51,6 @@ class Register(Resource):
         user = {'email': email, 'password': hashed_password, "date_created": date_created}
         db.users.insert_one(user)
         
-        #Generate user session to handle timeout
-        session['user_id'] = str(user["_id"])
-        session['last_activity'] = datetime.now()
 
         return {'message': 'User registered successfully', "access_token":access_token,"refresh_token":refresh_token}, 201
 
@@ -78,9 +75,6 @@ class Login(Resource):
         
         db.sessions.insert_one({"ip": request.remote_addr, "access_token": access_token, "refresh_token": refresh_token, "email": email})
         
-        #Generate user session
-        session['user_id'] = str(user["_id"])
-        session['last_activity'] = datetime.now()
 
         return {'message': 'Successfully Logged in.',"access_token":access_token,"refresh_token":refresh_token}, 200
 
@@ -140,6 +134,7 @@ class GetSessions(Resource):
 class GetSessionsForUser(Resource):
     @jwt_required()
     def get(self):
+        print("Getting Sessions")
         #get current user email
         session = db.sessions.find_one({'email': get_jwt_identity()})
         
@@ -159,16 +154,6 @@ class LogoutSpecific(Resource):
         db.blacklisted_tokens.insert_one({'jti': jti})
 
         return {"message": "Account logged out"}, 200
-
-def check_session_timeout():
-    if 'user_id' in session:
-        last_activity = session.get('last_activity')
-        if last_activity is not None and datetime.now() - last_activity > current_app.config['PERMANENT_SESSION_LIFETIME']:
-            # Session has expired, perform logout
-            session.clear()
-
-    # Update last activity timestamp
-    session['last_activity'] = datetime.now()
 
 
 @auth.route('/session_lifetime')

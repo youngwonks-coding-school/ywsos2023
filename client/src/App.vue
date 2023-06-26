@@ -64,11 +64,12 @@ export default {
     logout(){
       axios.get('/api/auth/logout', {
       headers: {Authorization: `Bearer ${localStorage.getItem('accessToken')}`}}).catch((error) => {console.log(error, "logging out");
-      });
-      localStorage.removeItem('accessToken');
-      window.location.reload();
-      this.$router.push({ name: 'Login' });
-      this.idle = false;
+      }).then(() => {
+        localStorage.removeItem('accessToken');
+        window.location.reload();
+        this.$router.push('/login')
+        this.idle = false;
+      })
     }
   },
 
