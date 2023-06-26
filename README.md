@@ -7,22 +7,22 @@
 Make a copy of the `.env.sample` files present in the `server` and `client` folders and name them as `.env`.
 Replace the content with your appropriate values.
 The `.env` file in the `client` folder will contain the Vite server url. This can be left unchanged.
-The `.env` file in the `server` folder will contain the database url and the secret key for the JWT token. The secret key for the JWT token can be left unchanged for development purposes, but the database url will need to be changed. Instructions for be are given below. You may also need to change the `FLASK_HOST` key to be 
+The `.env` file in the `server` folder will contain the database url and the secret key for the JWT token. The secret key for the JWT token can be left unchanged for development purposes, but the database url will need to be changed. Instructions for be are given below. You may also need to change the `FLASK_HOST` key to be `0.0.0.0` if you are running the mobile app on a physical device. 
 
 
 ### Instructions to run the app
 Depending on your Python install, you may need to use `python3` and `pip3` instead of `python` and `pip` respectively.
 
-1. To run the Flask server: 
-    Change directory to the server folder: `cd server`
-    Create a venv in the server folder: `python -m venv venv`
-    Activate the virtual environment
-    Install the dependencies : `pip install -r requirements.txt`
+1. To run the Flask server: \
+    Change directory to the server folder: `cd server` \
+    Create a venv in the server folder: `python -m venv venv` \
+    Activate the virtual environment \
+    Install the dependencies: `pip install -r requirements.txt` \
     Run the server: `python app.py`
 
-2. To run the VueJS client: 
-    Change directory to the client folder: `cd client`
-    Install the dependencies: `npm install`
+2. To run the VueJS client: \
+    Change directory to the client folder: `cd client` \
+    Install the dependencies: `npm install` \
     Run the application: `npm run dev`
 
 
