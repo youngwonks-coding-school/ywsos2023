@@ -141,7 +141,10 @@ class GetSessionsForUser(Resource):
         #get associated_restaurants id (no need for all data)
         associated_restaurants_ids = []
         document = db.restaurants.find_one({'email': get_jwt_identity()})
-        if document: associated_restaurants_ids = document.get('associated_restaurants_ids')
+        if document: 
+            associated_restaurants_ids = document.get('associated_restaurants_ids')
+            #Object ID not json serializable so I make it string 
+            associated_restaurants_ids = [str(oid) for oid in associated_restaurants_ids]
 
         #convert object id to string
         return jsonify({'associated_restaurants_ids': associated_restaurants_ids, 'email': get_jwt_identity()})

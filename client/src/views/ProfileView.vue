@@ -99,7 +99,7 @@ export default {
       associated_restaurants: {},
       selectedRestaurant: null,
       email: '',
-      title: "Let's Figure Out Who You Are!",
+      title: "Tell Us About Your Business",
       submitted: false
     };
   },
@@ -121,12 +121,10 @@ export default {
     // Response interceptor
     axiosInstance.interceptors.response.use(
       (response) => {
-        console.log('hello1', response)
         return response;
       },
       async (error) => {
         if (error.response && error.response.status === 401) {
-          console.log('hello2')
           try {
             const refreshResponse = await axiosInstance.post('/auth/refresh', {
               Authorization: `Bearer ${localStorage.getItem('refreshToken')}`
@@ -134,37 +132,34 @@ export default {
             localStorage.setItem('accessToken', refreshResponse.data.accessToken);
             return axiosInstance(error.response.config);
           } catch (error) {
-            console.log('Refresh token error: ', error);
+            $toast.error('Axios Instance \n Refresh token error');
+            console.log('Axios Instance \n Refresh token error:', error)
           }
         }
-        console.log('hello3', error.response)
         return Promise.reject(error);
       }
     );
 
-    // Get the current user email and all sessions
     axiosInstance
       .get('/auth/get_sessions_for_user', {skipAuth: false})
       .then((response) => {
         this.email = response.data.email;
-        console.log('Found User Session + Email ' + this.email);
-
-        // Get all restaurants associated with the user (id)
         this.associated_restaurants_ids = response.data.associated_restaurants_ids;
 
-        // Check if the user has set up a restaurant
-        console.log(this.associated_restaurants_ids.length);
+        this.$toast.success("Successfully retrieved user info")
+        console.log("Successfully retrieved " + this.email + "info -> associated restaurants: " + this.associated_restaurants_ids.length);
+
+        //user has previously set up restaurant -> we need to access that information
         if (this.associated_restaurants_ids.length > 0) {
-          // Check if the user is associated with more than one restaurant (allow for managing)
           axiosInstance
             .get(`/profile/previous_restaurant?current_user=${this.email}` , { skipAuth: true })
             .then((response) => {
               response = JSON.parse(response.data);
-              // Give all associated_restaurants to all_user_restaurants
-              for (let i = 0; i < response.associated_restaurants.length; i++) {
+              //Get data for each restaurant under user
+              for (let i = 0; i < this.associated_restaurants_ids.length; i++) {
                 this.associated_restaurants[i] = response.associated_restaurants[i];
               }
-              // Give current restaurant info to restaurant
+              // Get data for current restaurant under user
               this.restaurant = response.current_restaurant_info;
 
               this.form.name = this.restaurant.name;
@@ -177,12 +172,14 @@ export default {
               this.title = 'Hello There ' + this.restaurant.name;
             })
             .catch((error) => {
-              console.error(error);
+              this.$toast.error("Error finding previous restaurants")
+              console.log("Error finding previous restaurants: ", error )
             });
         }
       })
       .catch((error) => {
-        console.log(error);
+        this.$toast.error("Error finding previous restaurants")
+        console.log("Error finding previous restaurants: ", error )
       });
   },
   methods: {
@@ -215,7 +212,7 @@ export default {
           const responseData = JSON.parse(response.data.message).businesses;
           const amount = responseData.length;
           if (amount > 0) {
-            this.$toast.success('Success!');
+            this.$toast.success(amount + 'restaurants found!');
           }
           for (let i = 0; i < amount; i++) {
             // Insert all results into yelp_response (will be accessed to turn data into cards to select)

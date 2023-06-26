@@ -25,12 +25,14 @@ export default {
     }
   },
   mounted() {
-    if (localStorage.getItem("accessToken")) {
-      this.fetchSessionLifetime()
-        .then(() => {
-          this.setupIdleTimer();
-        });
-    }
+    //TODO: Note working (log user out if idle for this.session_lifetime)
+
+    // if (localStorage.getItem("accessToken")) {
+    //   this.fetchSessionLifetime()
+    //     .then(() => {
+    //       this.setupIdleTimer();
+    //     });
+    // }
   },
   methods: {
     async fetchSessionLifetime() {
@@ -56,7 +58,9 @@ export default {
       watch(idle, (idleValue) => {
         if (idleValue) {
           //user is idle
-          this.logout();
+          if (localStorage.getItem('accessToken')) {
+            this.logout();
+          }
           reset(); // Restart the idle timer
         }
       });
