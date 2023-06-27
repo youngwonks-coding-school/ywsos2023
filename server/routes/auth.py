@@ -163,5 +163,4 @@ class LogoutSpecific(Resource):
 class SessionLifetime(Resource):
     def get(self):
         session_lifetime = current_app.config['PERMANENT_SESSION_LIFETIME']
-        print('xx')
         return {'session_lifetime': session_lifetime.total_seconds()}, 200

@@ -21,7 +21,7 @@ def custom_serializer(obj):
 class GetRestaurants(Resource):
     def post(self):
         #Use yelp api to get possible restaurants based on user inputed data
-        data = request.get_json()
+        data = request.get_json()['data']
         url = "https://api.yelp.com/v3/businesses/search"
 
         headers = {
@@ -41,10 +41,11 @@ class GetRestaurants(Resource):
 @profile.route("/add_restaurant", methods=["POST"])
 class AddRestaurant(Resource):
     #after user clicks on desired restaurant, add data to db under user collection
+    @jwt_required()
     def post(self):
         data = request.get_json()
         restaurant_data = data["selected"]
-        current_user = data["current_user"]
+        current_user = get_jwt_identity()
         query = {"email": current_user}
         
         #add user _id to restaurant document _id **linked**
@@ -73,47 +74,36 @@ class AddRestaurant(Resource):
             document = {"_id":user_id, "email": current_user, "associated_restaurants": [restaurant_data], "associated_restaurants_ids": [_id]}
             restaurants.insert_one(document)
             
-        #add current restaurant user is associated with
-        sessions = db.get_collection('sessions')
-        if sessions.find_one(query):
-            sessions.update_one(query, {"$set": {"current_restaurant": _id}})
-        else:
-            document = {"email": current_user, "current_restaurant": _id}
-            sessions.insert_one(document)
-        
 
-        return {'message': "set restaurant data"}, 200
+        return {'current_restaurant': str(_id)}, 200
             
 @profile.route("/previous_restaurant", methods=["GET"])
 class PrevRestaurant(Resource):    
     """
-    When page loads, we check for all restaurants associated with user and return 
+    When page loads, we check for all restaurants associated with the user and return the data
     """
+    @jwt_required()
     def get(self):
-        #get the current restaurant id you are associated with
-        current_user = request.args.get('current_user')  
-        sessions = db.get_collection('sessions')
-        current_restaurant = sessions.find_one({"email": current_user})['current_restaurant']
+        current_restaurant = request.args.get('current_restaurant')
         
-        # get info about current restaurant and info about users associated_restaurants
+        # Get the current restaurant ID associated with the user
+        current_user = get_jwt_identity()
+        sessions = db.get_collection('sessions')
+        
+        # Get information about the current restaurant and the user's associated restaurants
         restaurants = db.get_collection('restaurants')
         existing_doc = restaurants.find_one({"email": current_user})
         if existing_doc:
             associated_restaurants = existing_doc.get("associated_restaurants", [])
             for rest in associated_restaurants:
-                if rest.get("_id") == current_restaurant:
+                if rest.get("_id") == ObjectId(current_restaurant):
                     response_data = {'current_restaurant_info': rest, "associated_restaurants": associated_restaurants}
                     response_data = json.dumps(response_data, default=custom_serializer)
                     return response_data, 200
+
                 
                 
-        
-        
-        
-        
-        
-        
-        
+
         
               
 

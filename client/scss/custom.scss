@@ -224,6 +224,22 @@ label {
   }
 }
 
+.profile-dropdown{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: -10px;
+  margin-bottom: 30px;
+  .dropdown-toggle{
+    border: #1a1a1a solid 1px;
+    border-radius: 10px;
+  }
+}
+
+.dropdown-item{
+  cursor: pointer;
+}
+
 
 
 // HOME PAGE STYLES

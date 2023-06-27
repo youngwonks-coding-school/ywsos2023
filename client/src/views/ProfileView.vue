@@ -1,10 +1,17 @@
 <template>
   <div class="profile-container container">
+    <div class="profile-dropdown" v-if="associated_restaurants_ids.length > 1">
+      <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+        {{ restaurant.name }}
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <li v-for="(restaurant, index) in associated_restaurants" :key="index">
+          <a class="dropdown-item" @click="handleRestaurantSelection(index)">{{ restaurant.name }}</a>
+        </li>
+      </ul>
+    </div>
     <div class="title-container d-flex justify-content-center flex-nowrap">
       <h1 class="p-title">{{this.title}}</h1>
-      <div v-if="associated_restaurants_ids.length > 1">
-
-      </div>
     </div>
     <div class="toggle-button">
         <input type="checkbox" id="toggle" class="toggle-input">
@@ -77,11 +84,28 @@
 
 <script>
 import axios from 'axios'
+import { reactive, toRefs } from 'vue';
+
 const axiosInstance = axios.create({
   baseURL: 'http://127.0.0.1:4000/api', // Assuming the base URL is '/api'
 });
 
 export default {
+  watch: {
+    restaurant: {
+      handler: function(newRestaurant) {
+        this.title = 'Hello There ' + newRestaurant.name;
+        this.form.name = newRestaurant.name;
+        this.form.address = newRestaurant.address;
+        this.form.phone = newRestaurant.phone;
+        this.form.city = newRestaurant.city;
+        this.form.state = newRestaurant.state;
+        this.form.country = newRestaurant.country;
+        this.form.type = newRestaurant.type;
+      },
+      deep: true
+    }
+  },
   data() {
     return {
       form: {
@@ -97,7 +121,7 @@ export default {
       restaurant: {},
       associated_restaurants_ids: [],
       associated_restaurants: {},
-      selectedRestaurant: null,
+      current_restaurant_index: 0,
       email: '',
       title: "Tell Us About Your Business",
       submitted: false
@@ -109,6 +133,7 @@ export default {
       (config) => {
         const accessToken = localStorage.getItem('accessToken');
         if (!config.skipAuth){
+
           config.headers.Authorization = `Bearer ${accessToken}`;
         }
         return config;
@@ -124,7 +149,7 @@ export default {
         return response;
       },
       async (error) => {
-        if (error.response && error.response.status === 401) {
+        if (error.response.status === 401) {
           try {
             const refreshResponse = await axiosInstance.post('/auth/refresh', {
               Authorization: `Bearer ${localStorage.getItem('refreshToken')}`
@@ -134,6 +159,7 @@ export default {
           } catch (error) {
             $toast.error('Axios Instance \n Refresh token error');
             console.log('Axios Instance \n Refresh token error:', error)
+            return Promise.reject(error);
           }
         }
         return Promise.reject(error);
@@ -151,8 +177,13 @@ export default {
 
         //user has previously set up restaurant -> we need to access that information
         if (this.associated_restaurants_ids.length > 0) {
-          axiosInstance
-            .get(`/profile/previous_restaurant?current_user=${this.email}` , { skipAuth: true })
+            axiosInstance
+            .get('/profile/previous_restaurant', {
+              skipAuth: false,
+              params: {
+                current_restaurant: localStorage.getItem('current_restaurant')
+              },
+            })
             .then((response) => {
               response = JSON.parse(response.data);
               //Get data for each restaurant under user
@@ -183,6 +214,11 @@ export default {
       });
   },
   methods: {
+    //user selected new restaurant to manage via drop down (set current restaurant id in sessions)
+    handleRestaurantSelection(index) {;
+      this.restaurant = this.associated_restaurants[index];
+      localStorage.setItem('current_restaurant', this.associated_restaurants[index]._id);
+    },
     onSubmit(event) {
       event.preventDefault();
       this.form.name = document.getElementById('name').value;
@@ -207,12 +243,12 @@ export default {
       };
       // Get possible restaurants from Yelp based on entered form data
       axiosInstance
-        .post('/profile/get_restaurants', data, {skipAuth: true})
+        .post('/profile/get_restaurants', {'data': data, skipAuth: false})
         .then((response) => {
           const responseData = JSON.parse(response.data.message).businesses;
           const amount = responseData.length;
           if (amount > 0) {
-            this.$toast.success(amount + 'restaurants found!');
+            this.$toast.success(amount + ' restaurants found!');
           }
           for (let i = 0; i < amount; i++) {
             // Insert all results into yelp_response (will be accessed to turn data into cards to select)
@@ -233,14 +269,15 @@ export default {
         })
         .catch((error) => {
           console.log(error);
-          this.$toast.error('Error! Please provide accurate information');
+          this.$toast.error('Error! Getting Restaurants');
         });
     },
     restaurantSelect(index) {
       // User selected restaurant -> server will send this data to the database
       axiosInstance
-        .post('/profile/add_restaurant', { selected: this.yelp_response[index], current_user: this.email })
-        .then(() => {
+        .post('/profile/add_restaurant', { selected: this.yelp_response[index]})
+        .then((response) => {
+          localStorage.setItem('current_restaurant', response.data.current_restaurant)
           this.restaurant = {
             name: this.yelp_response[index].name,
             address: this.yelp_response[index].address,
@@ -253,6 +290,7 @@ export default {
             distance: this.yelp_response[index].distance,
             coordinates: this.yelp_response[index].coordinates
           };
+          this.$toast.success('Successfully set your restaurant');
           console.log('we set your restaurant', this.restaurant);
           window.location.reload();
         })
