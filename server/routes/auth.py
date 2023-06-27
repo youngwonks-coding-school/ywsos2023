@@ -32,6 +32,10 @@ class Register(Resource):
         # Parse the request data
         email = auth.payload['email']
         password = auth.payload['password']
+        
+        data = request.get_json()
+        business_type = data['business_type']
+        
         date_created = datetime.utcnow()
 
         # Check if the user already exists
@@ -48,7 +52,7 @@ class Register(Resource):
         
         
         # Create a new user document
-        user = {'email': email, 'password': hashed_password, "date_created": date_created}
+        user = {'email': email, 'password': hashed_password, 'business_type':business_type, "date_created": date_created}
         db.users.insert_one(user)
         
 

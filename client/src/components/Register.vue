@@ -4,6 +4,13 @@
       <h5 class="card-title text-center">Register</h5>
       <form>
         <div class="mb-3">
+          <div class="form-group d-flex justify-content-center">
+            <ul class="nav nav-tabs">
+              <li class="nav-item" v-for="(option, index) in options" :key="index">
+                <a class="nav-link" :class="{ active: selectedOption === option }" @click="selectOption(option)">{{ option }}</a>
+              </li>
+            </ul>
+          </div>
           <label for="email" class="form-label">Email address</label>
           <input
             type="text"
@@ -33,10 +40,9 @@
             <a href="/privacy-policy">privacy policy</a></label
           >
         </div>
-        <div class="text-center">
-          <button type="button" @click="register()" class="btn btn-primary button">Register</button><br />
+        <div class="text-center mt-3">
+          <button type="button" @click="register()" class="btn btn-primary form-button">Register</button><br />
           <br />
-          <label class="form-check-label"><a href="/login">Login</a> </label>
         </div>
       </form>
     </div>
@@ -49,15 +55,19 @@ export default {
   data() {
     return {
       email: '',
-      password: ''
+      password: '',
+      options: ['Restaurant', 'Food Bank'],
+      selectedOption: 'Restaurant'
     }
   },
-  mounted() {},
   methods: {
+    selectOption(option) {
+      this.selectedOption = option;
+    },
     register() {
       console.log('login', this.email, this.password)
       axios
-        .post('/api/auth/register', { email: this.email, password: this.password })
+        .post('/api/auth/register', { email: this.email, password: this.password, business_type: this.selectOption })
         .then((response) => {
 
           this.$toast.success(response.data.message)
@@ -67,7 +77,7 @@ export default {
           this.$router.push('/profile');
           setTimeout(() => {
             window.location.reload();
-          }, 100);
+          }, 10);
         })
         .catch((error) => {
           console.log(error)
@@ -86,3 +96,15 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  .nav-item{
+    cursor: pointer;
+
+  }
+
+  .nav-link.active {
+    background-color: rgb(255,255,255, 0);
+    border: .5px solid black;
+}
+</style>
