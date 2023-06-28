@@ -8,6 +8,8 @@ import ToastPlugin from 'vue-toast-notification';
 import axios from 'axios';
 import { createApp } from "vue";
 import router from "./router";
+import { socket, state } from "./socket.js";
+
 
 (async () => {
     axios.defaults.baseURL = import.meta.env.VITE_SERVER_URL;
@@ -16,7 +18,10 @@ import router from "./router";
     await new Promise(resolve => setTimeout(resolve, 1000));
   
     const app = createApp(App);
-  
+
+
+    app.provide('socketState', state);
+    socket.connect();
     app.use(router);
     app.use(ToastPlugin, {
       position: 'top-right'
