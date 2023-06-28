@@ -65,7 +65,6 @@ export default {
           this.$toast.success(response.data.message)
           localStorage.setItem('accessToken', response.data.access_token)
           localStorage.setItem('refreshToken', response.data.refresh_token)
-          localStorage.setItem('email', this.email)
 
           this.$router.push('/dashboard')
           // Reload page
@@ -112,7 +111,6 @@ export default {
                 console.log(response.data.message)
                 this.$toast.success(response.data.message)
                 localStorage.setItem('accessToken', response.data.access_token)
-                localStorage.setItem('email', this.email)
 
                 this.$router.push('/dashboard')
               })

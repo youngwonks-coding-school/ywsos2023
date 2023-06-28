@@ -1,10 +1,11 @@
-from flask import request, jsonify,make_response
+from flask import request, jsonify,make_response, session, current_app
 from flask_restx import Namespace, Resource,fields
 from werkzeug.security import generate_password_hash, check_password_hash
-import datetime
+from datetime import datetime
 from db import db
+import json
 import os
-import requests 
+import requests
 
 
 from flask_jwt_extended import jwt_required,get_jwt_identity,create_access_token,create_refresh_token,get_jwt
@@ -31,7 +32,11 @@ class Register(Resource):
         # Parse the request data
         email = auth.payload['email']
         password = auth.payload['password']
-        date_created = datetime.datetime.utcnow()
+        
+        data = request.get_json()
+        business_type = data['business_type']
+        
+        date_created = datetime.utcnow()
 
         # Check if the user already exists
         if db.users.find_one({'email': email}):
@@ -44,9 +49,12 @@ class Register(Resource):
         refresh_token = create_refresh_token(identity=email)
         db.sessions.insert_one({"ip": request.remote_addr, "access_token": access_token, "refresh_token": refresh_token, "email": email})
 
+        
+        
         # Create a new user document
-        user = {'email': email, 'password': hashed_password, "date_created": date_created}
+        user = {'email': email, 'password': hashed_password, 'business_type':business_type, "date_created": date_created}
         db.users.insert_one(user)
+        
 
         return {'message': 'User registered successfully', "access_token":access_token,"refresh_token":refresh_token}, 201
 
@@ -68,7 +76,9 @@ class Login(Resource):
         # Generate access and refresh tokens
         access_token = create_access_token(identity=email)
         refresh_token = create_refresh_token(identity=email)
+        
         db.sessions.insert_one({"ip": request.remote_addr, "access_token": access_token, "refresh_token": refresh_token, "email": email})
+        
 
         return {'message': 'Successfully Logged in.',"access_token":access_token,"refresh_token":refresh_token}, 200
 
@@ -95,9 +105,11 @@ class Logout(Resource):
     def post(self):
         # Add the access token to the blacklist
         jti = get_jwt()['jti']
+        session.clear()
         db.blacklisted_tokens.insert_one({'jti': jti})
 
         return {'message': 'Successfuly logged out.'}, 200
+    
 
 @auth.route('/update_password', methods=['POST'])
 class UpdatePassword(Resource):
@@ -112,8 +124,10 @@ class UpdatePassword(Resource):
         password = generate_password_hash(new_password)
         db.users.update_one({"email": email}, {"$set": {"password": password, "updated_at": datetime.datetime.utcnow()}})
 
+
         return {"message": 'Successfuly update password'}, 200
 
+    
 @auth.route('/get_sessions', methods=['GET'])
 class GetSessions(Resource):
     def get(self):
@@ -124,7 +138,20 @@ class GetSessions(Resource):
 class GetSessionsForUser(Resource):
     @jwt_required()
     def get(self):
-        return db.sessions.get({'email': get_jwt_identity()})
+        print("Getting Sessions")
+        #get current user email
+        session = db.sessions.find_one({'email': get_jwt_identity()})
+        
+        #get associated_restaurants id (no need for all data)
+        associated_restaurants_ids = []
+        document = db.restaurants.find_one({'email': get_jwt_identity()})
+        if document: 
+            associated_restaurants_ids = document.get('associated_restaurants_ids')
+            #Object ID not json serializable so I make it string 
+            associated_restaurants_ids = [str(oid) for oid in associated_restaurants_ids]
+
+        #convert object id to string
+        return jsonify({'associated_restaurants_ids': associated_restaurants_ids, 'email': get_jwt_identity()})
 
 @auth.route('/logout_specific')
 class LogoutSpecific(Resource):
@@ -136,6 +163,8 @@ class LogoutSpecific(Resource):
         return {"message": "Account logged out"}, 200
 
 
-
-    
-
+@auth.route('/session_lifetime')
+class SessionLifetime(Resource):
+    def get(self):
+        session_lifetime = current_app.config['PERMANENT_SESSION_LIFETIME']
+        return {'session_lifetime': session_lifetime.total_seconds()}, 200
