@@ -12,10 +12,13 @@
   "dependencies": {
     "axios": "^1.4.0",
     "bootstrap": "^5.3.0",
+    "bootstrap-icons": "^1.10.5",
+    "chart.js": "^4.3.0",
     "cors": "^2.8.5",
     "luxon": "^3.3.0",
     "sass": "^1.63.3",
     "vue": "^3.3.2",
+    "vue-chartjs": "^5.2.0",
     "vue-router": "^4.2.0",
     "vue-toast-notification": "^3.1.1"
   },

@@ -5,16 +5,17 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_restx import Api, Resource
 from flask_jwt_extended import JWTManager
+from dotenv import load_dotenv
+
+load_dotenv()
 
 from routes.index import index
 from routes.auth import auth
 from routes.profile import profile
-from dotenv import load_dotenv
 from db import db
 
 
 app = Flask(__name__)
-load_dotenv()
 app.config['JSON_AS_ASCII'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
 

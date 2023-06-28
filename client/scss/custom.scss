@@ -78,6 +78,26 @@ input[type="text"] {
   color: var(--opposite);
 }
 
+select  {
+  background-color: #5a5a5a !important;
+  color: var(--opposite) !important;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--background) 40%),
+    linear-gradient(135deg, var(--background) 40%, transparent 50%) !important;
+  background-position:
+    calc(100% - 30px) 14px,
+    calc(100% - 20px) 14px,
+    100% 0;
+  background-size:
+    10px 10px,
+    10px 10px;
+  background-repeat: no-repeat;
+}
+
+Line {
+    background: var(--secondary);
+}
+
 strong{
   color: var(--highlight2);
 }
@@ -202,6 +222,16 @@ label {
 .dropdown-item{
   cursor: pointer;
   color: var(--text);
+}
+
+
+// POSTS PAGE STYLES
+.posts-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
 }
 
 
