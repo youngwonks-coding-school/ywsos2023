@@ -32,6 +32,16 @@ const router = createRouter({
       component: () => import("../views/DashboardView.vue"),
     },
     {
+        path: "/posts",
+        name: "posts",
+        component: () => import("../views/PostsView.vue"),
+    },
+    {
+        path: "/posting-trends",
+        name: "posting-trends",
+        component: () => import("../views/PostingTrendsView.vue"),
+    },
+    {
       path: "/logout",
       name: 'logout',
       redirect: to => {
