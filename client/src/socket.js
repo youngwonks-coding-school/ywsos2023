@@ -9,7 +9,6 @@ export var state = reactive({
 
 
 socket.on("connect", () => {
-  console.log("connected");
   state.connected = true;
 });
 
