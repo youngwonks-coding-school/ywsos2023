@@ -7,16 +7,15 @@ export var state = reactive({
     myResponses: []
 });
 
-//state.connected=true;
-//state.connected=true;
-socket.on("connected", () => {
+
+socket.on("connect", () => {
   console.log("connected");
   state.connected = true;
 });
 
-//socket.on("disconnect", () => {
- // state.connected = false;
-//});
+socket.on("disconnect", () => {
+  state.connected = false;
+});
 
 
 socket.on("my_response", (response) => {
