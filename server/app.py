@@ -22,7 +22,7 @@ app.config['PROPAGATE_EXCEPTIONS'] = True
 
 # Set the secret key to sign the JWTs with
 app.config['JWT_SECRET_KEY'] = os.environ['SECRET_KEY']  # Change this!
-socketio = SocketIO(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(minutes=15)  # Access token expires in 15 minutes
 app.config['JWT_REFRESH_TOKEN_EXPIRES'] = datetime.timedelta(days=30)  # Refresh token expires in 30 days
 
@@ -68,72 +68,27 @@ def check_token_in_blacklist(jwt_header, jwt_data):
 
 
 
-def background_thread():
-    """Example of how to send server generated events to clients."""
-    count = 0
-    while True:
-        socketio.sleep(10)
-        count += 1
-        socketio.emit('my_response', {'data': 'Server generated event'})
+#whenever something is emitted on front end, create a @socketio.on("what was emitted") for a response
 
 
-
-
-
-
-
-#for custom notification events
-@socketio.event
-def my_event(sid, message):
-    socketio.emit('my_response', {'data': message['data']}, room=sid)
-
-#for broadcasting notifications to all connected clients
-@socketio.event
-def my_broadcast_event(sid, message):
-    socketio.emit('my_response', {'data': message['data']})
-
-#allows clients to join specific rooms and recieve notification related to them
-@socketio.event
-def join(sid, message):
-    socketio.enter_room(sid, message['room'])
-    socketio.emit('my_response', {'data': 'Entered room: ' + message['room']},
-             room=sid)
-
-#allows clients to leave specific rooms and stop receiving notification related to them
-@socketio.event
-def leave(sid, message):
-    socketio.leave_room(sid, message['room'])
-    socketio.emit('my_response', {'data': 'Left room: ' + message['room']},
-             room=sid)
-
-#closes a specific room and emits my_response event to clients of specified room
-@socketio.event
-def close_room(sid, message):
-    socketio.emit('my_response',
-             {'data': 'Room ' + message['room'] + ' is closing.'},
-             room=message['room'])
-    socketio.close_room(message['room'])
-
-#for custom notification events in a specific room
-@socketio.event
-def my_room_event(sid, message):
-    socketio.emit('my_response', {'data': message['data']}, room=message['room'])
-
-#handles a client's request to disconnect
-@socketio.event
-def disconnect_request(sid):
-    socketio.disconnect(sid)
 
 #handles a clients connection to server
-@socketio.event
-def connect(sid, environ):
-    socketio.emit('my_response', {'data': 'Connected', 'count': 0}, room=sid)
+@socketio.on("connect")
+def connect():
+    print("Client connected:")
+
+
+#response to when my_event was emitted on client side
+@socketio.on("my_event")
+def connecting(x):
+    print("my_event response")
+
+
 
 #tracks when a client disconnects from server
-@socketio.event
-def disconnect(sid):
+@socketio.on("disconnect")
+def disconnect(y):
     print('Client disconnected')
-
 
 
 
