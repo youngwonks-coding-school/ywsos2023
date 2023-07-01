@@ -1,6 +1,6 @@
 import { reactive } from "vue";
 import { io } from "socket.io-client";
-export const socket = io()
+export const socket = io("ws://127.0.0.1:5000")
 
 export var state = reactive({
     connected: false,
@@ -8,47 +8,26 @@ export var state = reactive({
 });
 
 
-socket.on("connect", () => {
+
+//whenever something is emitted on back end, use socketio.on("what was emitted", () => {code needed}); for a response
+
+
+
+socket.on('connect', () => {
+  console.log("I am connected")
   state.connected = true;
+  socket.emit("my_event",{data:"connected"})
 });
+
+
 
 socket.on("disconnect", () => {
   state.connected = false;
+  console.log("I am disconnected")
 });
 
 
-socket.on("my_response", (response) => {
-  state.myResponses.push(response);
-});
 
 
-export function sendMyEvent(message) {
-  socket.emit("my_event", { data: message });
-}
-
-export function sendMyBroadcastEvent(message) {
-  socket.emit("my_broadcast_event", { data: message });
-}
-
-export function joinRoom(room) {
-  socket.emit("join", { room });
-}
-
-export function leaveRoom(room) {
-  socket.emit("leave", { room });
-}
-
-export function closeRoom(room) {
-  socket.emit("close_room", { room });
-}
-
-export function sendToRoom(room, message) {
-  socket.emit("my_room_event", { data: message, room });
-}
-
-export function requestDisconnect() {
-  socket.emit("disconnect_request");
-}
 
 export default { state, socket };
-
