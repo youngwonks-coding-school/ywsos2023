@@ -2,6 +2,13 @@
 import { RouterLink, RouterView } from 'vue-router'
 import Navbar from './components/Navbar.vue'
 import Footer from './components/Footer.vue'
+import { socket, state } from "./socket.js";
+import { onMounted } from 'vue';
+
+
+onMounted(() => {
+  socket.connect();
+});
 </script>
 
 <template>
