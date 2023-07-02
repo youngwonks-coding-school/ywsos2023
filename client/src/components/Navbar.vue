@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-md d-flex justify-content-center navbar-floating" :class="{ 'dark-theme': isDarkTheme }">
+  <nav :key="isLoggedIn" class="navbar navbar-expand-md d-flex justify-content-center navbar-floating" :class="{ 'dark-theme': isDarkTheme }">
     <div class="navbar-header">
     <a class="navbar-brand" href="/">YWSOS</a>
     </div>
@@ -71,16 +71,12 @@
 <script>
 import { DateTime, IANAZone } from 'luxon';
 import axios from 'axios';
+
 export default {
   data() {
     return {
       isLoggedIn: localStorage.hasOwnProperty('accessToken'),
       isDarkTheme: true,
-      
-      
-      
-      
-      
       currentTime: '',
       selectedTimezone: 'PST', // Default timezone
       timezones: [

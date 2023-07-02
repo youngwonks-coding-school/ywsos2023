@@ -3,9 +3,6 @@ from flask_restx import Namespace, Resource,fields
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from db import db
-import json
-import os
-import requests
 
 
 from flask_jwt_extended import jwt_required,get_jwt_identity,create_access_token,create_refresh_token,get_jwt
@@ -34,12 +31,15 @@ class Register(Resource):
         password = auth.payload['password']
         
         data = request.get_json()
+        # either "restaurant", "food_bank"
+        print(data)
         business_type = data['business_type']
         
         date_created = datetime.utcnow()
 
         # Check if the user already exists
         if db.users.find_one({'email': email}):
+            print("User already exists")
             return {'message': 'User already exists'}, 409
 
         # Hash the password
@@ -66,7 +66,6 @@ class Login(Resource):
         email = auth.payload['email']
         password = auth.payload['password']
         
-        # Find the user document
         user = db.users.find_one({'email': email})
 
         # Check if the user exists and the password is correct
@@ -77,10 +76,13 @@ class Login(Resource):
         access_token = create_access_token(identity=email)
         refresh_token = create_refresh_token(identity=email)
         
+        #Get Business Type user is associated with (restaurant or food bank)
+        business_type = user['business_type']
+        
         db.sessions.insert_one({"ip": request.remote_addr, "access_token": access_token, "refresh_token": refresh_token, "email": email})
         
 
-        return {'message': 'Successfully Logged in.',"access_token":access_token,"refresh_token":refresh_token}, 200
+        return {'message': 'Successfully Logged in.',"access_token":access_token,"refresh_token":refresh_token, "business_type": business_type}, 200
 
 @auth.route('/verify', methods=['POST'])
 class Verify(Resource):
@@ -88,7 +90,6 @@ class Verify(Resource):
     @auth.doc(security="Bearer")
     def post(self):
         email = get_jwt_identity()
-        print(email)
         return {'message': 'Access Token is valid', 'email': email}, 200
     
 @auth.route('/refresh', methods=['POST'])
@@ -127,6 +128,15 @@ class UpdatePassword(Resource):
 
         return {"message": 'Successfuly update password'}, 200
 
+    
+@auth.route('/get_business_type', methods=['GET'])
+class GetBusinessType(Resource):
+    @jwt_required()
+    def get(self):
+        user = db.users.find_one({"email": get_jwt_identity()})
+        if not user:
+            return {'message': 'Invalid email or password'}, 401
+        return {"business_type": user['business_type']}, 200
     
 @auth.route('/get_sessions', methods=['GET'])
 class GetSessions(Resource):

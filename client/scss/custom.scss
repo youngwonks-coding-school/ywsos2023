@@ -193,6 +193,12 @@ label {
 .form-button:hover, .form-button:focus {
   background-color: var(--highlight1);
 }
+
+.form-button:disabled {
+  background-color: var(--highlight1);
+  opacity: 0.7;
+  cursor: not-allowed;
+}
 .option-selection {
   display: flex;
   justify-content: space-between;

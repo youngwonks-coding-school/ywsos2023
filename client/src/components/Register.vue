@@ -6,8 +6,18 @@
         <div class="mb-3">
           <div class="form-group d-flex justify-content-center">
             <ul class="nav nav-tabs">
-              <li class="nav-item" v-for="(option, index) in options" :key="index">
-                <a class="nav-link" :class="{ active: selectedOption === option }" @click="selectOption(option)">{{ option }}</a>
+              <li
+                class="nav-item"
+                v-for="(option, index) in display_options"
+                :key="index"
+              >
+              <a
+              class="nav-link"
+              :class="{ active: selectedOption === options[index] }"
+              @click="selectOption(options[index])"
+              >
+                {{ option }}
+              </a>
               </li>
             </ul>
           </div>
@@ -29,19 +39,33 @@
             id="password"
             autocomplete="on"
             v-model="password"
-            :class="{ 'is-invalid': !isValidPassword, 'is-valid': isValidPassword }"
+            :class="{
+              'is-invalid': !isValidPassword,
+              'is-valid': isValidPassword,
+            }"
             required
           />
         </div>
         <div class="mb-3 form-check">
-          <input type="checkbox" class="form-check-input" id="terms-privacy-check" />
+          <input
+            type="checkbox"
+            class="form-check-input"
+            id="terms-privacy-check"
+          />
           <label class="form-check-label" for="terms-privacy-check"
             >I agree to the <a href="/terms-of-service">terms of servcie</a> and
             <a href="/privacy-policy">privacy policy</a></label
           >
         </div>
-        <div class="text-center mt-3">
-          <button type="button" @click="register()" class="btn btn-primary form-button">Register</button><br />
+        <div class="text-center">
+          <button
+            type="button"
+            @click="register()"
+            class="btn btn-primary form-button mt-4"
+            :disabled="!isValidEmail || !isValidPassword || !email || !password"
+          >
+            Register</button
+          ><br />
           <br />
         </div>
       </form>
@@ -50,61 +74,71 @@
 </template>
 
 <script>
-import axios from 'axios'
+import axios from "axios";
 export default {
   data() {
     return {
-      email: '',
-      password: '',
-      options: ['Restaurant', 'Food Bank'],
-      selectedOption: 'Restaurant'
-    }
+      email: "",
+      password: "",
+      display_options: ["Restaurant", "Food Bank"],
+      options: ["restaurant", "food_bank"],
+      selectedOption: "restaurant",
+    };
   },
   methods: {
+    //set the business type on tab change (restaurant or food bank)
     selectOption(option) {
       this.selectedOption = option;
     },
+
+    //register the user (send business type in addition to email and password)
     register() {
-      console.log('login', this.email, this.password)
+
+      localStorage.setItem("business_type", this.selectedOption);
+      console.log("Registering email: "+ this.email +" business type", this.selectedOption);
       axios
-        .post('/api/auth/register', { email: this.email, password: this.password, business_type: this.selectOption })
+        .post("/api/auth/register", {
+          email: this.email,
+          password: this.password,
+          business_type: this.selectedOption,
+        })
         .then((response) => {
+          localStorage.setItem("accessToken", response.data.access_token);
+          localStorage.setItem("refreshToken", response.data.refresh_token);
 
-          this.$toast.success(response.data.message)
-          localStorage.setItem('accessToken', response.data.access_token)
-          localStorage.setItem('refreshToken', response.data.refresh_token)
+          this.$toast.success(response.data.message);
+          this.$router.push('/profile')
 
-          this.$router.push('/profile');
           setTimeout(() => {
             window.location.reload();
-          }, 10);
+          }, 50);
+          
         })
         .catch((error) => {
-          console.log(error)
-          this.$toast.error(error.response)
-        })
-    }
+          console.log("Error Registering", error.response.data.message);
+          this.$toast.error(error.response.data.message);
+        });
+    },
   },
   computed: {
     isValidEmail() {
-      const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/
-      return emailRegex.test(this.email)
+      const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
+      return emailRegex.test(this.email);
     },
     isValidPassword() {
-      return this.password.length >= 8
-    }
-  }
-}
+      return this.password.length >= 8;
+    },
+  },
+};
 </script>
 
 <style scoped>
-  .nav-item{
-    cursor: pointer;
+.nav-item {
+  cursor: pointer;
+}
 
-  }
-
-  .nav-link.active {
-    background-color: rgb(255,255,255, 0);
-    border: .5px solid black;
+.nav-link.active {
+  background-color: rgb(255, 255, 255, 0);
+  border: 0.5px solid black;
 }
 </style>

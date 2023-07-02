@@ -13,14 +13,6 @@
     <div class="title-container d-flex justify-content-center flex-nowrap">
       <h1 class="p-title">{{this.title}}</h1>
     </div>
-    <div class="toggle-button">
-        <input type="checkbox" id="toggle" class="toggle-input">
-        <label for="toggle" class="toggle-label">
-          <span class="toggle-text mr-4">Restaurant</span>
-          <span class="toggle-switch"></span>
-          <span class="toggle-text ml-4">Food</span>
-        </label>
-      </div>
     <div class="form-container d-flex justify-content-center flex-nowrap">
 
       <form class="row form ">
@@ -84,7 +76,6 @@
 
 <script>
 import axios from 'axios'
-import { reactive, toRefs } from 'vue';
 
 const axiosInstance = axios.create({
   baseURL: 'http://127.0.0.1:4000/api', // Assuming the base URL is '/api'
@@ -101,7 +92,6 @@ export default {
         this.form.city = newRestaurant.city;
         this.form.state = newRestaurant.state;
         this.form.country = newRestaurant.country;
-        this.form.type = newRestaurant.type;
       },
       deep: true
     }
@@ -115,7 +105,6 @@ export default {
         city: '',
         state: '',
         country: '',
-        type: ''
       },
       yelp_response: {},
       restaurant: {},
@@ -199,7 +188,6 @@ export default {
               this.form.city = this.restaurant.city;
               this.form.state = this.restaurant.state;
               this.form.country = this.restaurant.country;
-              this.form.type = this.restaurant.type;
               this.title = 'Hello There ' + this.restaurant.name;
             })
             .catch((error) => {
@@ -227,7 +215,6 @@ export default {
       this.form.city = document.getElementById('city').value;
       this.form.state = document.getElementById('state').value;
       this.form.country = document.getElementById('country').value;
-      this.form.type = document.getElementById('toggle').checked ? 'restaurant' : 'food';
       console.log('submitted');
       this.profile_data();
     },
@@ -239,7 +226,6 @@ export default {
         city: this.form.city,
         state: this.form.state,
         country: this.form.country,
-        type: this.form.type
       };
       // Get possible restaurants from Yelp based on entered form data
       axiosInstance
