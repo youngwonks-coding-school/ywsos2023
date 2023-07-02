@@ -70,12 +70,16 @@
 
 <script>
 import { DateTime, IANAZone } from 'luxon';
-import axios from 'axios';
 
 export default {
+  computed: {
+    isLoggedIn() {
+      return this.accessToken !== '';
+    },
+  },
   data() {
     return {
-      isLoggedIn: localStorage.hasOwnProperty('accessToken'),
+      accessToken: localStorage.getItem('accessToken') || '',
       isDarkTheme: true,
       currentTime: '',
       selectedTimezone: 'PST', // Default timezone
@@ -108,9 +112,13 @@ export default {
     };
   },
   
-    mounted() {
+  mounted() {
     this.updateTime();
-    setInterval(this.updateTime, 1000); // Update time every second
+    setInterval(this.updateTime, 1000); 
+
+      window.addEventListener('access-token-localstorage-changed', (event) => {
+      this.accessToken = event.detail.storage;
+    });
   },
   
   methods: {
@@ -136,9 +144,8 @@ export default {
       }
     },
     
-        updateTime() {
+    updateTime() {
       let currentTime = DateTime.now().setZone(this.selectedTimezone);
-
       this.currentTime = currentTime.toFormat('hh:mm:ss a');
     },
     changeTimezone(timezone) {

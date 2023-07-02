@@ -106,12 +106,16 @@ export default {
           localStorage.setItem("accessToken", response.data.access_token);
           localStorage.setItem("refreshToken", response.data.refresh_token);
 
+          //dispatch custom event to update the localstorage in the navbar
+          window.dispatchEvent(new CustomEvent('access-token-localstorage-changed', {
+            detail: {
+              storage: localStorage.getItem('accessToken')
+            }
+          }));
+
           this.$toast.success(response.data.message);
           this.$router.push('/profile')
 
-          setTimeout(() => {
-            window.location.reload();
-          }, 50);
           
         })
         .catch((error) => {
