@@ -115,7 +115,7 @@ export default {
   
   methods: {
     logout() {
-      axios.get('/api/auth/logout', {
+      this.axiosInstance.get('/api/auth/logout', {
       headers: {Authorization: `Bearer ${localStorage.getItem('accessToken')}`}}).catch((error) => {console.log(error, "logging out");
       });
 
