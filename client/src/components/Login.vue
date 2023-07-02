@@ -64,8 +64,12 @@ export default {
           localStorage.setItem('refreshToken', response.data.refresh_token)
           localStorage.setItem('business_type', response.data.business_type )
 
+          window.dispatchEvent(new CustomEvent('access-token-localstorage-changed', {
+            detail: {
+              storage: localStorage.getItem('accessToken')
+            }
+          }));
           this.$router.push('/dashboard')
-          window.location.reload()
         })
         .catch((error) => {
           console.log(error)
