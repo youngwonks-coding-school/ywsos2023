@@ -85,4 +85,19 @@ app.use(ToastPlugin, {
 
 app.config.globalProperties.axiosInstance = axiosInstance;
 
-app.mount("#app");
+(async () => {
+    axios.defaults.baseURL = import.meta.env.VITE_SERVER_URL;
+    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light');
+    // Wait for the baseURL to be set
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  
+    const app = createApp(App);
+  
+    app.use(router);
+    app.use(ToastPlugin, {
+      position: 'top-right'
+    });
+  
+    app.mount("#app");
+  })();
+
