@@ -12,6 +12,7 @@ load_dotenv()
 from routes.index import index
 from routes.auth import auth
 from routes.profile import profile
+from routes.posts import posts
 from db import db
 
 
@@ -54,6 +55,7 @@ api.swagger = {
 
 api.add_namespace(index, '/api')
 api.add_namespace(auth, '/api/auth')
+api.add_namespace(posts, '/api/posts')
 api.add_namespace(profile, '/api/profile')
 
 
@@ -65,7 +67,9 @@ def check_token_in_blacklist(jwt_header, jwt_data):
     return blacklisted_token is not None
 
 
-if '__main__' == __name__:
-    app.run(host='127.0.0.1', port=4000, debug=True)
-    
-    
+if __name__ == '__main__':
+    app.run(
+        host=os.environ.get("FLASK_HOST", "127.0.0.1"),
+        port=int(os.environ.get("FLASK_PORT", 5000)),
+        debug=os.environ.get("FLASK_DEBUG", "True") == "True"
+    )
