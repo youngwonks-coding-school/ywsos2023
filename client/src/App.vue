@@ -44,14 +44,14 @@ export default {
   methods: {
     async fetchSessionLifetime() {
       try {
-        const response = await axios.get('/api/auth/session_lifetime');
+        const response = await this.axiosInstance.get('/api/auth/session_lifetime');
         this.sessionLifetime = response.data.session_lifetime;
       } catch (error) {
         console.log("Error fetching session lifetime:", error);
       }
     },
     logout() {
-      axios.post('/api/auth/logout')
+      this.axiosInstance.post('/api/auth/logout')
         .then(() => {
           localStorage.removeItem('accessToken');
           window.location.reload();
@@ -73,7 +73,7 @@ export default {
       });
     },
     logout(){
-      axios.get('/api/auth/logout', {
+      this.axiosInstance.get('/api/auth/logout', {
       headers: {Authorization: `Bearer ${localStorage.getItem('accessToken')}`}}).catch((error) => {console.log(error, "logging out");
       }).then(() => {
         localStorage.removeItem('accessToken');

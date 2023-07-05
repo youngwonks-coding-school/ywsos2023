@@ -39,7 +39,7 @@ export default {
   },
   methods: {
     async getPosts() {
-      let response = await axios.get("/api/posts/get-posts");
+      let response = await this.axiosInstance.get("/api/posts/get-posts");
       return response.data;
     },
     getDaysAgo(date) {
