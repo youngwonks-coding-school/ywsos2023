@@ -78,6 +78,26 @@ input[type="text"] {
   color: var(--opposite);
 }
 
+select  {
+  background-color: #5a5a5a !important;
+  color: var(--opposite) !important;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--background) 40%),
+    linear-gradient(135deg, var(--background) 40%, transparent 50%) !important;
+  background-position:
+    calc(100% - 30px) 14px,
+    calc(100% - 20px) 14px,
+    100% 0;
+  background-size:
+    10px 10px,
+    10px 10px;
+  background-repeat: no-repeat;
+}
+
+Line {
+    background: var(--secondary);
+}
+
 strong{
   color: var(--highlight2);
 }
@@ -173,55 +193,45 @@ label {
 .form-button:hover, .form-button:focus {
   background-color: var(--highlight1);
 }
-
-
-//profile toggle button
-.toggle-button {
+.option-selection {
   display: flex;
-  justify-content: center; 
-  margin-top: 30px;
+  justify-content: space-between;
+}
 
-  .toggle-label {
+.option-icon {
+  width: 30px;
+  height: 30px;
+  margin-right: 5px;
+}
+
+
+.profile-dropdown{
+  color: var(--text);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: -10px;
+  margin-bottom: 30px;
+  .dropdown-toggle{
+    border: #1a1a1a solid 1px;
+    color: var(--text);
+    border-radius: 10px;
+  }
+}
+
+.dropdown-item{
+  cursor: pointer;
+  color: var(--text);
+}
+
+
+// POSTS PAGE STYLES
+.posts-container {
     display: flex;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    justify-content: space-around;
-    cursor: pointer;
-    padding-top: 12px;
-    padding-right: 20px;
-    padding-bottom: 12px;
-    padding-left: 5px;
-    position: relative;
-    transition: background-color 0.2s ease;
-    border-radius: 20px;
-    background-color: var(--opposite);
-    width: 180px;
-
-    .toggle-text {
-      font-size: 14px;
-      color: var(--secondary);
-    }
-
-    .toggle-switch {
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      width: 50%;
-      height: calc(100% - 5px);
-      background-color: #dbd6d6;
-      opacity: 0.7;
-      border-radius: 20px;
-      transition: transform 0.2s ease;
-      pointer-events: auto;
-    }
-  }
-
-  input[type="checkbox"].toggle-input {
-    display: none;
-
-    &:checked + .toggle-label .toggle-switch {
-      transform: translateX(94%);
-    }
-  }
+    height: 90vh;
 }
 
 
@@ -325,18 +335,22 @@ $homeSFSize: 80px;
   border: var(--secondary) 1px solid;
   border-radius: 15px;
   margin-top: 15%;
-  height: 100%;
+  height:500px;
+  width: 450px
 }
 
 .card-title {
   color: var(--highlight1);
-  margin-bottom: 30px;
+  margin-bottom: 50px;
   margin-top:20px;
 }
 
 .form-check-label, .form-label {
   color: var(--text);
 }
+
+
+
 
 // NAV STYLES
 
@@ -385,6 +399,7 @@ $homeSFSize: 80px;
 
   .nav-item {
     color: var(--text);
+    cursor: pointer;
   }
 }
 

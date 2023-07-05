@@ -35,6 +35,9 @@
             </li>
           </div>
            <li class="nav-item">
+            <a class="nav-link" href="/posts">Posts</a>
+           </li>
+           <li class="nav-item">
             <div class="dropdown" href="/clock">
               <a
                 class="nav-link dropdown-toggle"
@@ -67,6 +70,7 @@
 
 <script>
 import { DateTime, IANAZone } from 'luxon';
+import axios from 'axios';
 export default {
   data() {
     return {
@@ -105,11 +109,6 @@ export default {
         { identifier: 'UTC+13', label: 'Tonga Time' },
         { identifier: 'UTC+10', label: 'Chamorro Standard Time' },
       ],
-      
-      
-      
-      
-      
     };
   },
   
@@ -120,6 +119,10 @@ export default {
   
   methods: {
     logout() {
+      axios.get('/api/auth/logout', {
+      headers: {Authorization: `Bearer ${localStorage.getItem('accessToken')}`}}).catch((error) => {console.log(error, "logging out");
+      });
+
       localStorage.removeItem('accessToken');
       this.isLoggedIn = false;
       console.log('Logged out');

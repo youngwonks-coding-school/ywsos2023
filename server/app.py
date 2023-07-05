@@ -1,30 +1,35 @@
 import os
-import datetime
+from datetime import timedelta
 
 from flask import Flask, jsonify
-from flask_socketio import SocketIO
 from flask_cors import CORS
 from flask_restx import Api, Resource
 from flask_jwt_extended import JWTManager
+from dotenv import load_dotenv
+from flask_socketio import SocketIO
+
+load_dotenv()
 
 from routes.index import index
 from routes.auth import auth
-from routes.posts import posts
 from routes.profile import profile
-from dotenv import load_dotenv
 from db import db
 
 
 app = Flask(__name__)
-load_dotenv()
 app.config['JSON_AS_ASCII'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
 
+app.secret_key = os.environ['SECRET_KEY']
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
+
 # Set the secret key to sign the JWTs with
 app.config['JWT_SECRET_KEY'] = os.environ['SECRET_KEY']  # Change this!
+
 socketio = SocketIO(app, cors_allowed_origins="*")
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(minutes=15)  # Access token expires in 15 minutes
 app.config['JWT_REFRESH_TOKEN_EXPIRES'] = datetime.timedelta(days=30)  # Refresh token expires in 30 days
+
 
 
 jwt = JWTManager(app)
@@ -53,7 +58,6 @@ api.swagger = {
 
 api.add_namespace(index, '/api')
 api.add_namespace(auth, '/api/auth')
-api.add_namespace(posts, '/api/posts')
 api.add_namespace(profile, '/api/profile')
 
 
@@ -63,9 +67,6 @@ def check_token_in_blacklist(jwt_header, jwt_data):
     jti = jwt_data['jti']
     blacklisted_token = db.blacklisted_tokens.find_one({'jti': jti})
     return blacklisted_token is not None
-
-
-
 
 
 #whenever something is emitted on front end, create a @socketio.on("what was emitted") for a response
@@ -90,14 +91,7 @@ def connecting(x):
 def disconnect(y):
     print('Client disconnected')
 
-
-
-
-
-
-
-
-
-
 if '__main__' == __name__:
-    socketio.run(app, host=os.environ["FLASK_HOST"], port=os.environ["FLASK_PORT"], debug=os.getenv("FLASK_DEBUG", "False") == "True")
+    app.run(host='127.0.0.1', port=4000, debug=True)
+    
+    
