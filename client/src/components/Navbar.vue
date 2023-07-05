@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-md d-flex justify-content-center navbar-floating" :class="{ 'dark-theme': isDarkTheme }">
+  <nav :key="isLoggedIn" class="navbar navbar-expand-md d-flex justify-content-center navbar-floating" :class="{ 'dark-theme': isDarkTheme }">
     <div class="navbar-header">
     <a class="navbar-brand" href="/">YWSOS</a>
     </div>
@@ -70,17 +70,17 @@
 
 <script>
 import { DateTime, IANAZone } from 'luxon';
-import axios from 'axios';
+
 export default {
+  computed: {
+    isLoggedIn() {
+      return this.accessToken !== '';
+    },
+  },
   data() {
     return {
-      isLoggedIn: localStorage.hasOwnProperty('accessToken'),
+      accessToken: localStorage.getItem('accessToken') || '',
       isDarkTheme: true,
-      
-      
-      
-      
-      
       currentTime: '',
       selectedTimezone: 'PST', // Default timezone
       timezones: [
@@ -112,14 +112,18 @@ export default {
     };
   },
   
-    mounted() {
+  mounted() {
     this.updateTime();
-    setInterval(this.updateTime, 1000); // Update time every second
+    setInterval(this.updateTime, 1000); 
+
+      window.addEventListener('access-token-localstorage-changed', (event) => {
+      this.accessToken = event.detail.storage;
+    });
   },
   
   methods: {
     logout() {
-      axios.get('/api/auth/logout', {
+      this.axiosInstance.get('/api/auth/logout', {
       headers: {Authorization: `Bearer ${localStorage.getItem('accessToken')}`}}).catch((error) => {console.log(error, "logging out");
       });
 
@@ -140,9 +144,8 @@ export default {
       }
     },
     
-        updateTime() {
+    updateTime() {
       let currentTime = DateTime.now().setZone(this.selectedTimezone);
-
       this.currentTime = currentTime.toFormat('hh:mm:ss a');
     },
     changeTimezone(timezone) {

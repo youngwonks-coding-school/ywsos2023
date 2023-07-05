@@ -193,6 +193,12 @@ label {
 .form-button:hover, .form-button:focus {
   background-color: var(--highlight1);
 }
+
+.form-button:disabled {
+  background-color: var(--highlight1);
+  opacity: 0.7;
+  cursor: not-allowed;
+}
 .option-selection {
   display: flex;
   justify-content: space-between;
@@ -336,7 +342,22 @@ $homeSFSize: 80px;
   border-radius: 15px;
   margin-top: 15%;
   height:500px;
-  width: 450px
+  width: 450px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .1);
+  cursor: pointer;
+}
+
+.card:hover .card-content {
+  opacity: 0.8;
+}
+
+.card-content {
+  transition: opacity 0.3s ease;
 }
 
 .card-title {
