@@ -25,77 +25,61 @@ class _ChartsState extends State<Charts> {
   List<String> aggregationOptions = ["Daily", "Monthly"];
   String dropdownValue = "Daily";
 
+  String dailyChartLabel(double value) {
+    DateTime now = DateTime.now();
+    switch (value.toInt()) {
+      case 0:
+        return DateFormat.Md().format(now.subtract(const Duration(days: 6)));
+      case 2:
+        return DateFormat.Md().format(now.subtract(const Duration(days: 5)));
+      case 4:
+        return DateFormat.Md().format(now.subtract(const Duration(days: 4)));
+      case 6:
+        return DateFormat.Md().format(now.subtract(const Duration(days: 3)));
+      case 8:
+        return DateFormat.Md().format(now.subtract(const Duration(days: 2)));
+      case 10:
+        return DateFormat.Md().format(now.subtract(const Duration(days: 1)));
+      case 12:
+        return DateFormat.Md().format(now);
+      default:
+        return '';
+    }
+  }
+
+  String monthlyChartLabel(double value) {
+    DateTime now = DateTime.now();
+    switch (value.toInt()) {
+      case 0:
+        return DateFormat("MMM").format(DateTime(0, now.month - 5));
+      case 2:
+        return DateFormat("MMM").format(DateTime(0, now.month - 4));
+      case 4:
+        return DateFormat("MMM").format(DateTime(0, now.month - 3));
+      case 6:
+        return DateFormat("MMM").format(DateTime(0, now.month - 2));
+      case 8:
+        return DateFormat("MMM").format(DateTime(0, now.month - 1));
+      case 10:
+        return DateFormat("MMM").format(now);
+      default:
+        return '';
+    }
+  }
+
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 15,
       height: 1.1,
     );
-    Widget text = const Text('');
+    Widget text;
     if (dropdownValue == "Daily") {
-      switch (value.toInt()) {
-        case 0:
-          text = Text('${DateTime.now().month}/${DateTime.now().day - 6}',
-              style: style);
-          break;
-        case 2:
-          text = Text('${DateTime.now().month}/${DateTime.now().day - 5}',
-              style: style);
-          break;
-        case 4:
-          text = Text('${DateTime.now().month}/${DateTime.now().day - 4}',
-              style: style);
-          break;
-        case 6:
-          text = Text('${DateTime.now().month}/${DateTime.now().day - 3}',
-              style: style);
-          break;
-        case 8:
-          text = Text('${DateTime.now().month}/${DateTime.now().day - 2}',
-              style: style);
-          break;
-        case 10:
-          text = Text('${DateTime.now().month}/${DateTime.now().day - 1}',
-              style: style);
-          break;
-        case 12:
-          text = Text('${DateTime.now().month}/${DateTime.now().day}',
-              style: style);
-          break;
-        default:
-          text = const Text('');
-          break;
-      }
+      text = Text(dailyChartLabel(value), style: style);
     } else if (dropdownValue == "Monthly") {
-      switch (value.toInt()) {
-        case 0:
-          text = Text(DateFormat("MMM").format(DateTime.now().subtract(const Duration(days: 150))),
-              style: style);
-          break;
-        case 2:
-          text = Text(DateFormat("MMM").format(DateTime.now().subtract(const Duration(days: 120))),
-              style: style);
-          break;
-        case 4:
-          text = Text(DateFormat("MMM").format(DateTime.now().subtract(const Duration(days: 90))),
-              style: style);
-          break;
-        case 6:
-          text = Text(DateFormat("MMM").format(DateTime.now().subtract(const Duration(days: 60))),
-              style: style);
-          break;
-        case 8:
-          text = Text(DateFormat("MMM").format(DateTime.now().subtract(const Duration(days: 30))),
-              style: style);
-          break;
-        case 10:
-          text = Text(DateFormat("MMM").format(DateTime.now()),
-              style: style);
-          break;
-        default:
-          text = const Text('');
-          break;
-      }
+      text = Text(monthlyChartLabel(value), style: style);
+    } else {
+      text = const Text('');
     }
 
     return SideTitleWidget(
@@ -160,7 +144,16 @@ class _ChartsState extends State<Charts> {
 
   @override
   Widget build(BuildContext context) {
-    API().verify();
+    API().verify().then((value) => {
+          if (value is Map)
+            {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(value["error"]),
+                ),
+              ),
+            }
+        });
 
     if (loadingPosts == true) {
       getData();
@@ -176,11 +169,10 @@ class _ChartsState extends State<Charts> {
     }
 
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: appbarComponent(title: widget.title),
+      appBar: appbarComponent(title: widget.title, backButton: true),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(5, 120, 5, 35),
+          padding: const EdgeInsets.fromLTRB(5, 15, 5, 35),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -189,7 +181,8 @@ class _ChartsState extends State<Charts> {
                 value: dropdownValue,
                 icon: const Icon(Icons.arrow_downward),
                 elevation: 16,
-                style: const TextStyle(color: Color.fromRGBO(50, 110, 180, 1), fontFamily: "Nexa"),
+                style: const TextStyle(
+                    color: Color.fromRGBO(50, 110, 180, 1), fontFamily: "Nexa"),
                 underline: Container(
                   height: 2,
                   color: const Color.fromRGBO(50, 110, 180, 1),
@@ -264,9 +257,7 @@ class _ChartsState extends State<Charts> {
         ),
       ),
       bottomNavigationBar: buildNavbar(
-        selectedColor: widget.selectedColor,
-        unSelectedColor: widget.unSelectedColor,
-        currentPageIndex: 2,
+        currentPageIndex: -1,
         context: context,
       ),
     );
