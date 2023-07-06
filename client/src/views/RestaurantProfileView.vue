@@ -1,12 +1,12 @@
 <template>
-  <div class="profile-container container">
+  <div class="profile-container-restaurant container">
     <!-- Profile Dropdown -->
     <div class="profile-dropdown" v-if="associated_restaurants_ids.length > 1">
       <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
         {{ restaurant.name }}
       </button>
       <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <li v-for="(restaurant, index) in associated_restaurants" :key="index">
+        <li v-for="(restaurant, index) in associated_restaurants_data" :key="index">
           <a class="dropdown-item" @click="handleRestaurantSelection(index)">{{ restaurant.name }}</a>
         </li>
       </ul>
@@ -21,12 +21,12 @@
     <div class="form-container d-flex justify-content-center flex-nowrap">
       <form class="row form">
         <div class="row-md-6 form-group">
-          <label for="name">Business Name:</label>
-          <input type="text" id="name" class="form-control" v-model="form.name">
+          <label for="name">Restaurant Name:</label>
+          <input type="text" id="name" autocomplete="on" class="form-control" v-model="form.name" required>
         </div>
         <div class="row-md-6 form-group">
-          <label for="address">Business Address:</label>
-          <input type="text" id="address" class="form-control" v-model="form.address">
+          <label for="address">Address:</label>
+          <input type="text" id="address" autocomplete="on" class="form-control" v-model="form.address" required>
         </div>
         <div class="w-100"></div>
         <div class="row-md-6 form-group">
@@ -80,6 +80,7 @@
 <script>
 
 export default {
+  name: 'RestaurantProfileView',
   watch: {
     restaurant: {
       handler: function(newRestaurant) {
@@ -107,10 +108,9 @@ export default {
       yelp_response: {},
       restaurant: {},
       associated_restaurants_ids: [],
-      associated_restaurants: {},
+      associated_restaurants_data: {},
       current_restaurant_index: 0,
-      email: '',
-      title: "Tell Us About Your Business",
+      title: "Tell Us About Your Restaurant",
       submitted: false
     };
   },
@@ -121,57 +121,64 @@ export default {
     Get associated restaurant data
     Get current restaurant data
     */
+    this.fetchAssociatedRestaurantsIds();
 
-    this.axiosInstance
-      .get('/profile/get_associated_restaurant_ids', { skipAuth: false })
-      .then((response) => {
-        this.associated_restaurants_ids = response.data.associated_restaurants_ids;
-        this.$toast.success("Successfully restaurant IDs")
-        console.log("Successfully retrieved associated restaurant IDs: " + this.associated_restaurants_ids.length);
 
-        //user has previously set up restaurant -> we need to access that information
-        if (this.associated_restaurants_ids.length > 0) {
-          this.axiosInstance
-            .get('/profile/previous_restaurant', {
-              skipAuth: false,
-              params: {
-                current_restaurant: localStorage.getItem('current_restaurant')
-              },
-            })
-            .then((response) => {
-              response = JSON.parse(response.data);
-
-              //Get data for each associated restaurant
-              for (let i = 0; i < this.associated_restaurants_ids.length; i++) {
-                this.associated_restaurants[i] = response.associated_restaurants[i];
-              }
-
-              // Set current restaurant data
-              this.restaurant = response.current_restaurant_info;
-              this.form.name = this.restaurant.name;
-              this.form.address = this.restaurant.address;
-              this.form.phone = this.restaurant.phone;
-              this.form.city = this.restaurant.city;
-              this.form.state = this.restaurant.state;
-              this.form.country = this.restaurant.country;
-              this.title = 'Hello There ' + this.restaurant.name;
-            })
-            .catch((error) => {
-              this.$toast.error("Error finding previous restaurants")
-              console.log("Error finding previous restaurants: ", error )
-            });
-        }
-      })
-      .catch((error) => {
-        this.$toast.error("Error finding previous restaurants")
-        console.log("Error finding previous restaurants: ", error )
-      });
+    
   },
   methods: {
+    fetchAssociatedRestaurantsIds() {
+      this.axiosInstance
+        .get('/restaurant/get_associated_restaurants_ids', { skipAuth: false })
+        .then((response) => {
+          this.associated_restaurants_ids = response.data.associated_restaurants_ids;
+          this.$toast.success("Successfully retrieved restaurant IDs");
+          console.log("Successfully retrieved associated restaurant IDs: " + this.associated_restaurants_ids.length);
+
+          if (this.associated_restaurants_ids.length > 0) {
+            this.fetchAssociatedRestaurantsData();
+          }
+        })
+        .catch((error) => {
+          this.$toast.error("Error finding previous restaurants");
+          console.log("Error finding previous restaurants: ", error);
+        });
+    },
+    fetchAssociatedRestaurantsData() {
+      this.axiosInstance
+        .get('/restaurant/get_associated_restaurants_data', {
+          skipAuth: false,
+          params: {
+            current_restaurant: localStorage.getItem('current_restaurant')
+          },
+        })
+        .then((response) => {
+          response = JSON.parse(response.data);
+
+          for (let i = 0; i < this.associated_restaurants_ids.length; i++) {
+            this.associated_restaurants_data[i] = response.associated_restaurants_data[i];
+          }
+
+          this.restaurant = response.current_restaurant_info;
+          this.form.name = this.restaurant.name;
+          this.form.address = this.restaurant.address;
+          this.form.phone = this.restaurant.phone;
+          this.form.city = this.restaurant.city;
+          this.form.state = this.restaurant.state;
+          this.form.country = this.restaurant.country;
+          this.title = 'Hello There ' + this.restaurant.name;
+          this.$toast.success('Successfully fetched food bank data');
+        })
+        .catch((error) => {
+          this.$toast.error("Error finding previous restaurants");
+          console.log("Error finding previous restaurants: ", error);
+        });
+    },
+
     //user selected new restaurant to manage via drop down (set current restaurant id in sessions)
     handleRestaurantSelection(index) {;
-      this.restaurant = this.associated_restaurants[index];
-      localStorage.setItem('current_restaurant', this.associated_restaurants[index]._id);
+      this.restaurant = this.associated_restaurants_data[index];
+      localStorage.setItem('current_restaurant', this.associated_restaurants_data[index]._id);
     },
     onSubmit(event) {
       event.preventDefault();
@@ -196,7 +203,7 @@ export default {
 
       // Get possible restaurants from Yelp based on entered form data
       this.axiosInstance
-        .post('/profile/get_restaurants', { data: data, skipAuth: false })
+        .post('/restaurant/get_restaurants', { data: data, skipAuth: true })
         .then((response) => {
           const response_data = JSON.parse(response.data.message).businesses;
           const amount = response_data.length;
@@ -232,7 +239,7 @@ export default {
     //user selected restaurant -> send to db
     restaurantSelect(index) {
       this.axiosInstance
-        .post('/profile/add_restaurant', { selected: this.yelp_response[index]})
+        .post('/restaurant/add_restaurant', { selected: this.yelp_response[index], skipAuth: false})
         .then((response) => {
           localStorage.setItem('current_restaurant', response.data.current_restaurant);
 
