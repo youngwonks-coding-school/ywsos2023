@@ -1,40 +1,34 @@
 <template>
-  <div class="profile-container container">
+  <div class="profile-container-restaurant container">
+    <!-- Profile Dropdown -->
     <div class="profile-dropdown" v-if="associated_restaurants_ids.length > 1">
       <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
         {{ restaurant.name }}
       </button>
       <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <li v-for="(restaurant, index) in associated_restaurants" :key="index">
+        <li v-for="(restaurant, index) in associated_restaurants_data" :key="index">
           <a class="dropdown-item" @click="handleRestaurantSelection(index)">{{ restaurant.name }}</a>
         </li>
       </ul>
     </div>
+
+    <!-- Title Section -->
     <div class="title-container d-flex justify-content-center flex-nowrap">
-      <h1 class="p-title">{{this.title}}</h1>
+      <h1 class="p-title">{{ title }}</h1>
     </div>
-    <div class="toggle-button">
-        <input type="checkbox" id="toggle" class="toggle-input">
-        <label for="toggle" class="toggle-label">
-          <span class="toggle-text mr-4">Restaurant</span>
-          <span class="toggle-switch"></span>
-          <span class="toggle-text ml-4">Food</span>
-        </label>
-      </div>
+
+    <!-- Form Section -->
     <div class="form-container d-flex justify-content-center flex-nowrap">
-
-      <form class="row form ">
+      <form class="row form">
         <div class="row-md-6 form-group">
-          <label for="name">Business Name:</label>
-          <input type="text" id="name" class="form-control" v-model="form.name">
+          <label for="name">Restaurant Name:</label>
+          <input type="text" id="name" autocomplete="on" class="form-control" v-model="form.name" required>
         </div>
-
         <div class="row-md-6 form-group">
-          <label for="address">Business Address:</label>
-          <input type="text" id="address" class="form-control" v-model="form.address">
+          <label for="address">Address:</label>
+          <input type="text" id="address" autocomplete="on" class="form-control" v-model="form.address" required>
         </div>
         <div class="w-100"></div>
-
         <div class="row-md-6 form-group">
           <label for="city">City:</label>
           <input type="text" id="city" class="form-control" v-model="form.city">
@@ -45,15 +39,14 @@
             <label for="state">State:</label>
             <input type="text" id="state" class="form-control" v-model="form.state">
           </div>
-
           <div class="col-md-6 form-group">
             <label for="country">Country:</label>
             <input type="text" id="country" class="form-control" v-model="form.country">
           </div>
         </div>
         <div class="row-md-6 form-group">
-            <label for="number">Phone Number:</label>
-            <input type="text" id="phone" class="form-control" v-model="form.phone">
+          <label for="number">Phone Number:</label>
+          <input type="text" id="phone" class="form-control" v-model="form.phone">
         </div>
         <div class="col-md-12 d-flex justify-content-center">
           <div class="submit-button">
@@ -63,6 +56,8 @@
       </form>  
     </div>
   </div>
+
+  <!-- Submission Section -->
   <div class="submission container">
     <div id="profile-results" class="profile-results card-deck container d-flex flex-row align-items-center ">
       <div class="card" v-for="(key, index) in Object.keys(yelp_response).slice(0, 3)" :key="index">
@@ -79,18 +74,13 @@
       </div>
     </div>
   </div>
-
 </template>
 
-<script>
-import axios from 'axios'
-import { reactive, toRefs } from 'vue';
 
-const axiosInstance = axios.create({
-  baseURL: 'http://127.0.0.1:4000/api', // Assuming the base URL is '/api'
-});
+<script>
 
 export default {
+  name: 'RestaurantProfileView',
   watch: {
     restaurant: {
       handler: function(newRestaurant) {
@@ -101,7 +91,6 @@ export default {
         this.form.city = newRestaurant.city;
         this.form.state = newRestaurant.state;
         this.form.country = newRestaurant.country;
-        this.form.type = newRestaurant.type;
       },
       deep: true
     }
@@ -115,109 +104,81 @@ export default {
         city: '',
         state: '',
         country: '',
-        type: ''
       },
       yelp_response: {},
       restaurant: {},
       associated_restaurants_ids: [],
-      associated_restaurants: {},
+      associated_restaurants_data: {},
       current_restaurant_index: 0,
-      email: '',
-      title: "Tell Us About Your Business",
+      title: "Tell Us About Your Restaurant",
       submitted: false
     };
   },
   mounted() {
-    // Request interceptor
-    axiosInstance.interceptors.request.use(
-      (config) => {
-        const accessToken = localStorage.getItem('accessToken');
-        if (!config.skipAuth){
 
-          config.headers.Authorization = `Bearer ${accessToken}`;
-        }
-        return config;
-      },
-      (error) => {
-        return Promise.reject(error);
-      }
-    );
+    /*
+    Get associated restaurant ids
+    Get associated restaurant data
+    Get current restaurant data
+    */
+    this.fetchAssociatedRestaurantsIds();
 
-    // Response interceptor
-    axiosInstance.interceptors.response.use(
-      (response) => {
-        return response;
-      },
-      async (error) => {
-        if (error.response.status === 401) {
-          try {
-            const refreshResponse = await axiosInstance.post('/auth/refresh', {
-              Authorization: `Bearer ${localStorage.getItem('refreshToken')}`
-            });
-            localStorage.setItem('accessToken', refreshResponse.data.accessToken);
-            return axiosInstance(error.response.config);
-          } catch (error) {
-            $toast.error('Axios Instance \n Refresh token error');
-            console.log('Axios Instance \n Refresh token error:', error)
-            return Promise.reject(error);
-          }
-        }
-        return Promise.reject(error);
-      }
-    );
 
-    axiosInstance
-      .get('/auth/get_sessions_for_user', {skipAuth: false})
-      .then((response) => {
-        this.email = response.data.email;
-        this.associated_restaurants_ids = response.data.associated_restaurants_ids;
-
-        this.$toast.success("Successfully retrieved user info")
-        console.log("Successfully retrieved " + this.email + "info -> associated restaurants: " + this.associated_restaurants_ids.length);
-
-        //user has previously set up restaurant -> we need to access that information
-        if (this.associated_restaurants_ids.length > 0) {
-            axiosInstance
-            .get('/profile/previous_restaurant', {
-              skipAuth: false,
-              params: {
-                current_restaurant: localStorage.getItem('current_restaurant')
-              },
-            })
-            .then((response) => {
-              response = JSON.parse(response.data);
-              //Get data for each restaurant under user
-              for (let i = 0; i < this.associated_restaurants_ids.length; i++) {
-                this.associated_restaurants[i] = response.associated_restaurants[i];
-              }
-              // Get data for current restaurant under user
-              this.restaurant = response.current_restaurant_info;
-
-              this.form.name = this.restaurant.name;
-              this.form.address = this.restaurant.address;
-              this.form.phone = this.restaurant.phone;
-              this.form.city = this.restaurant.city;
-              this.form.state = this.restaurant.state;
-              this.form.country = this.restaurant.country;
-              this.form.type = this.restaurant.type;
-              this.title = 'Hello There ' + this.restaurant.name;
-            })
-            .catch((error) => {
-              this.$toast.error("Error finding previous restaurants")
-              console.log("Error finding previous restaurants: ", error )
-            });
-        }
-      })
-      .catch((error) => {
-        this.$toast.error("Error finding previous restaurants")
-        console.log("Error finding previous restaurants: ", error )
-      });
+    
   },
   methods: {
+    fetchAssociatedRestaurantsIds() {
+      this.axiosInstance
+        .get('/restaurant/get_associated_restaurants_ids', { skipAuth: false })
+        .then((response) => {
+          this.associated_restaurants_ids = response.data.associated_restaurants_ids;
+          this.$toast.success("Successfully retrieved restaurant IDs");
+          console.log("Successfully retrieved associated restaurant IDs: " + this.associated_restaurants_ids.length);
+
+          if (this.associated_restaurants_ids.length > 0) {
+            this.fetchAssociatedRestaurantsData();
+          }
+        })
+        .catch((error) => {
+          this.$toast.error("Error finding previous restaurants");
+          console.log("Error finding previous restaurants: ", error);
+        });
+    },
+    fetchAssociatedRestaurantsData() {
+      this.axiosInstance
+        .get('/restaurant/get_associated_restaurants_data', {
+          skipAuth: false,
+          params: {
+            current_restaurant: localStorage.getItem('current_restaurant')
+          },
+        })
+        .then((response) => {
+          response = JSON.parse(response.data);
+
+          for (let i = 0; i < this.associated_restaurants_ids.length; i++) {
+            this.associated_restaurants_data[i] = response.associated_restaurants_data[i];
+          }
+
+          this.restaurant = response.current_restaurant_info;
+          this.form.name = this.restaurant.name;
+          this.form.address = this.restaurant.address;
+          this.form.phone = this.restaurant.phone;
+          this.form.city = this.restaurant.city;
+          this.form.state = this.restaurant.state;
+          this.form.country = this.restaurant.country;
+          this.title = 'Hello There ' + this.restaurant.name;
+          this.$toast.success('Successfully fetched food bank data');
+        })
+        .catch((error) => {
+          this.$toast.error("Error finding previous restaurants");
+          console.log("Error finding previous restaurants: ", error);
+        });
+    },
+
     //user selected new restaurant to manage via drop down (set current restaurant id in sessions)
     handleRestaurantSelection(index) {;
-      this.restaurant = this.associated_restaurants[index];
-      localStorage.setItem('current_restaurant', this.associated_restaurants[index]._id);
+      this.restaurant = this.associated_restaurants_data[index];
+      localStorage.setItem('current_restaurant', this.associated_restaurants_data[index]._id);
     },
     onSubmit(event) {
       event.preventDefault();
@@ -227,7 +188,6 @@ export default {
       this.form.city = document.getElementById('city').value;
       this.form.state = document.getElementById('state').value;
       this.form.country = document.getElementById('country').value;
-      this.form.type = document.getElementById('toggle').checked ? 'restaurant' : 'food';
       console.log('submitted');
       this.profile_data();
     },
@@ -239,32 +199,35 @@ export default {
         city: this.form.city,
         state: this.form.state,
         country: this.form.country,
-        type: this.form.type
       };
+
       // Get possible restaurants from Yelp based on entered form data
-      axiosInstance
-        .post('/profile/get_restaurants', {'data': data, skipAuth: false})
+      this.axiosInstance
+        .post('/restaurant/get_restaurants', { data: data, skipAuth: true })
         .then((response) => {
-          const responseData = JSON.parse(response.data.message).businesses;
-          const amount = responseData.length;
+          const response_data = JSON.parse(response.data.message).businesses;
+          const amount = response_data.length;
+
           if (amount > 0) {
             this.$toast.success(amount + ' restaurants found!');
           }
+
           for (let i = 0; i < amount; i++) {
             // Insert all results into yelp_response (will be accessed to turn data into cards to select)
             this.yelp_response[i] = {
-              name: responseData[i].name,
-              address: responseData[i].location.display_address.join(', '),
-              phone: responseData[i].display_phone,
-              rating: responseData[i].rating,
-              image: responseData[i].image_url,
-              url: responseData[i].url,
-              price: responseData[i].price,
-              categories: responseData[i].categories,
-              distance: responseData[i].distance,
-              coordinates: responseData[i].coordinates
+              name: response_data[i].name,
+              address: response_data[i].location.display_address.join(', '),
+              phone: response_data[i].display_phone,
+              rating: response_data[i].rating,
+              image: response_data[i].image_url,
+              url: response_data[i].url,
+              price: response_data[i].price,
+              categories: response_data[i].categories,
+              distance: response_data[i].distance,
+              coordinates: response_data[i].coordinates
             };
           }
+
           this.submitted = true;
         })
         .catch((error) => {
@@ -272,12 +235,14 @@ export default {
           this.$toast.error('Error! Getting Restaurants');
         });
     },
+
+    //user selected restaurant -> send to db
     restaurantSelect(index) {
-      // User selected restaurant -> server will send this data to the database
-      axiosInstance
-        .post('/profile/add_restaurant', { selected: this.yelp_response[index]})
+      this.axiosInstance
+        .post('/restaurant/add_restaurant', { selected: this.yelp_response[index], skipAuth: false})
         .then((response) => {
-          localStorage.setItem('current_restaurant', response.data.current_restaurant)
+          localStorage.setItem('current_restaurant', response.data.current_restaurant);
+
           this.restaurant = {
             name: this.yelp_response[index].name,
             address: this.yelp_response[index].address,
@@ -290,6 +255,7 @@ export default {
             distance: this.yelp_response[index].distance,
             coordinates: this.yelp_response[index].coordinates
           };
+
           this.$toast.success('Successfully set your restaurant');
           console.log('we set your restaurant', this.restaurant);
           window.location.reload();

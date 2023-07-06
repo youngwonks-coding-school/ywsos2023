@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'api_interface.dart';
 import 'utils.dart';
 
@@ -6,8 +7,6 @@ class Profile extends StatefulWidget {
   const Profile({super.key, required this.title});
 
   final String title;
-  final selectedColor = const Color.fromRGBO(249, 181, 12, 1);
-  final unSelectedColor = const Color.fromRGBO(88, 47, 195, 1);
 
   @override
   State<Profile> createState() => _ProfileState();
@@ -16,20 +15,30 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
-    API().verify();
+    API().verify().then((value) => {
+          if (value is Map)
+            {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(value["error"]),
+                ),
+              ),
+            }
+        });
+
     return Scaffold(
-      extendBodyBehindAppBar: true,
       appBar: appbarComponent(title: widget.title),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(15, 40, 5, 0),
-          child: Stack(
-            alignment: Alignment.center,
+          padding: const EdgeInsets.fromLTRB(15, 40, 15, 0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               ElevatedButton.icon(
                 onPressed: () async {
                   await API().logout();
-                  Navigator.pushNamed(context, '/');
+                  if (context.mounted) context.go('/');
                 },
                 icon: const Icon(Icons.logout, size: 19),
                 label: const Text("Sign Out", style: TextStyle(fontSize: 16)),
@@ -39,8 +48,6 @@ class _ProfileState extends State<Profile> {
         ),
       ),
       bottomNavigationBar: buildNavbar(
-        selectedColor: widget.selectedColor,
-        unSelectedColor: widget.unSelectedColor,
         currentPageIndex: 3,
         context: context,
       ),

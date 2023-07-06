@@ -37,6 +37,7 @@
           <button type="button" @click="login()" class="btn btn-primary button" id="login">Login</button><br /><br />
 
           <label class="form-check-label"><a href="/register">Register</a> </label>
+
         </div>
       </form>
     </div>
@@ -61,14 +62,17 @@ export default {
       axios
         .post('/api/auth/login', { email: this.email, password: this.password })
         .then((response) => {
-          console.log(response.data.message)
           this.$toast.success(response.data.message)
           localStorage.setItem('accessToken', response.data.access_token)
           localStorage.setItem('refreshToken', response.data.refresh_token)
+          localStorage.setItem('business_type', response.data.business_type )
 
+          window.dispatchEvent(new CustomEvent('access-token-localstorage-changed', {
+            detail: {
+              storage: localStorage.getItem('accessToken')
+            }
+          }));
           this.$router.push('/dashboard')
-          // Reload page
-          window.location.reload()
         })
         .catch((error) => {
           console.log(error)
@@ -89,9 +93,7 @@ export default {
             }
           )
           .then((response) => {
-            console.log(response.data.message)
             this.$toast.success(response.data.message)
-
             this.$router.push('/dashboard')
           })
           .catch((error) => {

@@ -14,7 +14,14 @@ const router = createRouter({
     {
       path: "/profile",
       name: "profile",
-      component: () => import("../views/ProfileView.vue"),
+      component: () => {
+        if (localStorage.getItem('business_type') == 'restaurant') {
+          return import('../views/RestaurantProfileView.vue');
+        }
+        else {
+          return import('../views/FoodBankProfileView.vue');
+        }
+      }
     },
     {
       path: "/login",

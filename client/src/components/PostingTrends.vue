@@ -11,7 +11,6 @@
 
 <script>
 import { DateTime } from 'luxon';
-import axios from 'axios';
 import { Line } from 'vue-chartjs'
 import { Chart as ChartJS, Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement } from 'chart.js'
 
@@ -39,7 +38,7 @@ export default {
   },
   methods: {
     async getPosts() {
-      let response = await axios.get("/api/posts/get-posts");
+      let response = await this.axiosInstance.get("/api/posts/get-posts");
       return response.data;
     },
     getDaysAgo(date) {
