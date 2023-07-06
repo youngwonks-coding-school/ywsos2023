@@ -34,7 +34,10 @@
           >
         </div>
         <div class="text-center">
-          <button type="button" @click="login()" class="btn btn-primary form-button">Login</button><br /><br />
+          <button type="button" @click="login()" class="btn btn-primary button" id="login">Login</button><br /><br />
+
+          <label class="form-check-label"><a href="/register">Register</a> </label>
+
         </div>
       </form>
     </div>
