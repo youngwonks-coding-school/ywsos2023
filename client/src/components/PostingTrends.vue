@@ -11,7 +11,6 @@
 
 <script>
 import { DateTime } from 'luxon';
-import axios from 'axios';
 import { Line } from 'vue-chartjs'
 import { Chart as ChartJS, Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement } from 'chart.js'
 

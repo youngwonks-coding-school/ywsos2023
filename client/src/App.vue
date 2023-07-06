@@ -12,7 +12,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="main-container d-flex flex-column justify-content-between">
+  <div class="d-flex flex-column justify-content-between main-container">
     <Navbar />
     <RouterView />
     <Footer />

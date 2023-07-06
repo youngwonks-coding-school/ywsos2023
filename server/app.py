@@ -1,6 +1,5 @@
 import os
 from datetime import timedelta
-
 from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_restx import Api, Resource
@@ -12,8 +11,9 @@ load_dotenv()
 
 from routes.index import index
 from routes.auth import auth
-from routes.profile import profile
 from routes.posts import posts
+from routes.restaurant import restaurant
+from routes.food_bank import food_bank
 from db import db
 
 
@@ -29,8 +29,8 @@ app.config['JWT_SECRET_KEY'] = os.environ['SECRET_KEY']  # Change this!
 
 
 socketio = SocketIO(app, cors_allowed_origins="*")
-app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(minutes=15)  # Access token expires in 15 minutes
-app.config['JWT_REFRESH_TOKEN_EXPIRES'] = datetime.timedelta(days=30)  # Refresh token expires in 30 days
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(minutes=15)  # Access token expires in 15 minutes
+app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=30)  # Refresh token expires in 30 days
 
 
 
@@ -62,7 +62,8 @@ api.swagger = {
 api.add_namespace(index, '/api')
 api.add_namespace(auth, '/api/auth')
 api.add_namespace(posts, '/api/posts')
-api.add_namespace(profile, '/api/profile')
+api.add_namespace(restaurant, '/api/restaurant')
+api.add_namespace(food_bank, '/api/food_bank')
 
 
 @jwt.token_in_blocklist_loader
@@ -98,7 +99,7 @@ def disconnect(y):
 if '__main__' == __name__:
     app.run(
         host=os.environ.get("FLASK_HOST", "127.0.0.1"),
-        port=int(os.environ.get("FLASK_PORT", 5000)),
+        port=int(os.environ.get("FLASK_PORT", 4000)),
         debug=os.environ.get("FLASK_DEBUG", "True") == "True"
     )
     
