@@ -22,5 +22,7 @@ class Test(unittest.TestCase):
         self.driver.find_element(By.ID,"password").send_keys(password)
         self.driver.find_element(By.ID,"terms-privacy-check").click()
         self.driver.find_element(By.ID,"login").click()
+    def tearDown(self):
+        self.driver.close()
 if __name__=="__main__":
     unittest.main()
