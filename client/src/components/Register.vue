@@ -62,6 +62,7 @@
             type="button"
             @click="register()"
             class="btn btn-primary form-button mt-4"
+            id="register"
             :disabled="!isValidEmail || !isValidPassword || !email || !password"
           >
             Register</button
