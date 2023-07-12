@@ -16,7 +16,7 @@ class Test(unittest.TestCase):
         self.driver.get("http://localhost:5173/login")
     def test_login(self):
         WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, "email")))
-        username="nato1of5"
+        username="nato1of5@outlook.com"
         password="Au1.61803399"
         self.driver.find_element(By.ID,"email").send_keys(username)
         self.driver.find_element(By.ID,"password").send_keys(password)
