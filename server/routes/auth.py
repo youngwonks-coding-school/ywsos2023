@@ -1,5 +1,5 @@
 from flask import request, jsonify, session, current_app
-from flask_restx import Namespace, Resource,fields
+from flask_restx import Namespace, Resource, fields
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from db import db
@@ -14,7 +14,11 @@ auth_model = auth.model('AuthModel', {
     'email': fields.String(required=True, description='Email address'),
     'password': fields.String(required=True, description='Password')
 })
-
+register_model = auth.model('RegisterModel', {
+    'email': fields.String(required=True, description='Email address'),
+    'password': fields.String(required=True, description='Password'),
+    'business_type': fields.String(required=True, description='Business type')
+})
 update_model = auth.model('UpdateModel', {
     'email': fields.String(required=True, description='Email address'),
     'old_pass': fields.String(required=True, description='Old password'),
@@ -24,7 +28,7 @@ update_model = auth.model('UpdateModel', {
 
 @auth.route('/register', methods=['POST'])
 class Register(Resource):
-    @auth.expect(auth_model, validate=True)
+    @auth.expect(register_model, validate=True)
     def post(self):
         data = request.get_json()
         business_type = data['business_type']
