@@ -17,95 +17,69 @@ post_model = posts.model("Post", {
     "quantity": fields.Integer(required=True, description="Quantity of the food"),
 })
 
-# @posts.route("/get-posts")
-# class GetPosts(Resource):
-#     def get(self):
-#         return json.loads(json_util.dumps(list(db.posts.find({}))))
-#
-#
-# @posts.route("/create-post", methods=["POST"])
-# class CreatePost(Resource):
-#     @jwt_required()
-#     def post(self):
-#         email = get_jwt_identity()
-#         print(email)
-#
-#         post = {
-#             "title": request.json["title"],
-#             "description": request.json["description"],
-#             "location": request.json["location"],
-#             "time": str(datetime.datetime.now()),
-#             "user": email,
-#         }
-#
-#         db.posts.insert_one(post)
-#
-#         return {"message": "Post created successfully."}
 
+@posts.route('/restaurant-post', methods=["POST", "GET", "PUT", "DELETE"])
+@posts.route('/restaurant-post/<id>', methods=["POST", "GET", "PUT", "DELETE"])
+class RestaurantPost(Resource):
+    @jwt_required()
+    @posts.doc(security="Bearer")
+    @posts.expect(post_model, validate=True)
+    def post(self):
+        email = get_jwt_identity()
 
-class Post(Resource):
-    @posts.route('/create-restaurant-post', methods=['POST'])
-    class RestaurantPost(Resource):
-        @jwt_required()
-        @posts.doc(security="Bearer")
-        @posts.expect(post_model, validate=True)
-        def post(self):
-            email = get_jwt_identity()
-            print(email)
+        post = {
+            "title": request.json["title"],
+            "description": request.json["description"],
+            "location": request.json["location"],
+            "time": str(datetime.datetime.now()),
+            "user": email,
+            "food": request.json["food"],
+            "quantity": request.json["quantity"],
+        }
 
-            post = {
-                "title": request.json["title"],
-                "description": request.json["description"],
-                "location": request.json["location"],
-                "time": str(datetime.datetime.now()),
-                "user": email,
-                "food": request.json["food"],
-                "quantity": request.json["quantity"],
-            }
+        db.restaurant_posts.insert_one(post)
 
-            db.restaurant_posts.insert_one(post)
+        return {"message": "Post created successfully."}
 
-            return {"message": "Post created successfully."}
-
-    @posts.route('/get-restaurant-posts')
-    class GetRestaurantPosts(Resource):
-        def get(self):
+    def get(self, id=None):
+        if id is None:
             return json.loads(json_util.dumps(list(db.restaurant_posts.find({}))))
+        return json.loads(json_util.dumps(list(db.restaurant_posts.find({"_id": ObjectId(id)}))))
 
-    @posts.route('/get-restaurant-post/<id>')
-    class GetRestaurantPost(Resource):
-        def get(self, id):
-            return json.loads(json_util.dumps(list(db.restaurant_posts.find({"_id": ObjectId(id)}))))
+    def delete(self, id):
+        db.restaurant_posts.delete_one({"_id": ObjectId(id)})
+        return {"message": "Post deleted successfully."}
 
-    @posts.route('/create-bank-post', methods=['POST'])
-    class CreateBankPost(Resource):
-        @jwt_required()
-        @posts.doc(security="Bearer")
-        @posts.expect(post_model, validate=True)
-        def post(self):
-            email = get_jwt_identity()
-            print(email)
 
-            post = {
-                "title": request.json["title"],
-                "description": request.json["description"],
-                "location": request.json["location"],
-                "time": str(datetime.datetime.now()),
-                "user": email,
-                "food": request.json["food"],
-                "quantity": request.json["quantity"],
-            }
+@posts.route('/bank-post', methods=["POST", "GET", "PUT", "DELETE"])
+@posts.route('/bank-post/<id>', methods=["POST", "GET", "PUT", "DELETE"])
+class BankPost(Resource):
+    @jwt_required()
+    @posts.doc(security="Bearer")
+    @posts.expect(post_model, validate=True)
+    def post(self):
+        email = get_jwt_identity()
+        print(email)
 
-            db.bank_posts.insert_one(post)
+        post = {
+            "title": request.json["title"],
+            "description": request.json["description"],
+            "location": request.json["location"],
+            "time": str(datetime.datetime.now()),
+            "user": email,
+            "food": request.json["food"],
+            "quantity": request.json["quantity"],
+        }
 
-            return {"message": "Post created successfully."}
+        db.bank_posts.insert_one(post)
 
-    @posts.route('/get-bank-posts')
-    class GetBankPosts(Resource):
-        def get(self):
+        return {"message": "Post created successfully."}
+
+    def get(self, id=None):
+        if id is None:
             return json.loads(json_util.dumps(list(db.bank_posts.find({}))))
+        return json.loads(json_util.dumps(list(db.bank_posts.find({"_id": ObjectId(id)}))))
 
-    @posts.route('/get-bank-post/<id>')
-    class GetBankPost(Resource):
-        def get(self, id):
-            return json.loads(json_util.dumps(list(db.bank_posts.find({"_id": ObjectId(id)}))))
+    def delete(self, id):
+        db.bank_posts.delete_one({"_id": ObjectId(id)})
+        return {"message": "Post deleted successfully."}
