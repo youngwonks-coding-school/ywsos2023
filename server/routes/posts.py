@@ -19,8 +19,10 @@ post_model = posts.model("Post", {
 
 
 @posts.route('/restaurant-post', methods=["POST", "GET", "PUT", "DELETE"])
-@posts.route('/restaurant-post/<id>', methods=["POST", "GET", "PUT", "DELETE"])
-class RestaurantPost(Resource):
+class ResturantPostM(Resource):
+    def get(self):
+        return json.loads(json_util.dumps(list(db.restaurant_posts.find({}))))
+
     @jwt_required()
     @posts.doc(security="Bearer")
     @posts.expect(post_model, validate=True)
@@ -41,9 +43,31 @@ class RestaurantPost(Resource):
 
         return {"message": "Post created successfully."}
 
-    def get(self, id=None):
-        if id is None:
-            return json.loads(json_util.dumps(list(db.restaurant_posts.find({}))))
+
+
+@posts.route('/restaurant-post/<id>', methods=["POST", "GET", "PUT", "DELETE"])
+class RestaurantPost(Resource):
+    @jwt_required()
+    @posts.doc(security="Bearer")
+    @posts.expect(post_model, validate=True)
+    def put(self, id):
+        email = get_jwt_identity()
+
+        post = {
+            "title": request.json["title"],
+            "description": request.json["description"],
+            "location": request.json["location"],
+            "time": str(datetime.datetime.now()),
+            "user": email,
+            "food": request.json["food"],
+            "quantity": request.json["quantity"],
+        }
+
+        db.restaurant_posts.update_one({"_id": ObjectId(id)}, {"$set": {"title": post["title"], "description": post["description"], "location": post["location"], "time": post["time"], "quantity": post["quantity"], "food": post["food"]}})
+
+        return {"message": "Post updated successfully."}
+
+    def get(self, id):
         return json.loads(json_util.dumps(list(db.restaurant_posts.find({"_id": ObjectId(id)}))))
 
     def delete(self, id):
@@ -52,8 +76,10 @@ class RestaurantPost(Resource):
 
 
 @posts.route('/bank-post', methods=["POST", "GET", "PUT", "DELETE"])
-@posts.route('/bank-post/<id>', methods=["POST", "GET", "PUT", "DELETE"])
-class BankPost(Resource):
+class BankPostM(Resource):
+    def get(self):
+        return json.loads(json_util.dumps(list(db.bank_posts.find({}))))
+
     @jwt_required()
     @posts.doc(security="Bearer")
     @posts.expect(post_model, validate=True)
@@ -75,9 +101,32 @@ class BankPost(Resource):
 
         return {"message": "Post created successfully."}
 
-    def get(self, id=None):
-        if id is None:
-            return json.loads(json_util.dumps(list(db.bank_posts.find({}))))
+
+@posts.route('/bank-post/<id>', methods=["POST", "GET", "PUT", "DELETE"])
+class BankPost(Resource):
+
+    @jwt_required()
+    @posts.doc(security="Bearer")
+    @posts.expect(post_model, validate=True)
+    def put(self, id):
+        email = get_jwt_identity()
+
+        post = {
+            "title": request.json["title"],
+            "description": request.json["description"],
+            "location": request.json["location"],
+            "time": str(datetime.datetime.now()),
+            "user": email,
+            "food": request.json["food"],
+            "quantity": request.json["quantity"],
+        }
+
+        db.bank_posts.update_one({"_id": ObjectId(id)}, {"$set": {"title": post["title"], "description": post["description"], "location": post["location"], "time": post["time"], "quantity": post["quantity"], "food": post["food"]}})
+
+        return {"message": "Post updated successfully."}
+
+
+    def get(self, id):
         return json.loads(json_util.dumps(list(db.bank_posts.find({"_id": ObjectId(id)}))))
 
     def delete(self, id):
