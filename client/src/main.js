@@ -22,7 +22,7 @@ import router from "./router";
 addIcons(BiTrash, IoAddCircleSharp, IoCloseOutline, RiSave3Line, BiPencilSquare, BiExclamationCircleFill);
 
 const axiosInstance = axios.create({
-  baseURL: 'http://127.0.0.1:4000/api', // Assuming the base URL is '/api'
+  baseURL: 'http://127.0.0.1:5000/api', // Assuming the base URL is '/api'
 });
 
 // Request interceptor
