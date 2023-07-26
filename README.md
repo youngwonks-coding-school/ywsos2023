@@ -39,6 +39,11 @@ Depending on your Python install, you may need to use `python3` and `pip3` inste
 2. Enter in the necessary information into the fields
 3. Copy the API key given and paste it into the `YELP_API_KEY` key in the `.env` file in the `server` folder
 
+### Creating Google Maps API Key
+1. Go to [Google Maps Platform] (https://console.cloud.google.com/getting-started) > Credentials page
+2. On the Credentials page, click Create credentials > API key
+3. Copy the API key given and paste it into the 'GOOGLE_MAAPS_API_KEY' key in the '.env' file in the 'server' folder
+
 ### Instructions for running the test
 1. open 3 terminals
 2. on the first terminal cd into the server ex. cd C:\Users\NATO1\OneDrive\Desktop\java\Git\ywsos2023\server
