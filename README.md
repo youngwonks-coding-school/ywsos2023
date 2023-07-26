@@ -43,6 +43,7 @@ Depending on your Python install, you may need to use `python3` and `pip3` inste
 1. Go to [Google Maps Platform] (https://console.cloud.google.com/getting-started) > Credentials page
 2. On the Credentials page, click Create credentials > API key
 3. Copy the API key given and paste it into the 'GOOGLE_MAAPS_API_KEY' key in the '.env' file in the 'server' folder
+4. Restrict the API key to the domain
 
 ### Instructions for running the test
 1. open 3 terminals
