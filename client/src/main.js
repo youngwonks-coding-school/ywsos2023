@@ -18,6 +18,7 @@ import axios from 'axios';
 import { createApp } from "vue"
 ;
 import router from "./router";
+import VueGoogleMaps from '@fawmi/vue-google-maps';
 
 addIcons(BiTrash, IoAddCircleSharp, IoCloseOutline, RiSave3Line, BiPencilSquare, BiExclamationCircleFill);
 
