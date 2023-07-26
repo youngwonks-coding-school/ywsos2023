@@ -84,6 +84,18 @@ if (localStorage.getItem('accessToken')) {
 
 
 (async () => {
+  
+  let myapiKey=null;
+    try {
+      axios.post("http://localhost:5000/api/maps/get_api_key")
+        .then(response => {
+          myapiKey = response.data.key;
+          return { myapiKey }
+        })
+    } catch (error) {
+      console.error('Failed to fetch API key:', error);
+      return;
+    }
 
 
     axios.defaults.baseURL = import.meta.env.VITE_SERVER_URL;
@@ -99,6 +111,12 @@ if (localStorage.getItem('accessToken')) {
     app.use(router);
     app.use(ToastPlugin, {
       position: 'top-right'
+    });
+
+      app.use(VueGoogleMaps, {
+      load: {
+        key: myapiKey
+      }
     });
   
     app.mount("#app");
