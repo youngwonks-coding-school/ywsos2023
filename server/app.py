@@ -9,6 +9,7 @@ from flask_socketio import SocketIO
 
 load_dotenv()
 
+from routes.maps import maps
 from routes.index import index
 from routes.auth import auth
 from routes.posts import posts
@@ -59,6 +60,8 @@ api.add_namespace(auth, '/api/auth')
 api.add_namespace(posts, '/api/posts')
 api.add_namespace(restaurant, '/api/restaurant')
 api.add_namespace(food_bank, '/api/food_bank')
+api.add_namespace(maps, '/api/maps')
+
 
 
 @jwt.token_in_blocklist_loader
