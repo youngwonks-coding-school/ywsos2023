@@ -12,7 +12,7 @@ class Test(unittest.TestCase):
     def setUp(self):
         self.options = Options()
         self.options.add_experimental_option("detach",True)
-        self.driver=webdriver.Chrome(service=Service(ChromeDriverManager().install()),options=self.options)
+        self.driver=webdriver.Chrome(service=Service(ChromeDriverManager(version="114.0.5735.90").install()),options=self.options)
         self.driver.get("http://localhost:5173/login")
     def test_login(self):
         WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, "email")))
