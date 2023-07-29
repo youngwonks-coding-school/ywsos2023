@@ -12,7 +12,10 @@ class Test(unittest.TestCase):
     def setUp(self):
         self.options = Options()
         self.options.add_experimental_option("detach",True)
-        self.driver=webdriver.Chrome(service=Service(ChromeDriverManager().install()),options=self.options)
+        service=ChromeDriverManager(version="114.0.5735.90")
+        service=service.install()#error
+        service=Service(service)
+        self.driver=webdriver.Chrome(service=service,options=self.options)
         self.driver.get("http://localhost:5173/")
     def test_click(self):
         links = self.driver.find_elements("xpath","//a[@href]")
@@ -21,5 +24,3 @@ class Test(unittest.TestCase):
                 self.assertIsNotNone(link.click())
 if __name__=="__main__":
     unittest.main()
-
-

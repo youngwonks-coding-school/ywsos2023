@@ -12,18 +12,18 @@ class Test(unittest.TestCase):
     def setUp(self):
         self.options = Options()
         self.options.add_experimental_option("detach",True)
-        self.driver=webdriver.Chrome(service=Service(ChromeDriverManager().install()),options=self.options)
+        self.driver=webdriver.Chrome(service=Service(ChromeDriverManager(version="114.0.5735.90").install()),options=self.options)
         self.driver.get("http://localhost:5173/")
     def test_click(self):
         WebDriverWait(self.driver, 10)#.until(EC.presence_of_element_located(("xpath","//div[contains(@class, 'col btn btn-secondary button me-1')]")
         btns = self.driver.find_elements("xpath","//div[contains(@class, 'col btn btn-secondary button me-1')]")
         for btn in btns:
-            btn.click()
+            self.assertIsNone(btn.click())
     def test_href(self):
         WebDriverWait(self.driver, 10)
         links = self.driver.find_elements("xpath","//div[contains(@href, '#')]")
         for link in links:
-            link.click()
+            self.assertIsNone(link.click())
     def tearDown(self):
         self.driver.close()
 if __name__=="__main__":
