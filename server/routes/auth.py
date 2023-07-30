@@ -17,7 +17,7 @@ auth_model = auth.model('AuthModel', {
 register_model = auth.model('RegisterModel', {
     'email': fields.String(required=True, description='Email address'),
     'password': fields.String(required=True, description='Password'),
-    'business_type': fields.String(required=True, description='Business type')
+    'name': fields.String(required=True, description='Name'),
 })
 update_model = auth.model('UpdateModel', {
     'email': fields.String(required=True, description='Email address'),
@@ -31,7 +31,7 @@ class Register(Resource):
     @auth.expect(register_model, validate=True)
     def post(self):
         data = request.get_json()
-        business_type = data['business_type']
+        name = data['name']
         email = auth.payload['email']
         password = auth.payload['password']
         date_created = datetime.utcnow()
@@ -46,11 +46,11 @@ class Register(Resource):
         db.sessions.insert_one({"ip": request.remote_addr, "access_token": access_token, "refresh_token": refresh_token, "email": email})
 
         # New user created
-        user = {'email': email, 'password': hashed_password, 'business_type':business_type, "date_created": date_created}
+        user = {'email': email, 'password': hashed_password, 'name': name, "date_created": date_created, "food_banks": [], "restaurants": []}
         db.users.insert_one(user)
         
         print("Registered User Successfully")
-        return {'message': 'User registered successfully', "access_token":access_token,"refresh_token":refresh_token}, 201
+        return {'message': 'User registered successfully', "access_token": access_token, "refresh_token": refresh_token}, 201
 
 
 @auth.route('/login', methods=['POST'])
