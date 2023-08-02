@@ -29,16 +29,19 @@ class _CreatePostState extends State<CreatePost> {
 
   @override
   Widget build(BuildContext context) {
-    API().verify().then((value) => {
-          if (value is Map)
-            {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(value["error"]),
-                ),
-              ),
-            }
-        });
+    API().verify().then((value) {
+      if (value is Map) {
+        if (value.containsKey('error')) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(value["error"]),
+            ),
+          );
+        } else {
+          setState(() {});
+        }
+      }
+    });
 
     return Scaffold(
       appBar: appbarComponent(title: widget.title),
@@ -74,7 +77,7 @@ class _CreatePostState extends State<CreatePost> {
                 const SizedBox(height: 5),
                 ElevatedButton.icon(
                   onPressed: () async {
-                    Response response = await API().createPost(
+                    Response response = await API().createFoodBankPost(
                       title: titleController.text,
                       description: descriptionController.text,
                       location: locationController.text,

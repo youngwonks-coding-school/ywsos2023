@@ -16,16 +16,19 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    API().verify().then((value) => {
-          if (value is Map)
-            {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(value["error"]),
-                ),
-              ),
-            }
-        });
+    API().verify().then((value) {
+      if (value is Map) {
+        if (value.containsKey('error')) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(value["error"]),
+            ),
+          );
+        } else {
+          setState(() {});
+        }
+      }
+    });
 
     return Scaffold(
       appBar: appbarComponent(title: widget.title),

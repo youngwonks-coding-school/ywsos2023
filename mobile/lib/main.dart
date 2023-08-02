@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'home_page.dart';
 import 'posts.dart';
-import 'create_post.dart';
+import 'create_foodbank_post.dart';
 import 'charts.dart';
 import 'profile.dart';
 import 'authenticate.dart';
@@ -35,7 +35,7 @@ final _router = GoRouter(
       builder: (context, state) => const Profile(title: 'Profile'),
     ),
     GoRoute(
-      path: '/create-post',
+      path: '/create-foodbank-post',
       builder: (context, state) => const CreatePost(title: 'Create Post'),
     ),
   ],

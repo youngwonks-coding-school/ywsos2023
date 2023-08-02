@@ -129,10 +129,11 @@ class _ChartsState extends State<Charts> {
   void getData() async {
     loadingPosts = true;
 
-    List<dynamic> postsData = (await API().getPosts()).data;
+    List<dynamic> postsData = (await API().getRestaurantPosts()).data;
 
     for (final post in postsData) {
-      post["time"] = DateTime.parse(post["time"]);
+      post["time"] =
+          DateTime.fromMillisecondsSinceEpoch(int.parse(post["time"]) * 1000);
     }
 
     posts = postsData;
@@ -144,16 +145,19 @@ class _ChartsState extends State<Charts> {
 
   @override
   Widget build(BuildContext context) {
-    API().verify().then((value) => {
-          if (value is Map)
-            {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(value["error"]),
-                ),
-              ),
-            }
-        });
+    API().verify().then((value) {
+      if (value is Map) {
+        if (value.containsKey('error')) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(value["error"]),
+            ),
+          );
+        } else {
+          setState(() {});
+        }
+      }
+    });
 
     if (loadingPosts == true) {
       getData();
@@ -188,7 +192,6 @@ class _ChartsState extends State<Charts> {
                   color: const Color.fromRGBO(50, 110, 180, 1),
                 ),
                 onChanged: (String? value) {
-                  // This is called when the user selects an item.
                   setState(() {
                     dropdownValue = value!;
                   });
@@ -247,8 +250,8 @@ class _ChartsState extends State<Charts> {
                             ),
                           ),
                           duration:
-                              const Duration(milliseconds: 150), // Optional
-                          curve: Curves.linear, // Optional
+                              const Duration(milliseconds: 150),
+                          curve: Curves.linear,
                         ),
                       ),
                     ),
