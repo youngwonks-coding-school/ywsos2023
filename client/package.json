@@ -12,6 +12,7 @@
   "dependencies": {
     "@esbuild/win32-x64": "^0.18.11",
     "@vueuse/core": "^10.2.1",
+    "@fawmi/vue-google-maps": "^0.9.67",
     "axios": "^1.4.0",
     "bootstrap": "^5.3.0",
     "bootstrap-icons": "^1.10.5",
