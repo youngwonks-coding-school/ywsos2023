@@ -100,14 +100,19 @@ class Refresh(Resource):
     def post(self):
         print("error refreshing")
         current_user = get_jwt_identity()
+        jti = get_jwt()['jti']
+
+        if db.blacklisted_tokens.find_one({'jti': jti}) is not None:
+            return {'message': 'use a token that is not blacklisted'}, 401
+
         new_access_token = create_access_token(identity=current_user)
         return {'message':'new access token created using refresh token','access_token': new_access_token}, 200
         
 @auth.route('/logout', methods=['POST'])
 class Logout(Resource):
-    @jwt_required()
+    @jwt_required(refresh=True)
     def post(self):
-        # Add the access token to the blacklist
+        # Add the refresh token to the blacklist
         jti = get_jwt()['jti']
         session.clear()
         db.blacklisted_tokens.insert_one({'jti': jti})

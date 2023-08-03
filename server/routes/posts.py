@@ -9,12 +9,16 @@ from flask_restx import Namespace, Resource, fields
 from db import db
 
 posts = Namespace("posts", description="Operations related to posts")
-post_model = posts.model("Post", {
+food_bank_post_model = posts.model("Food Bank Post", {
     "title": fields.String(required=True, description="Title of the post"),
     "description": fields.String(required=True, description="Description of the post"),
     "location": fields.String(required=True, description="Location of the food bank or restaurant"),
+})
+restaurant_post_model = posts.model("Restaurant Post", {
+    "location": fields.String(required=True, description="Location of the food bank or restaurant"),
     "food": fields.String(required=True, description="Type of food"),
     "quantity": fields.Integer(required=True, description="Quantity of the food"),
+    "exp": fields.Integer(required=True, description="Expiration date of the food in time since Unix Epoch")
 })
 
 
@@ -25,18 +29,16 @@ class ResturantPostM(Resource):
 
     @jwt_required()
     @posts.doc(security="Bearer")
-    @posts.expect(post_model, validate=True)
+    @posts.expect(restaurant_post_model, validate=True)
     def post(self):
         email = get_jwt_identity()
 
         post = {
-            "title": request.json["title"],
-            "description": request.json["description"],
-            "location": request.json["location"],
             "time": str(datetime.datetime.now()),
             "user": email,
             "food": request.json["food"],
             "quantity": request.json["quantity"],
+            "exp": str(datetime.datetime.utcfromtimestamp(request.json["exp"]))
         }
 
         db.restaurant_posts.insert_one(post)
@@ -49,18 +51,16 @@ class ResturantPostM(Resource):
 class RestaurantPost(Resource):
     @jwt_required()
     @posts.doc(security="Bearer")
-    @posts.expect(post_model, validate=True)
+    @posts.expect(restaurant_post_model, validate=True)
     def put(self, id):
         email = get_jwt_identity()
 
         post = {
-            "title": request.json["title"],
-            "description": request.json["description"],
-            "location": request.json["location"],
             "time": str(datetime.datetime.now()),
             "user": email,
             "food": request.json["food"],
             "quantity": request.json["quantity"],
+            "exp": request.json["exp"]
         }
 
         db.restaurant_posts.update_one({"_id": ObjectId(id)}, {"$set": {"title": post["title"], "description": post["description"], "location": post["location"], "time": post["time"], "quantity": post["quantity"], "food": post["food"]}})
@@ -82,7 +82,7 @@ class BankPostM(Resource):
 
     @jwt_required()
     @posts.doc(security="Bearer")
-    @posts.expect(post_model, validate=True)
+    @posts.expect(food_bank_post_model, validate=True)
     def post(self):
         email = get_jwt_identity()
         print(email)
@@ -93,8 +93,6 @@ class BankPostM(Resource):
             "location": request.json["location"],
             "time": str(datetime.datetime.now()),
             "user": email,
-            "food": request.json["food"],
-            "quantity": request.json["quantity"],
         }
 
         db.bank_posts.insert_one(post)
@@ -107,7 +105,7 @@ class BankPost(Resource):
 
     @jwt_required()
     @posts.doc(security="Bearer")
-    @posts.expect(post_model, validate=True)
+    @posts.expect(food_bank_post_model, validate=True)
     def put(self, id):
         email = get_jwt_identity()
 
@@ -117,8 +115,6 @@ class BankPost(Resource):
             "location": request.json["location"],
             "time": str(datetime.datetime.now()),
             "user": email,
-            "food": request.json["food"],
-            "quantity": request.json["quantity"],
         }
 
         db.bank_posts.update_one({"_id": ObjectId(id)}, {"$set": {"title": post["title"], "description": post["description"], "location": post["location"], "time": post["time"], "quantity": post["quantity"], "food": post["food"]}})

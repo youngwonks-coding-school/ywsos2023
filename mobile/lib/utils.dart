@@ -78,9 +78,10 @@ Widget buildNavbar({
 }
 
 PreferredSizeWidget appbarComponent(
-    {required String title, bool backButton = false}) {
+    {required String title, bool backButton = false, PreferredSizeWidget? bottom}) {
   return AppBar(
     automaticallyImplyLeading: backButton,
+    bottom: bottom,
     systemOverlayStyle: const SystemUiOverlayStyle(
       statusBarColor: Color.fromRGBO(240, 230, 220, 1),
       statusBarIconBrightness: Brightness.dark,
@@ -122,29 +123,36 @@ TextFormField buildTextField(
     TextEditingController? controller,
     bool obscureText = false,
     bool multiline = false,
-    Function? validate}) {
+    bool border = true,
+    bool dense = false,
+    String? Function(String?)? validate}) {
   return TextFormField(
     controller: controller,
     obscureText: obscureText,
     maxLines: multiline ? null : 1,
     keyboardType: multiline ? TextInputType.multiline : null,
-    validator: validate as String? Function(String?)?,
+    validator: validate,
     autovalidateMode: validate == null ? AutovalidateMode.disabled : AutovalidateMode.onUserInteraction,
     decoration: InputDecoration(
       prefixIcon: Icon(icon),
       labelText: labelText,
       isDense: true,
+      contentPadding: dense ? EdgeInsets.zero : null,
+      prefixIconConstraints: dense ? const BoxConstraints(
+        minHeight: 40,
+        minWidth: 30,
+      ) : null,
       labelStyle: const TextStyle(fontSize: 17),
-      enabledBorder: const OutlineInputBorder(
+      enabledBorder: border ? const OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(10.0)),
         borderSide: BorderSide(
           color: Colors.grey,
         ),
-      ),
-      focusedBorder: OutlineInputBorder(
+      ) : null,
+      focusedBorder: border ? OutlineInputBorder(
         borderRadius: const BorderRadius.all(Radius.circular(10.0)),
         borderSide: BorderSide(color: Theme.of(context).primaryColor),
-      ),
+      ) : null,
     ),
   );
 }

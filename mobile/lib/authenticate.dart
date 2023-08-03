@@ -92,115 +92,159 @@ class _AuthenticateState extends State<Authenticate> {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: SingleChildScrollView(
+          child: DefaultTabController(
+            length: 2,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                buildTextField(
-                    labelText: "Email",
-                    controller: emailController,
-                    icon: Icons.email,
-                    context: context,
-                    validate: (String? text) {
-                      if (!emailRegex.hasMatch(text!)) {
-                        return "Please enter a valid email address!";
-                      }
-                      return null;
-                    }),
-                const SizedBox(height: 5),
-                buildTextField(
-                  labelText: "Password",
-                  controller: passwordController,
-                  obscureText: true,
-                  icon: Icons.lock,
-                  context: context,
-                  validate: (String? text) {
-                    if (text!.length < 8) {
-                      return "Please enter a password with at least 8 characters!";
-                    }
-                    return null;
-                  },
+                const TabBar(
+                  tabs: [
+                    Tab(text: "Login"),
+                    Tab(text: "Register"),
+                  ],
                 ),
-                const SizedBox(height: 6),
-                ElevatedButton.icon(
-                  onPressed: login,
-                  icon: const Icon(Icons.login, size: 19),
-                  label: const Text("Login", style: TextStyle(fontSize: 16)),
-                ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  child: Row(
+                Expanded(
+                  child: TabBarView(
                     children: [
-                      Expanded(
-                        child: Divider(
-                          color: Colors.black,
-                          thickness: 1,
+                      Center(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              buildTextField(
+                                labelText: "Email",
+                                controller: emailController,
+                                icon: Icons.email,
+                                context: context,
+                                validate: (String? text) {
+                                  if (!emailRegex.hasMatch(text!)) {
+                                    return "Please enter a valid email address!";
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 5),
+                              buildTextField(
+                                labelText: "Password",
+                                controller: passwordController,
+                                obscureText: true,
+                                icon: Icons.lock,
+                                context: context,
+                                validate: (String? text) {
+                                  if (text!.length < 8) {
+                                    return "Please enter a password with at least 8 characters!";
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 6),
+                              ElevatedButton.icon(
+                                onPressed: login,
+                                icon: const Icon(Icons.login, size: 19),
+                                label: const Text("Login",
+                                    style: TextStyle(fontSize: 16)),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8),
-                        child: Text('OR'),
-                      ),
-                      Expanded(
-                        child: Divider(
-                          color: Colors.black,
-                          thickness: 1,
+                      Center(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              buildTextField(
+                                labelText: "Email",
+                                controller: emailController,
+                                icon: Icons.email,
+                                context: context,
+                                validate: (String? text) {
+                                  if (!emailRegex.hasMatch(text!)) {
+                                    return "Please enter a valid email address!";
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 5),
+                              buildTextField(
+                                labelText: "Password",
+                                controller: passwordController,
+                                obscureText: true,
+                                icon: Icons.lock,
+                                context: context,
+                                validate: (String? text) {
+                                  if (text!.length < 8) {
+                                    return "Please enter a password with at least 8 characters!";
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 6),
+                              ToggleButtons(
+                                direction: Axis.horizontal,
+                                onPressed: (int index) {
+                                  setState(() {
+                                    for (int i = 0;
+                                        i < _accountType.length;
+                                        i++) {
+                                      _accountType[i] = i == index;
+                                    }
+                                  });
+                                },
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(8)),
+                                selectedBorderColor: Colors.transparent,
+                                selectedColor: Colors.white,
+                                fillColor:
+                                    const Color.fromRGBO(180, 160, 130, 1),
+                                color: Colors.red[800],
+                                constraints: const BoxConstraints(
+                                  minHeight: 40.0,
+                                  minWidth: 80.0,
+                                ),
+                                isSelected: _accountType,
+                                children: const [
+                                  Padding(
+                                    padding: EdgeInsets.all(8),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.restaurant_rounded,
+                                          size: 20,
+                                        ),
+                                        Text('Restaurant'),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 0, horizontal: 8),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.food_bank_rounded,
+                                          size: 34,
+                                        ),
+                                        Text('Food Bank'),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              ElevatedButton.icon(
+                                onPressed: register,
+                                icon: const Icon(Icons.person_add, size: 19),
+                                label: const Text("Register",
+                                    style: TextStyle(fontSize: 16)),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],
                   ),
-                ),
-                ToggleButtons(
-                  direction: Axis.horizontal,
-                  onPressed: (int index) {
-                    setState(() {
-                      // The button that is tapped is set to true, and the others to false.
-                      for (int i = 0; i < _accountType.length; i++) {
-                        _accountType[i] = i == index;
-                      }
-                    });
-                  },
-                  borderRadius: const BorderRadius.all(Radius.circular(8)),
-                  selectedBorderColor: Colors.transparent,
-                  selectedColor: Colors.white,
-                  fillColor: const Color.fromRGBO(180, 160, 130, 1),
-                  color: Colors.red[800],
-                  constraints: const BoxConstraints(
-                    minHeight: 40.0,
-                    minWidth: 80.0,
-                  ),
-                  isSelected: _accountType,
-                  children: const [
-                    Padding(
-                      padding: EdgeInsets.all(8),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.restaurant_rounded,
-                            size: 20,
-                          ),
-                          Text('Restaurant'),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 0, horizontal: 8),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.food_bank_rounded,
-                            size: 34,
-                          ),
-                          Text('Food Bank'),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                ElevatedButton.icon(
-                  onPressed: register,
-                  icon: const Icon(Icons.person_add, size: 19),
-                  label: const Text("Register", style: TextStyle(fontSize: 16)),
                 ),
               ],
             ),
