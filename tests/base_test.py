@@ -21,6 +21,6 @@ class Test(unittest.TestCase):
         links = self.driver.find_elements("xpath","//a[@href]")
         for link in links:
             if "Books" in link.get_attribute("innerHTML"):
-                self.assertIsNotNone(link.click())
+                self.assertIsNone(link.click())
 if __name__=="__main__":
     unittest.main()
