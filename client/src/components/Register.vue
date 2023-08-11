@@ -113,7 +113,7 @@ export default {
               storage: localStorage.getItem('accessToken')
             }
           }));
-
+          console.log("Registered user")
           this.$toast.success(response.data.message);
           this.$router.push('/profile')
 

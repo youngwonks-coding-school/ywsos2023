@@ -26,12 +26,12 @@ class Test(unittest.TestCase):
         WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, "email")))
         btns = self.driver.find_elements("xpath","//div[contains(@class, 'col btn btn-secondary button me-1')]")
         for btn in btns:
-            btn.click()
+            self.assertIsNone(btn.click())
     def test_href(self):
         WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, "email")))
         links = self.driver.find_elements("xpath","//div[contains(@href, '#')]")
         for link in links:
-            link.click()
+            self.assertIsNone(link.click())
     def tearDown(self):
         self.driver.close()
 if __name__=="__main__":

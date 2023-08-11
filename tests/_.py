@@ -1,0 +1,1 @@
+"compsci".find("o")
