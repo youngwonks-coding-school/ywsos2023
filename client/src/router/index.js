@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import HomeView from "../views/HomeView.vue";
 import axios from 'axios'
-
+axios.defaults.baseURL = 'http://localhost:5000'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -12,9 +12,9 @@ const router = createRouter({
       component: HomeView,
     },
     {
-      path: "/maps", 
+      path: "/maps",
       name: "maps",
-      component: () => import("../views/MapsView.vue"), 
+      component: () => import("../views/MapsView.vue"),
     },
     {
       path: "/profile",
@@ -44,14 +44,14 @@ const router = createRouter({
       component: () => import("../views/DashboardView.vue"),
     },
     {
-        path: "/posts",
-        name: "posts",
-        component: () => import("../views/PostsView.vue"),
+      path: "/posts",
+      name: "posts",
+      component: () => import("../views/PostsView.vue"),
     },
     {
-        path: "/posting-trends",
-        name: "posting-trends",
-        component: () => import("../views/PostingTrendsView.vue"),
+      path: "/posting-trends",
+      name: "posting-trends",
+      component: () => import("../views/PostingTrendsView.vue"),
     },
     {
       path: "/logout",

@@ -1,7 +1,11 @@
 <template>
-  <nav :key="isLoggedIn" class="navbar navbar-expand-md d-flex justify-content-center navbar-floating" :class="{ 'dark-theme': isDarkTheme }">
+  <nav
+    :key="isLoggedIn"
+    class="navbar navbar-expand-md d-flex justify-content-center navbar-floating"
+    :class="{ 'dark-theme': isDarkTheme }"
+  >
     <div class="navbar-header">
-    <a class="navbar-brand" href="/">YWSOS</a>
+      <a class="navbar-brand text-dark" href="/">Yum Union</a>
     </div>
     <button
       class="navbar-toggler"
@@ -24,23 +28,20 @@
             <a class="nav-link" href="/login">Login</a>
           </li>
           <div class="d-flex" v-else>
-            <li class="nav-item">
-            <a class="nav-link" href="/logout" @click="logout">Logout</a>
+            <li>
+              <a class="nav-link" href="/dashboard">Dashboard</a>
             </li>
             <li>
-              <a class="nav-link" href="/dashboard" >Dashboard</a>
-            </li>
-            <li>
-              <a class="nav-link" href="/profile" >Profile</a>
+              <a class="nav-link" href="/profile">Profile</a>
             </li>
           </div>
-           <li class="nav-item">
+          <li class="nav-item" v-if="isLoggedIn">
             <a class="nav-link" href="/posts">Posts</a>
-           </li>
-          <li class="nav-item">
+          </li>
+          <li class="nav-item" v-if="isLoggedIn">
             <a class="nav-link" href="/maps">Maps</a>
           </li>
-           <li class="nav-item">
+          <li class="nav-item">
             <div class="dropdown" href="/clock">
               <a
                 class="nav-link dropdown-toggle"
@@ -53,7 +54,9 @@
               </a>
               <ul class="dropdown-menu" aria-labelledby="timezone">
                 <li v-for="timezone in timezones" :key="timezone.identifier">
-                  <a class="dropdown-item" href="#" @click="changeTimezone(timezone)">{{ timezone.label }}</a>
+                  <a class="dropdown-item" href="#" @click="changeTimezone(timezone)">{{
+                    timezone.label
+                  }}</a>
                 </li>
               </ul>
             </div>
@@ -64,21 +67,23 @@
               <i v-else class="fas fa-sun"></i>
             </button>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/logout" @click="logout">Logout</a>
+          </li>
         </ul>
       </div>
     </div>
   </nav>
 </template>
 
-
 <script>
-import { DateTime, IANAZone } from 'luxon';
+import { DateTime, IANAZone } from 'luxon'
 
 export default {
   computed: {
     isLoggedIn() {
-      return this.accessToken !== '';
-    },
+      return this.accessToken !== ''
+    }
   },
   data() {
     return {
@@ -110,51 +115,54 @@ export default {
         { identifier: 'UTC+11', label: 'New Caledonia Time' },
         { identifier: 'UTC+12', label: 'New Zealand Standard Time' },
         { identifier: 'UTC+13', label: 'Tonga Time' },
-        { identifier: 'UTC+10', label: 'Chamorro Standard Time' },
-      ],
-    };
+        { identifier: 'UTC+10', label: 'Chamorro Standard Time' }
+      ]
+    }
   },
-  
-  mounted() {
-    this.updateTime();
-    setInterval(this.updateTime, 1000); 
 
-      window.addEventListener('access-token-localstorage-changed', (event) => {
-      this.accessToken = event.detail.storage;
-    });
+  mounted() {
+    this.updateTime()
+    setInterval(this.updateTime, 1000)
+
+    window.addEventListener('access-token-localstorage-changed', (event) => {
+      this.accessToken = event.detail.storage
+    })
   },
-  
+
   methods: {
     logout() {
-      this.axiosInstance.get('/api/auth/logout', {
-      headers: {Authorization: `Bearer ${localStorage.getItem('accessToken')}`}}).catch((error) => {console.log(error, "logging out");
-      });
+      this.axiosInstance
+        .get('/api/auth/logout', {
+          headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
+        })
+        .catch((error) => {
+          console.log(error, 'logging out')
+        })
 
-      localStorage.removeItem('accessToken');
-      this.isLoggedIn = false;
-      console.log('Logged out');
+      localStorage.removeItem('accessToken')
+      this.isLoggedIn = false
+      console.log('Logged out')
     },
 
     changeTheme() {
-      this.isDarkTheme = !this.isDarkTheme;
+      this.isDarkTheme = !this.isDarkTheme
       if (this.isDarkTheme) {
-        localStorage.setItem('theme', 'dark');
-        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark')
+        document.documentElement.setAttribute('data-theme', 'dark')
       } else {
-        document.documentElement.setAttribute('data-theme', 'light');
-        localStorage.setItem('theme', 'light');
-
+        document.documentElement.setAttribute('data-theme', 'light')
+        localStorage.setItem('theme', 'light')
       }
     },
-    
+
     updateTime() {
-      let currentTime = DateTime.now().setZone(this.selectedTimezone);
-      this.currentTime = currentTime.toFormat('hh:mm:ss a');
+      let currentTime = DateTime.now().setZone(this.selectedTimezone)
+      this.currentTime = currentTime.toFormat('hh:mm:ss a')
     },
     changeTimezone(timezone) {
-      this.selectedTimezone = timezone.identifier;
-      this.updateTime();
-    },
-  },
-};
+      this.selectedTimezone = timezone.identifier
+      this.updateTime()
+    }
+  }
+}
 </script>

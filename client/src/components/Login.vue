@@ -34,10 +34,11 @@
           >
         </div>
         <div class="text-center">
-          <button type="button" @click="login()" class="btn btn-primary button" id="login">Login</button><br /><br />
+          <button type="button" @click="login()" class="btn btn-primary button" id="login">
+            Login</button
+          ><br /><br />
 
           <label class="form-check-label"><a href="/register">Register</a> </label>
-
         </div>
       </form>
     </div>
@@ -46,6 +47,8 @@
 
 <script>
 import axios from 'axios'
+axios.defaults.baseURL = 'http://localhost:5000'
+
 export default {
   data() {
     return {
@@ -65,13 +68,15 @@ export default {
           this.$toast.success(response.data.message)
           localStorage.setItem('accessToken', response.data.access_token)
           localStorage.setItem('refreshToken', response.data.refresh_token)
-          localStorage.setItem('business_type', response.data.business_type )
+          localStorage.setItem('business_type', response.data.business_type)
 
-          window.dispatchEvent(new CustomEvent('access-token-localstorage-changed', {
-            detail: {
-              storage: localStorage.getItem('accessToken')
-            }
-          }));
+          window.dispatchEvent(
+            new CustomEvent('access-token-localstorage-changed', {
+              detail: {
+                storage: localStorage.getItem('accessToken')
+              }
+            })
+          )
           this.$router.push('/dashboard')
         })
         .catch((error) => {

@@ -91,6 +91,10 @@ class RestaurantM(Resource):
     def get(self, id):
         return json_util.dumps(db.restaurants.find_one({"_id": ObjectId(id)}))
 
+@restaurant.route('/get_associated_restaurants_ids/<email>')
+class RestaurantM(Resource):
+    def get(self, email):
+        return json_util.dumps(db.restaurants.find_one({"email": email}))
 
 @restaurant.route('/food', methods=['POST', 'DELETE'])
 class Food(Resource):

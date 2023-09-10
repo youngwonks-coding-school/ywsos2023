@@ -4,23 +4,23 @@
       <h5 class="card-title text-center">Register</h5>
       <form>
         <div class="mb-3">
-          <div class="form-group d-flex justify-content-center">
+          <!-- <div class="form-group d-flex justify-content-center">
             <ul class="nav nav-tabs">
               <li
-                class="nav-item"
+                class="nav-item text-dark"
                 v-for="(option, index) in display_options"
                 :key="index"
               >
-              <a
-              class="nav-link"
-              :class="{ active: selectedOption === options[index] }"
-              @click="selectOption(options[index])"
-              >
-                {{ option }}
-              </a>
+                <a
+                  class="nav-link"
+                  :class="{ active: selectedOption === options[index] }"
+                  @click="selectOption(options[index])"
+                >
+                  {{ option }}
+                </a>
               </li>
             </ul>
-          </div>
+          </div> -->
           <label for="email" class="form-label">Email address</label>
           <input
             type="text"
@@ -41,19 +41,15 @@
             v-model="password"
             :class="{
               'is-invalid': !isValidPassword,
-              'is-valid': isValidPassword,
+              'is-valid': isValidPassword
             }"
             required
           />
         </div>
         <div class="mb-3 form-check">
-          <input
-            type="checkbox"
-            class="form-check-input"
-            id="terms-privacy-check"
-          />
+          <input type="checkbox" class="form-check-input" id="terms-privacy-check" />
           <label class="form-check-label" for="terms-privacy-check"
-            >I agree to the <a href="/terms-of-service">terms of servcie</a> and
+            >I agree to the <a href="/terms-of-service">terms of service</a> and
             <a href="/privacy-policy">privacy policy</a></label
           >
         </div>
@@ -75,66 +71,66 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from 'axios'
+axios.defaults.baseURL = 'http://localhost:5000'
 export default {
   data() {
     return {
-      email: "",
-      password: "",
-      display_options: ["Restaurant", "Food Bank"],
-      options: ["restaurant", "food_bank"],
-      selectedOption: "restaurant",
-    };
+      email: '',
+      password: '',
+      display_options: ['Restaurant', 'Food Bank'],
+      options: ['restaurant', 'food_bank'],
+      selectedOption: 'restaurant'
+    }
   },
   methods: {
     //set the business type on tab change (restaurant or food bank)
     selectOption(option) {
-      this.selectedOption = option;
+      this.selectedOption = option
     },
 
     //register the user (send business type in addition to email and password)
     register() {
-
-      localStorage.setItem("business_type", this.selectedOption);
-      console.log("Registering email: "+ this.email +" business type", this.selectedOption);
+      localStorage.setItem('business_type', this.selectedOption)
+      console.log('Registering email: ' + this.email + ' business type', this.selectedOption)
       axios
-        .post("/api/auth/register", {
+        .post('/api/auth/register', {
           email: this.email,
           password: this.password,
-          business_type: this.selectedOption,
+          business_type: this.selectedOption
         })
         .then((response) => {
-          localStorage.setItem("accessToken", response.data.access_token);
-          localStorage.setItem("refreshToken", response.data.refresh_token);
+          localStorage.setItem('accessToken', response.data.access_token)
+          localStorage.setItem('refreshToken', response.data.refresh_token)
 
           //dispatch custom event to update the localstorage in the navbar
-          window.dispatchEvent(new CustomEvent('access-token-localstorage-changed', {
-            detail: {
-              storage: localStorage.getItem('accessToken')
-            }
-          }));
-          console.log("Registered user")
-          this.$toast.success(response.data.message);
+          window.dispatchEvent(
+            new CustomEvent('access-token-localstorage-changed', {
+              detail: {
+                storage: localStorage.getItem('accessToken')
+              }
+            })
+          )
+          console.log('Registered user')
+          this.$toast.success(response.data.message)
           this.$router.push('/profile')
-
-          
         })
         .catch((error) => {
-          console.log("Error Registering", error.response.data.message);
-          this.$toast.error(error.response.data.message);
-        });
-    },
+          console.log('Error Registering', error.response.data.message)
+          this.$toast.error(error.response.data.message)
+        })
+    }
   },
   computed: {
     isValidEmail() {
-      const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
-      return emailRegex.test(this.email);
+      const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/
+      return emailRegex.test(this.email)
     },
     isValidPassword() {
-      return this.password.length >= 8;
-    },
-  },
-};
+      return this.password.length >= 8
+    }
+  }
+}
 </script>
 
 <style scoped>

@@ -78,7 +78,7 @@ class Login(Resource):
             "email": email
         })
 
-        business_type = user_data['business_type']
+        business_type = "user_data['business_type']"
         return {
             'message': 'Successfully logged in.',
             "access_token": access_token,
@@ -152,7 +152,7 @@ class GetBusinessType(Resource):
         user = db.users.find_one({"email": get_jwt_identity()})
         if not user:
             return {'message': 'Invalid email or password'}, 401
-        return {"business_type": user['business_type']}, 200
+        return {"business_type": "user['business_type']"}, 200
     
 @auth.route('/get_sessions', methods=['GET'])
 class GetSessions(Resource):

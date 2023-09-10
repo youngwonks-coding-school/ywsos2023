@@ -2,12 +2,20 @@
   <div class="profile-container-restaurant container">
     <!-- Profile Dropdown -->
     <div class="profile-dropdown" v-if="associated_restaurants_ids.length > 1">
-      <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+      <button
+        class="btn dropdown-toggle"
+        type="button"
+        id="dropdownMenuButton"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
         {{ restaurant.name }}
       </button>
       <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
         <li v-for="(restaurant, index) in associated_restaurants_data" :key="index">
-          <a class="dropdown-item" @click="handleRestaurantSelection(index)">{{ restaurant.name }}</a>
+          <a class="dropdown-item" @click="handleRestaurantSelection(index)">{{
+            restaurant.name
+          }}</a>
         </li>
       </ul>
     </div>
@@ -22,53 +30,82 @@
       <form class="row form">
         <div class="row-md-6 form-group">
           <label for="name">Restaurant Name:</label>
-          <input type="text" id="name" autocomplete="on" class="form-control" v-model="form.name" required>
+          <input
+            type="text"
+            id="name"
+            autocomplete="on"
+            class="form-control"
+            v-model="form.name"
+            required
+          />
         </div>
         <div class="row-md-6 form-group">
           <label for="address">Address:</label>
-          <input type="text" id="address" autocomplete="on" class="form-control" v-model="form.address" required>
+          <input
+            type="text"
+            id="address"
+            autocomplete="on"
+            class="form-control"
+            v-model="form.address"
+            required
+          />
         </div>
         <div class="w-100"></div>
         <div class="row-md-6 form-group">
           <label for="city">City:</label>
-          <input type="text" id="city" class="form-control" v-model="form.city">
+          <input type="text" id="city" class="form-control" v-model="form.city" />
         </div>
         <div class="w-100"></div>
         <div class="row form-group">
           <div class="col-md-6 form-group">
             <label for="state">State:</label>
-            <input type="text" id="state" class="form-control" v-model="form.state">
+            <input type="text" id="state" class="form-control" v-model="form.state" />
           </div>
           <div class="col-md-6 form-group">
             <label for="country">Country:</label>
-            <input type="text" id="country" class="form-control" v-model="form.country">
+            <input type="text" id="country" class="form-control" v-model="form.country" />
           </div>
         </div>
         <div class="row-md-6 form-group">
           <label for="number">Phone Number:</label>
-          <input type="text" id="phone" class="form-control" v-model="form.phone">
+          <input type="text" id="phone" class="form-control" v-model="form.phone" />
         </div>
         <div class="col-md-12 d-flex justify-content-center">
           <div class="submit-button">
-            <input type="button" @click="onSubmit" id="submitButton" class="btn btn-primary form-button" value="Submit"/>
+            <input
+              type="button"
+              @click="onSubmit"
+              id="submitButton"
+              class="btn btn-primary form-button"
+              value="Submit"
+            />
           </div>
         </div>
-      </form>  
+      </form>
     </div>
   </div>
 
   <!-- Submission Section -->
   <div class="submission container">
-    <div id="profile-results" class="profile-results card-deck container d-flex flex-row align-items-center ">
+    <div
+      id="profile-results"
+      class="profile-results card-deck container d-flex flex-row align-items-center"
+    >
       <div class="card" v-for="(key, index) in Object.keys(yelp_response).slice(0, 3)" :key="index">
-        <img :src="yelp_response[key].image" class="card-img-top" alt="Restaurant Image">
+        <img :src="yelp_response[key].image" class="card-img-top" alt="Restaurant Image" />
         <div class="card-body d-flex flex-column" @click="restaurantSelect(index)">
           <h5 class="card-title">{{ yelp_response[key].name }}</h5>
           <p class="card-text">{{ yelp_response[key].address }}</p>
           <p class="card-text">Phone: {{ yelp_response[key].phone }}</p>
           <p class="card-text">Rating: {{ yelp_response[key].rating }}</p>
           <div class="mt-auto">
-            <a :href="yelp_response[key].url" target="_blank" class="btn btn-primary button" style="background: #4f61ff">View on Yelp</a>
+            <a
+              :href="yelp_response[key].url"
+              target="_blank"
+              class="btn btn-primary button"
+              style="background: #4f61ff"
+              >View on Yelp</a
+            >
           </div>
         </div>
       </div>
@@ -76,21 +113,19 @@
   </div>
 </template>
 
-
 <script>
-
 export default {
   name: 'RestaurantProfileView',
   watch: {
     restaurant: {
-      handler: function(newRestaurant) {
-        this.title = 'Hello There ' + newRestaurant.name;
-        this.form.name = newRestaurant.name;
-        this.form.address = newRestaurant.address;
-        this.form.phone = newRestaurant.phone;
-        this.form.city = newRestaurant.city;
-        this.form.state = newRestaurant.state;
-        this.form.country = newRestaurant.country;
+      handler: function (newRestaurant) {
+        this.title = 'Hello There ' + newRestaurant.name
+        this.form.name = newRestaurant.name
+        this.form.address = newRestaurant.address
+        this.form.phone = newRestaurant.phone
+        this.form.city = newRestaurant.city
+        this.form.state = newRestaurant.state
+        this.form.country = newRestaurant.country
       },
       deep: true
     }
@@ -103,93 +138,92 @@ export default {
         phone: '',
         city: '',
         state: '',
-        country: '',
+        country: ''
       },
       yelp_response: {},
       restaurant: {},
       associated_restaurants_ids: [],
       associated_restaurants_data: {},
       current_restaurant_index: 0,
-      title: "Tell Us About Your Restaurant",
+      title: 'Tell Us About Your Restaurant',
       submitted: false
-    };
+    }
   },
   mounted() {
-
     /*
     Get associated restaurant ids
     Get associated restaurant data
     Get current restaurant data
     */
-    this.fetchAssociatedRestaurantsIds();
-
-
-    
+    this.fetchAssociatedRestaurantsIds()
   },
   methods: {
     fetchAssociatedRestaurantsIds() {
       this.axiosInstance
-        .get('/restaurant/get_associated_restaurants_ids', { skipAuth: false })
+        .get('/api/restaurant/get_associated_restaurants_ids', { skipAuth: false })
         .then((response) => {
-          this.associated_restaurants_ids = response.data.associated_restaurants_ids;
-          this.$toast.success("Successfully retrieved restaurant IDs");
-          console.log("Successfully retrieved associated restaurant IDs: " + this.associated_restaurants_ids.length);
+          this.associated_restaurants_ids = response.data.associated_restaurants_ids
+          this.$toast.success('Successfully retrieved restaurant IDs')
+          console.log(
+            'Successfully retrieved associated restaurant IDs: ' +
+              this.associated_restaurants_ids.length
+          )
 
           if (this.associated_restaurants_ids.length > 0) {
-            this.fetchAssociatedRestaurantsData();
+            this.fetchAssociatedRestaurantsData()
           }
         })
         .catch((error) => {
-          this.$toast.error("Error finding previous restaurants");
-          console.log("Error finding previous restaurants: ", error);
-        });
+          this.$toast.error('Error finding previous restaurants')
+          console.log('Error finding previous restaurants: ', error)
+        })
     },
     fetchAssociatedRestaurantsData() {
       this.axiosInstance
-        .get('/restaurant/get_associated_restaurants_data', {
+        .get('/api/restaurant/get_associated_restaurants_data', {
           skipAuth: false,
           params: {
             current_restaurant: localStorage.getItem('current_restaurant')
-          },
+          }
         })
         .then((response) => {
-          response = JSON.parse(response.data);
+          response = JSON.parse(response.data)
 
           for (let i = 0; i < this.associated_restaurants_ids.length; i++) {
-            this.associated_restaurants_data[i] = response.associated_restaurants_data[i];
+            this.associated_restaurants_data[i] = response.associated_restaurants_data[i]
           }
 
-          this.restaurant = response.current_restaurant_info;
-          this.form.name = this.restaurant.name;
-          this.form.address = this.restaurant.address;
-          this.form.phone = this.restaurant.phone;
-          this.form.city = this.restaurant.city;
-          this.form.state = this.restaurant.state;
-          this.form.country = this.restaurant.country;
-          this.title = 'Hello There ' + this.restaurant.name;
-          this.$toast.success('Successfully fetched food bank data');
+          this.restaurant = response.current_restaurant_info
+          this.form.name = this.restaurant.name
+          this.form.address = this.restaurant.address
+          this.form.phone = this.restaurant.phone
+          this.form.city = this.restaurant.city
+          this.form.state = this.restaurant.state
+          this.form.country = this.restaurant.country
+          this.title = 'Hello There ' + this.restaurant.name
+          this.$toast.success('Successfully fetched food bank data')
         })
         .catch((error) => {
-          this.$toast.error("Error finding previous restaurants");
-          console.log("Error finding previous restaurants: ", error);
-        });
+          this.$toast.error('Error finding previous restaurants')
+          console.log('Error finding previous restaurants: ', error)
+        })
     },
 
     //user selected new restaurant to manage via drop down (set current restaurant id in sessions)
-    handleRestaurantSelection(index) {;
-      this.restaurant = this.associated_restaurants_data[index];
-      localStorage.setItem('current_restaurant', this.associated_restaurants_data[index]._id);
+    handleRestaurantSelection(index) {
+      this.restaurant = this.associated_restaurants_data[index]
+      localStorage.setItem('current_restaurant', this.associated_restaurants_data[index]._id)
     },
     onSubmit(event) {
-      event.preventDefault();
-      this.form.name = document.getElementById('name').value;
-      this.form.address = document.getElementById('address').value;
-      this.form.phone = document.getElementById('phone').value;
-      this.form.city = document.getElementById('city').value;
-      this.form.state = document.getElementById('state').value;
-      this.form.country = document.getElementById('country').value;
-      console.log('submitted');
-      this.profile_data();
+      event.preventDefault()
+      this.form.name = document.getElementById('name').value
+      this.form.address = document.getElementById('address').value
+      this.form.phone = document.getElementById('phone').value
+      this.form.city = document.getElementById('city').value
+      this.form.state = document.getElementById('state').value
+      this.form.country = document.getElementById('country').value
+      console.log('submitted')
+      this.profile_data()
     },
     profile_data() {
       const data = {
@@ -198,18 +232,18 @@ export default {
         phone: this.form.phone,
         city: this.form.city,
         state: this.form.state,
-        country: this.form.country,
-      };
+        country: this.form.country
+      }
 
       // Get possible restaurants from Yelp based on entered form data
       this.axiosInstance
         .post('/restaurant/get_restaurants', { data: data, skipAuth: true })
         .then((response) => {
-          const response_data = JSON.parse(response.data.message).businesses;
-          const amount = response_data.length;
+          const response_data = JSON.parse(response.data.message).businesses
+          const amount = response_data.length
 
           if (amount > 0) {
-            this.$toast.success(amount + ' restaurants found!');
+            this.$toast.success(amount + ' restaurants found!')
           }
 
           for (let i = 0; i < amount; i++) {
@@ -225,23 +259,26 @@ export default {
               categories: response_data[i].categories,
               distance: response_data[i].distance,
               coordinates: response_data[i].coordinates
-            };
+            }
           }
 
-          this.submitted = true;
+          this.submitted = true
         })
         .catch((error) => {
-          console.log(error);
-          this.$toast.error('Error! Getting Restaurants');
-        });
+          console.log(error)
+          this.$toast.error('Error! Getting Restaurants')
+        })
     },
 
     //user selected restaurant -> send to db
     restaurantSelect(index) {
       this.axiosInstance
-        .post('/restaurant/add_restaurant', { selected: this.yelp_response[index], skipAuth: false})
+        .post('/api/restaurant/add_restaurant', {
+          selected: this.yelp_response[index],
+          skipAuth: false
+        })
         .then((response) => {
-          localStorage.setItem('current_restaurant', response.data.current_restaurant);
+          localStorage.setItem('current_restaurant', response.data.current_restaurant)
 
           this.restaurant = {
             name: this.yelp_response[index].name,
@@ -254,20 +291,17 @@ export default {
             categories: this.yelp_response[index].categories,
             distance: this.yelp_response[index].distance,
             coordinates: this.yelp_response[index].coordinates
-          };
+          }
 
-          this.$toast.success('Successfully set your restaurant');
-          console.log('we set your restaurant', this.restaurant);
-          window.location.reload();
+          this.$toast.success('Successfully set your restaurant')
+          console.log('we set your restaurant', this.restaurant)
+          window.location.reload()
         })
         .catch((error) => {
-          console.log(error);
-          this.$toast.error('Error selecting restaurant');
-        });
+          console.log(error)
+          this.$toast.error('Error selecting restaurant')
+        })
     }
   }
-};
+}
 </script>
-
-
-
